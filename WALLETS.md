@@ -32,7 +32,7 @@ discovery (the 404/403 message names the owning project).
 |---|---|---|---|---|---|
 | openwork-csm | env `GEMINI_API_KEY`/`GOOGLE_API_KEY` AND `~/.opencode/auth.json` google (same key, fp match) | `D6rQ` | `704bb5` | **252939746739** | BLOCKED: Agent Platform API never enabled on the project (403). OpenWork + OpenCode draw this one wallet today. |
 | Joanna (Keith's OpenWork target) **<-- ACTIVE DRAW** | `vertex_key.txt` | `3fMQ` | `141811` | `project-5a33f910-1251-4d6a-bf9` | **$142.36 remaining** (Keith, read from Credits page 2026-09-28 — MEASURED, not computed). Discount eligibility offered after credits exhaust. Window ends **2026-10-10** (Keith, read from the console — supersedes the computed Oct 13). Vertex express LIVE (re-probed 9/28). |
-| Kelly / orders.ggn (COSMOS + Crucible) | `vertex_coding_key.txt` | `Ko_A` | `0bc221` | `project-10b3a132-ec5b-41e9-a2c` | $300 through **2026-12-04** |
+| Kelly / orders.ggn (COSMOS + Crucible) | `vertex_coding_key.txt` | `Ko_A` | `0bc221` | `project-10b3a132-ec5b-41e9-a2c` | **~$40-60 remaining** (Keith est. 2026-09-28 — the Sep 5 "$0 used" snapshot is stale; COSMOS/Crucible draws consumed most of the $300). Console read owed to pin the exact figure. Window ends **2026-12-04**. |
 | keith.bbf AI Studio "My First Project" | `gemini_key.txt` | `jvmA` | `213147` | **475026348209** | Free tier, rate-capped (RPD 20-22/20; ~300x 429 in Jul) |
 | keith.bbf depleted key | `gemini_key.txt.depleted-2026-08-12.bak` | `rgXw` | `2a00b3` | - | depleted 2026-08-12 |
 | keith.bbf "Default Gemini Project" | index only (key `openw-cos`, not in .secrets) | `cLGw` | - | `gen-lang-client-0129519884` | per COSMOS index |
@@ -49,12 +49,12 @@ per call. To burn a different wallet, override the env var for that run.
 
 1. **Joanna** — $142.36 measured, ends **Oct 10** (12 days from measurement).
    Spend to $0 first. CONFIRMED ORDER.
-2. **Kelly** — $300 through **2026-12-04**. Becomes the default draw on
-   ~Oct 10 and carries the fleet for ~8 weeks.
+2. **Kelly — use up next** (Keith, 2026-09-28). **~$40-60 remaining** (estimate;
+   console read owed), window ends **2026-12-04**. Small balance, so it burns
+   fast — default draw from ~Oct 10 until $0.
 3. **MedicineMan / Fruitaholics / PatriotFuelStop** — $300 each, expires
-   **~Dec 10-20** (registered ~Sep 20 + 90 days; approximate). Draw them after
-   Kelly's window, earliest-dated first once exact dates are read from the
-   console.
+   **~Dec 10-20** (registered ~Sep 20 + 90 days; approximate). The fresh rail
+   after Kelly dies — earliest-dated first once exact dates are read.
 
 Ranny (both) is Jack's - never draw it from Keith's seats.
 
