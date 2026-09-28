@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Siteforge MCP server - stdio transport, stdlib only (no pip deps).
+"""SpiderCaster MCP server - stdio transport, stdlib only (no pip deps).
 
-Exposes the working siteforge engine (IR, renderer, checks, wallets) as MCP
+Exposes the working SpiderCaster engine (IR, renderer, checks, wallets) as MCP
 tools so any harness-bound agent (Claude Code, Codex, Cursor, Antigravity,
 OpenCode, WOMBAT's own harness, ...) can drive it. Tool names follow the
 COSMOS2 engine design; the implementation runs against the real engine.
@@ -29,9 +29,9 @@ from lib import ir as ir_mod            # noqa: E402
 from lib import offline as offline_mod  # noqa: E402
 from lib import render                  # noqa: E402
 
-SURFACE_ROOT = Path(os.environ.get("SITEFORGE_SURFACE_ROOT") or (ROOT / "sites"))
-SECRETS_DIR = Path(os.environ.get("SITEFORGE_SECRETS_DIR") or r"V:\Research4\.secrets")
-SERVER_INFO = {"name": "siteforge-mcp", "version": "0.1.0"}
+SURFACE_ROOT = Path(os.environ.get("SPIDERCASTER_SURFACE_ROOT") or (ROOT / "sites"))
+SECRETS_DIR = Path(os.environ.get("SPIDERCASTER_SECRETS_DIR") or r"V:\Research4\.secrets")
+SERVER_INFO = {"name": "spidercaster-mcp", "version": "0.1.0"}
 
 
 # ---------------------------------------------------------------- helpers
@@ -63,7 +63,7 @@ def _key_meta(text: str):
 
 def tool_catalog_read(args: dict) -> dict:
     return {
-        "engine": "siteforge/0.1",
+        "engine": "spidercaster/0.1",
         "granularity": "section-level IR; the renderer owns layout and styles",
         "section_types": [
             {"id": t, "data_fields": ir_mod.SECTION_DOCS.get(t, "")}
@@ -87,7 +87,7 @@ def tool_tokens_read(args: dict) -> dict:
         "accent": ir_mod.hex6(args.get("accent")),
         "accent2": ir_mod.hex6(args.get("accent2")),
     }
-    pal = render.build_palette(theme, args.get("seed") or "siteforge")
+    pal = render.build_palette(theme, args.get("seed") or "spidercaster")
     vars_out = {}
     m = re.search(r":root\{([^}]*)\}", render.CSS_TEMPLATE)
     if m:
@@ -277,7 +277,7 @@ TOOLS = {
 OBJ = {"type": "object", "properties": {}, "additionalProperties": False}
 
 TOOL_SPECS = [
-    {"name": "catalog_read", "description": "Siteforge section catalog: types, data fields, icons, templates, content rules.",
+    {"name": "catalog_read", "description": "SpiderCaster section catalog: types, data fields, icons, templates, content rules.",
      "inputSchema": OBJ},
     {"name": "tokens_read", "description": "Resolved theme tokens (CSS vars) for template/dark/accent. Agents set knobs, never literals.",
      "inputSchema": {"type": "object", "properties": {
@@ -357,7 +357,7 @@ def main() -> int:
         try:
             msg = json.loads(line)
         except ValueError:
-            print("siteforge-mcp: bad JSON line ignored", file=sys.stderr)
+            print("spidercaster-mcp: bad JSON line ignored", file=sys.stderr)
             continue
         resp = handle(msg)
         if resp:

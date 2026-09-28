@@ -1,17 +1,17 @@
-# Siteforge MCP - harness configs
+# SpiderCaster MCP - harness configs
 
 One server, every harness. The engine stays here; agents keep their own
 harnesses (no re-homing). Each config below points at the same stdio server.
 Windows paths use forward slashes (Python accepts them natively).
 
-Server: `V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py`
-Surface root (optional env): `SITEFORGE_SURFACE_ROOT` (default: `siteforge/sites`)
-Secrets dir (optional env): `SITEFORGE_SECRETS_DIR` (default: `V:\Research4\.secrets`)
+Server: `V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py`
+Surface root (optional env): `SPIDERCASTER_SURFACE_ROOT` (default: `SpiderCaster/sites`)
+Secrets dir (optional env): `SPIDERCASTER_SECRETS_DIR` (default: `V:\Research4\.secrets`)
 
 ## Claude Code
 
 ```
-claude mcp add siteforge -- python V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py
+claude mcp add spidercaster -- python V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py
 ```
 
 or `.mcp.json` at the project root:
@@ -19,10 +19,10 @@ or `.mcp.json` at the project root:
 ```json
 {
   "mcpServers": {
-    "siteforge": {
+    "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py"],
-      "env": { "SITEFORGE_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/siteforge/sites" }
+      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
     }
   }
 }
@@ -37,10 +37,10 @@ change to the ledger; hooks can also gate `render_trigger` completions.
 
 ```toml
 [[mcp_servers]]
-name = "siteforge"
+name = "spidercaster"
 command = "python"
-args = ["V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py"]
-env = { SITEFORGE_SURFACE_ROOT = "V:/Streams/WEBSITES/openwork_space/siteforge/sites" }
+args = ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"]
+env = { SPIDERCASTER_SURFACE_ROOT = "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
 ```
 
 Approval policy: the engine tools are local, trusted operations on Keith's own
@@ -54,10 +54,10 @@ agent prompt (builder vs content), not just in config.
 ```json
 {
   "mcpServers": {
-    "siteforge": {
+    "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py"],
-      "env": { "SITEFORGE_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/siteforge/sites" }
+      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
     }
   }
 }
@@ -74,16 +74,16 @@ Workspace `.agents/mcp_config.json` (or global `~/.gemini/config/mcp_config.json
 ```json
 {
   "mcpServers": {
-    "siteforge": {
+    "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py"],
-      "env": { "SITEFORGE_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/siteforge/sites" }
+      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
     }
   }
 }
 ```
 
-Ask mode is default: add the siteforge tools to the allowlist so they run
+Ask mode is default: add the SpiderCaster tools to the allowlist so they run
 without per-call approval (local, trusted).
 
 ## OpenCode
@@ -93,10 +93,10 @@ Project `opencode.json`:
 ```json
 {
   "mcp": {
-    "siteforge": {
+    "spidercaster": {
       "type": "local",
-      "command": ["python", "V:/Streams/WEBSITES/openwork_space/siteforge/mcp_server.py"],
-      "environment": { "SITEFORGE_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/siteforge/sites" }
+      "command": ["python", "V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
+      "environment": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
     }
   }
 }

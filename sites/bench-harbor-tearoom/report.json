@@ -1,5 +1,5 @@
 {
-  "generator": "siteforge/0.1",
+  "generator": "spidercaster/0.1",
   "mode": "offline",
   "brief": "# Brief\n\nRound 1 Spidercaster bench fixture (SYNTHETIC, frozen 2026-09-28). A quiet\ntea room that seats walk-ins by the water. Single page: hours, menu table\n(3 teas with prices), find-us block, contact link. Mobile-first, noindex,\nsingle self-contained page, no external requests. Synthetic business:\nnever index, never deploy, never link from live lanes.",
   "provider": null,
@@ -17,5 +17,5 @@
     "est_cost_usd": 0
   },
   "attempts": [],
-  "built_at": "2026-09-28 14:57:49"
+  "built_at": "2026-09-28 15:08:32"
 }

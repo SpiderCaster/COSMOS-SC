@@ -1,17 +1,17 @@
 {
   "version": 1,
-  "generator": "siteforge/0.1",
-  "brief": "# Brief\n\nLocal test build for Siteforge, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "generator": "spidercaster/0.1",
+  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
-    "title": "Siteforge: Websites from Real Copy, on Free Tokens",
-    "description": "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, ",
+    "title": "SpiderCaster: Websites from Real Copy",
+    "description": "SpiderCaster is a copy-driven static website engine. Build sites from your brief and real copy files. Zero token builds with optional AI.",
     "lang": "en"
   },
   "theme": {
     "template": "modern",
     "dark": false,
-    "accent": "#2a9d8f",
-    "accent2": "#e9c46a"
+    "accent": "#000000",
+    "accent2": "#444444"
   },
   "nav": [
     {
@@ -23,8 +23,8 @@
       "href": "#house-rules"
     },
     {
-      "label": "Questions",
-      "href": "#questions"
+      "label": "FAQ",
+      "href": "#faq"
     },
     {
       "label": "About",
@@ -34,28 +34,27 @@
   "pages": [
     {
       "slug": "index",
-      "title": "Siteforge: Websites from Real Copy, on Free Tokens",
+      "title": "SpiderCaster",
       "sections": [
         {
           "id": "hero",
           "type": "hero",
           "data": {
-            "eyebrow": "Siteforge",
+            "eyebrow": "SpiderCaster",
             "headline": "Websites from Real Copy, on Free Tokens",
-            "subhead": "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain.",
+            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.",
             "primary": {
               "label": "View Commands",
               "href": "#commands"
             },
             "secondary": {
-              "label": "Why it is Cheap",
-              "href": "#cheap"
+              "label": "Learn More",
+              "href": "#about"
             },
             "bullets": [
-              "Deterministic code, zero token bulk builds",
-              "AI optional on free chains",
-              "No invented content",
-              "Noindex by default"
+              "Zero token builds",
+              "Optional AI on free chains",
+              "Deterministic assembly"
             ]
           }
         },
@@ -83,28 +82,24 @@
         },
         {
           "id": "house-rules",
-          "type": "features",
+          "type": "steps",
           "data": {
             "title": "House rules the engine enforces",
             "subhead": "",
             "items": [
               {
-                "icon": "check",
                 "title": "No invented content",
-                "body": "The AI prompt is hard-restricted to your source copy, and the offline planner only uses text it was given. OPENWORK_API_KEY. Values are never written to disk by the engine."
+                "body": "The AI prompt is hard-restricted to your source copy, Values are never written to disk by the engine."
               },
               {
-                "icon": "lock",
                 "title": "Noindex by default",
                 "body": "Pass --indexable only after a gate is signed."
               },
               {
-                "icon": "sparkles",
                 "title": "No hotlinking",
                 "body": "External stock-photo URLs are dropped at ingest."
               },
               {
-                "icon": "code",
                 "title": "Secrets by env var name only",
                 "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY."
               }
@@ -112,7 +107,7 @@
           }
         },
         {
-          "id": "questions",
+          "id": "faq",
           "type": "faq",
           "data": {
             "title": "Questions about the engine",
@@ -142,53 +137,33 @@
           }
         },
         {
-          "id": "cheap",
-          "type": "steps",
-          "data": {
-            "title": "Why it is cheap",
-            "subhead": "",
-            "items": [
-              {
-                "title": "Deterministic assembly",
-                "body": "layout, CSS, icons and pages are code, not tokens."
-              },
-              {
-                "title": "Offline mode",
-                "body": "a full draft with zero tokens, mapped straight from your copy."
-              },
-              {
-                "title": "One-call AI builds",
-                "body": "a single compact planning call produces the whole site, with at most one JSON-repair retry."
-              },
-              {
-                "title": "Refine instead of rebuild",
-                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
-              },
-              {
-                "title": "Hand edits are first-class",
-                "body": "edit site.json directly and rebuild for free. The renderer is deterministic, so the rebuild is free."
-              }
-            ]
-          }
-        },
-        {
           "id": "about",
           "type": "about",
           "data": {
-            "title": "Siteforge: websites from real copy, on free tokens",
+            "title": "About SpiderCaster",
             "body": [
-              "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
+              "SpiderCaster is a copy-driven static website engine. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
               "The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable."
             ],
-            "points": []
+            "points": [
+              {
+                "title": "Why it is cheap",
+                "body": "- Deterministic assembly: layout, CSS, icons and pages are code, not tokens.\n- Offline mode: a full draft with zero tokens, mapped straight from your copy.\n- One-call AI builds: a single compact planning call produces the whole site\n- Refine instead of rebuild: edits touch one section, so a revision costs a few hundred tokens instead of a full build.\n- Hand edits are first-class: edit site.json directly and rebuild for free."
+              }
+            ]
           }
         }
       ]
     }
   ],
   "footer": {
-    "text": "Siteforge.io",
-    "links": [],
+    "text": "SpiderCaster",
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/openwork-space/spidcaster"
+      }
+    ],
     "credit": true
   }
 }

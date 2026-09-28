@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generator": "siteforge/0.1",
-  "brief": "# Brief\n\nLocal test build for Siteforge, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "generator": "spidercaster/0.1",
+  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
-    "title": "Siteforge: websites from real copy, on free tokens",
-    "description": "Siteforge is a copy-driven static website engine. You give it a brief and",
+    "title": "SpiderCaster: websites from real copy, on free tokens",
+    "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and",
     "lang": "en"
   },
   "theme": {
@@ -14,6 +14,10 @@
     "accent2": null
   },
   "nav": [
+    {
+      "label": "About",
+      "href": "#about"
+    },
     {
       "label": "Build",
       "href": "#features"
@@ -33,30 +37,39 @@
     {
       "label": "Questions about the engine",
       "href": "#faq"
-    },
-    {
-      "label": "Why it is cheap",
-      "href": "#features-3"
     }
   ],
   "pages": [
     {
       "slug": "index",
-      "title": "Siteforge: websites from real copy, on free tokens",
+      "title": "SpiderCaster: websites from real copy, on free tokens",
       "sections": [
         {
           "id": "hero",
           "type": "hero",
           "data": {
             "eyebrow": "",
-            "headline": "Siteforge: websites from real copy, on free tokens",
-            "subhead": "Siteforge is a copy-driven static website engine. You give it a brief and",
+            "headline": "SpiderCaster: websites from real copy, on free tokens",
+            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and",
             "primary": {
               "label": "Read on",
-              "href": "#features"
+              "href": "#about"
             },
             "secondary": null,
             "bullets": []
+          }
+        },
+        {
+          "id": "about",
+          "type": "about",
+          "data": {
+            "title": "About",
+            "body": [
+              "real copy files; it returns a self-contained static site. The structure,",
+              "layout, styling and assembly are deterministic code, so the bulk of every",
+              "build costs zero tokens. AI is optional and rides the free chain: the Gemini"
+            ],
+            "points": []
           }
         },
         {
@@ -224,7 +237,7 @@
     }
   ],
   "footer": {
-    "text": "(c) 2026 Siteforge: websites from real copy, on free tokens",
+    "text": "(c) 2026 SpiderCaster: websites from real copy, on free tokens",
     "links": [],
     "credit": true
   }

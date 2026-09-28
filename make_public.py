@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a sanitized PUBLIC variant of siteforge for publishing.
+"""Build a sanitized PUBLIC variant of SpiderCaster for publishing.
 
 Copies the tree to a staging dir with redactions applied:
   - excludes WALLETS.md (private wallet ledger)

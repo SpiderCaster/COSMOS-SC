@@ -111,7 +111,7 @@ LIGHT_PAIRS = [("#0ea5e9", "#6366f1"), ("#059669", "#0d9488"), ("#d97706", "#e11
 def build_palette(theme: dict, seed: str) -> dict:
     dark = theme.get("dark", True) is not False
     pairs = DARK_PAIRS if dark else LIGHT_PAIRS
-    pair = pairs[hash_str(seed or "siteforge") % len(pairs)]
+    pair = pairs[hash_str(seed or "spidercaster") % len(pairs)]
     accent = theme.get("accent") or pair[0]
     accent2 = theme.get("accent2") or pair[1]
     if dark:
@@ -521,11 +521,11 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
 
     foot_links = "".join(f'<a href="{esc(resolve_href(l["href"], site, current_slug))}">{esc(l["label"])}</a>'
                          for l in site.get("footer", {}).get("links", []))
-    credit = ('<div class="wrap credit">Built with Siteforge (openwork_space)</div>'
+    credit = ('<div class="wrap credit">Built with SpiderCaster (openwork_space)</div>'
               if site.get("footer", {}).get("credit") else "")
 
     robots = '<meta name="robots" content="noindex, nofollow">' if noindex else ""
-    robots_note = "<!-- siteforge: noindex until approved -->" if noindex else ""
+    robots_note = "<!-- SpiderCaster: noindex until approved -->" if noindex else ""
 
     sections_html = "\n".join(render_section(sec, site, pal, current_slug) for sec in page["sections"])
     title = page["title"] if page["title"] == brand else f"{page['title']} - {brand}"

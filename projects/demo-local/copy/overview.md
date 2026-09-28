@@ -1,6 +1,6 @@
-# Siteforge: websites from real copy, on free tokens
+# SpiderCaster: websites from real copy, on free tokens
 
-Siteforge is a copy-driven static website engine. You give it a brief and
+SpiderCaster is a copy-driven static website engine. You give it a brief and
 real copy files; it returns a self-contained static site. The structure,
 layout, styling and assembly are deterministic code, so the bulk of every
 build costs zero tokens. AI is optional and rides the free chain: the Gemini

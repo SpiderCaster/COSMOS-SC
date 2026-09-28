@@ -1,4 +1,4 @@
-"""Siteforge IR: the normalized site.json intermediate representation.
+"""SpiderCaster IR: the normalized site.json intermediate representation.
 
 Everything the renderer consumes goes through normalize_site() so both the
 zero-token offline planner and the LLM planner produce the same shape.
@@ -246,11 +246,11 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
     meta_in = raw.get("meta") if isinstance(raw.get("meta"), dict) else {}
     site = {
         "version": 1,
-        "generator": "siteforge/0.1",
+        "generator": "spidercaster/0.1",
         "brief": s(opts.get("brief") or raw.get("brief")),
         "meta": {
             "title": s(meta_in.get("title")) or brand,
-            "description": (s(meta_in.get("description")) or f"{brand} - local build by Siteforge")[:155],
+            "description": (s(meta_in.get("description")) or f"{brand} - local build by SpiderCaster")[:155],
             "lang": s(meta_in.get("lang")) or "en",
         },
     }
@@ -320,7 +320,7 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
 # Kept deliberately small: the whole system prompt is a few hundred tokens, so
 # a full build fits comfortably inside free-tier quotas.
 
-SCHEMA_PROMPT = """You are the planner for Siteforge, a static website engine. Reply with ONLY one minified JSON object. No markdown fences, no commentary.
+SCHEMA_PROMPT = """You are the planner for SpiderCaster, a static website engine. Reply with ONLY one minified JSON object. No markdown fences, no commentary.
 HARD RULE: use ONLY facts, names, numbers, prices, claims and wording present in the SOURCE COPY given by the user. You may reorganize, trim, tighten and write connective phrasing, but never invent facts, statistics, prices, dates, names, quotes or offers.
 Shape: {"meta":{"title","description"},"theme":{"template":"modern|editorial|bold","dark":bool,"accent":"#rrggbb","accent2":"#rrggbb"},"nav":[{"label","href"}],"pages":[{"slug","title","sections":[{"id","type","data"}]}],"footer":{"text","links":[{"label","href"}]}}
 Section types and their data:
@@ -340,7 +340,7 @@ menu: {"title","groups":[{"name","items":[{"name","desc","price"}]}]}
 logocloud: {"title","items":[str]}
 Rules: first page slug must be "index" with 4-8 sections; extra pages 3-6 sections. Omit a section type entirely when the SOURCE COPY has nothing real for it. hrefs: "#sectionId" for same-page anchors, "slug.html" for other pages, or absolute URLs. Pick accent colors that suit the brand. meta.title <= 60 chars; meta.description <= 155 chars."""
 
-REFINE_PROMPT = """You patch ONE section of an existing Siteforge site. Reply with ONLY the replacement section as minified JSON: {"id","type","data"} keeping the same id and type. HARD RULE: use only facts present in the current section data and the user instruction; never invent facts, prices, names or claims. Keep unchanged fields unless the instruction requires changing them. Match the site's voice."""
+REFINE_PROMPT = """You patch ONE section of an existing SpiderCaster site. Reply with ONLY the replacement section as minified JSON: {"id","type","data"} keeping the same id and type. HARD RULE: use only facts present in the current section data and the user instruction; never invent facts, prices, names or claims. Keep unchanged fields unless the instruction requires changing them. Match the site's voice."""
 
 
 SECTION_DOCS = {

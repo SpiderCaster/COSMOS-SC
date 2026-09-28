@@ -1,4 +1,4 @@
-# Siteforge - a website building engine on free and nearly-free tokens
+# SpiderCaster - a website building engine on free and nearly-free tokens
 
 Copy-driven static site engine for the WebDev fleet. Real copy in, self-contained
 static site out. The structure, layout and assembly are deterministic code, so
@@ -14,8 +14,8 @@ and a token ledger on every run.
 None. Python 3.11+ with stdlib only.
 
 ```
-cd siteforge
-python forge.py --help
+cd SpiderCaster
+python spidercaster.py --help
 ```
 
 ## Token economics
@@ -37,25 +37,25 @@ with token counts - never key values.
 ## Quickstart
 
 ```
-python forge.py init projects/myproj          # scaffold brief.md + copy/
+python spidercaster.py init projects/myproj          # scaffold brief.md + copy/
 # fill projects/myproj/brief.md and projects/myproj/copy/*.md with REAL copy
-python forge.py build projects/myproj --offline --out sites/myproj
-python forge.py check sites/myproj --expect-noindex
-python forge.py serve sites/myproj            # http://localhost:4173
+python spidercaster.py build projects/myproj --offline --out sites/myproj
+python spidercaster.py check sites/myproj --expect-noindex
+python spidercaster.py serve sites/myproj            # http://localhost:4173
 ```
 
 AI polish when a provider is configured:
 
 ```
-python forge.py models --probe                # what is reachable right now
-python forge.py build projects/myproj --out sites/myproj
-python forge.py refine sites/myproj "tighten the hero" --section hero
+python spidercaster.py models --probe                # what is reachable right now
+python spidercaster.py build projects/myproj --out sites/myproj
+python spidercaster.py refine sites/myproj "tighten the hero" --section hero
 ```
 
 Hand-edit path (zero tokens): edit `sites/myproj/site.json`, then
 
 ```
-python forge.py build --from sites/myproj/site.json --out sites/myproj
+python spidercaster.py build --from sites/myproj/site.json --out sites/myproj
 ```
 
 ## Copy mapping rules (offline planner)
@@ -77,7 +77,7 @@ Everything on the site comes from `copy/` files. Nothing is invented.
 
 ## Checks (fleet-aligned)
 
-`python forge.py check SITE [--expect-noindex|--expect-indexable]`
+`python spidercaster.py check SITE [--expect-noindex|--expect-indexable]`
 
 - `no_sample` - the same fleet patterns as
   `WebDev/tools/owp-tools/scripts/website_checker.py` (SAMPLE, lorem ipsum,
@@ -124,7 +124,7 @@ sites/<name>/
 ## Section types
 
 hero, features, stats, steps, gallery, pricing, testimonials, faq, cta,
-contact, about, team, menu, logocloud - see `python forge.py sections`.
+contact, about, team, menu, logocloud - see `python spidercaster.py sections`.
 
 ## Extending
 
