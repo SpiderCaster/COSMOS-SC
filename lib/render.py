@@ -521,7 +521,7 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
 
     foot_links = "".join(f'<a href="{esc(resolve_href(l["href"], site, current_slug))}">{esc(l["label"])}</a>'
                          for l in site.get("footer", {}).get("links", []))
-    credit = ('<div class="wrap credit">Built with SpiderCaster (openwork_space)</div>'
+    credit = ('<div class="wrap credit">Built with SpiderCaster</div>'
               if site.get("footer", {}).get("credit") else "")
 
     robots = '<meta name="robots" content="noindex, nofollow">' if noindex else ""

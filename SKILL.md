@@ -1,7 +1,7 @@
 ---
 name: spidercaster
 description: >-
-  use this to build static sites in openwork_space from REAL copy with zero or
+  use this to build static sites from the SpiderCaster tree (V:\a\ai\spidercaster\working) from REAL copy with zero or
   free-tier AI tokens (offline draft, Gemini free tier, OpenRouter :free) — not
   for live deploys, domain/CF work, or inventing content
 ---

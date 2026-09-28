@@ -4,14 +4,14 @@ One server, every harness. The engine stays here; agents keep their own
 harnesses (no re-homing). Each config below points at the same stdio server.
 Windows paths use forward slashes (Python accepts them natively).
 
-Server: `V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py`
+Server: `V:/a/ai/spidercaster/working/mcp_server.py`
 Surface root (optional env): `SPIDERCASTER_SURFACE_ROOT` (default: `SpiderCaster/sites`)
 Secrets dir (optional env): `SPIDERCASTER_SECRETS_DIR` (default: `V:\Research4\.secrets`)
 
 ## Claude Code
 
 ```
-claude mcp add spidercaster -- python V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py
+claude mcp add spidercaster -- python V:/a/ai/spidercaster/working/mcp_server.py
 ```
 
 or `.mcp.json` at the project root:
@@ -21,8 +21,8 @@ or `.mcp.json` at the project root:
   "mcpServers": {
     "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
-      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
+      "args": ["V:/a/ai/spidercaster/working/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/a/ai/spidercaster/working/sites" }
     }
   }
 }
@@ -39,8 +39,8 @@ change to the ledger; hooks can also gate `render_trigger` completions.
 [[mcp_servers]]
 name = "spidercaster"
 command = "python"
-args = ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"]
-env = { SPIDERCASTER_SURFACE_ROOT = "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
+args = ["V:/a/ai/spidercaster/working/mcp_server.py"]
+env = { SPIDERCASTER_SURFACE_ROOT = "V:/a/ai/spidercaster/working/sites" }
 ```
 
 Approval policy: the engine tools are local, trusted operations on Keith's own
@@ -56,8 +56,8 @@ agent prompt (builder vs content), not just in config.
   "mcpServers": {
     "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
-      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
+      "args": ["V:/a/ai/spidercaster/working/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/a/ai/spidercaster/working/sites" }
     }
   }
 }
@@ -76,8 +76,8 @@ Workspace `.agents/mcp_config.json` (or global `~/.gemini/config/mcp_config.json
   "mcpServers": {
     "spidercaster": {
       "command": "python",
-      "args": ["V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
-      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
+      "args": ["V:/a/ai/spidercaster/working/mcp_server.py"],
+      "env": { "SPIDERCASTER_SURFACE_ROOT": "V:/a/ai/spidercaster/working/sites" }
     }
   }
 }
@@ -95,8 +95,8 @@ Project `opencode.json`:
   "mcp": {
     "spidercaster": {
       "type": "local",
-      "command": ["python", "V:/Streams/WEBSITES/openwork_space/SpiderCaster/mcp_server.py"],
-      "environment": { "SPIDERCASTER_SURFACE_ROOT": "V:/Streams/WEBSITES/openwork_space/SpiderCaster/sites" }
+      "command": ["python", "V:/a/ai/spidercaster/working/mcp_server.py"],
+      "environment": { "SPIDERCASTER_SURFACE_ROOT": "V:/a/ai/spidercaster/working/sites" }
     }
   }
 }

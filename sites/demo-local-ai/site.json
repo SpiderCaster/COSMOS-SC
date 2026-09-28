@@ -1,17 +1,17 @@
 {
   "version": 1,
   "generator": "spidercaster/0.1",
-  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
-    "title": "SpiderCaster: Websites from Real Copy",
-    "description": "SpiderCaster is a copy-driven static website engine. Build sites from your brief and real copy files. Zero token builds with optional AI.",
+    "title": "SpiderCaster: Websites from Real Copy, on Free Tokens",
+    "description": "SpiderCaster is a copy-driven static website engine. It builds self-contained static sites from your brief and copy files. Costs are zero tokens for most b",
     "lang": "en"
   },
   "theme": {
     "template": "modern",
     "dark": false,
     "accent": "#000000",
-    "accent2": "#444444"
+    "accent2": "#000000"
   },
   "nav": [
     {
@@ -23,18 +23,14 @@
       "href": "#house-rules"
     },
     {
-      "label": "FAQ",
-      "href": "#faq"
-    },
-    {
-      "label": "About",
-      "href": "#about"
+      "label": "Questions",
+      "href": "#questions"
     }
   ],
   "pages": [
     {
       "slug": "index",
-      "title": "SpiderCaster",
+      "title": "SpiderCaster: Websites from Real Copy, on Free Tokens",
       "sections": [
         {
           "id": "hero",
@@ -42,19 +38,19 @@
           "data": {
             "eyebrow": "SpiderCaster",
             "headline": "Websites from Real Copy, on Free Tokens",
-            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.",
+            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
             "primary": {
               "label": "View Commands",
               "href": "#commands"
             },
             "secondary": {
-              "label": "Learn More",
-              "href": "#about"
+              "label": "Why it is cheap",
+              "href": "#why-it-is-cheap"
             },
             "bullets": [
-              "Zero token builds",
-              "Optional AI on free chains",
-              "Deterministic assembly"
+              "Copy-driven",
+              "Zero-token builds",
+              "Optional AI on free tiers"
             ]
           }
         },
@@ -82,32 +78,55 @@
         },
         {
           "id": "house-rules",
-          "type": "steps",
+          "type": "about",
           "data": {
             "title": "House rules the engine enforces",
+            "body": [
+              "The offline planner only uses text it was given.",
+              "OPENWORK_API_KEY. Values are never written to disk by the engine.",
+              "No invented content: the AI prompt is hard-restricted to your source copy,",
+              "Noindex by default: pass --indexable only after a gate is signed."
+            ],
+            "points": []
+          }
+        },
+        {
+          "id": "why-it-is-cheap",
+          "type": "features",
+          "data": {
+            "title": "Why it is cheap",
             "subhead": "",
             "items": [
               {
-                "title": "No invented content",
-                "body": "The AI prompt is hard-restricted to your source copy, Values are never written to disk by the engine."
+                "icon": "layers",
+                "title": "Deterministic assembly",
+                "body": "layout, CSS, icons and pages are code, not tokens."
               },
               {
-                "title": "Noindex by default",
-                "body": "Pass --indexable only after a gate is signed."
+                "icon": "cloud",
+                "title": "Offline mode",
+                "body": "a full draft with zero tokens, mapped straight from your copy."
               },
               {
-                "title": "No hotlinking",
-                "body": "External stock-photo URLs are dropped at ingest."
+                "icon": "cpu",
+                "title": "One-call AI builds",
+                "body": "a single compact planning call produces the whole site"
               },
               {
-                "title": "Secrets by env var name only",
-                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY."
+                "icon": "trending",
+                "title": "Refine instead of rebuild",
+                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
+              },
+              {
+                "icon": "code",
+                "title": "Hand edits are first-class",
+                "body": "edit site.json directly and rebuild for free."
               }
             ]
           }
         },
         {
-          "id": "faq",
+          "id": "questions",
           "type": "faq",
           "data": {
             "title": "Questions about the engine",
@@ -135,35 +154,13 @@
               }
             ]
           }
-        },
-        {
-          "id": "about",
-          "type": "about",
-          "data": {
-            "title": "About SpiderCaster",
-            "body": [
-              "SpiderCaster is a copy-driven static website engine. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
-              "The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable."
-            ],
-            "points": [
-              {
-                "title": "Why it is cheap",
-                "body": "- Deterministic assembly: layout, CSS, icons and pages are code, not tokens.\n- Offline mode: a full draft with zero tokens, mapped straight from your copy.\n- One-call AI builds: a single compact planning call produces the whole site\n- Refine instead of rebuild: edits touch one section, so a revision costs a few hundred tokens instead of a full build.\n- Hand edits are first-class: edit site.json directly and rebuild for free."
-              }
-            ]
-          }
         }
       ]
     }
   ],
   "footer": {
-    "text": "SpiderCaster",
-    "links": [
-      {
-        "label": "GitHub",
-        "href": "https://github.com/openwork-space/spidcaster"
-      }
-    ],
+    "text": "SpiderCaster: websites from real copy, on free tokens",
+    "links": [],
     "credit": true
   }
 }

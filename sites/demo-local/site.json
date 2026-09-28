@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generator": "spidercaster/0.1",
-  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
     "title": "SpiderCaster: websites from real copy, on free tokens",
     "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and",
