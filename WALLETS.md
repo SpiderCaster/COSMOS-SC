@@ -11,9 +11,9 @@ discovery (the 404/403 message names the owning project).
 
 | wallet | key file (V:\Research4\.secrets\) | last4 | fp | project number | status measured 9/28 |
 |---|---|---|---|---|---|
-| MedicineMan | `vertex_medicineman_key.txt` | `BZIg` | `50748b` | **456875530590** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails 2026-09-28 — approximate; reg ≈ early Sep). |
-| Fruitaholics | `vertex_fruitaholics_key.txt` | `B9Rg` | `b1b221` | **953760228233** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails — approximate). |
-| PatriotFuelStop | `vertex_patriotfuelstop_key.txt` | `2qDQ` | `5986e9` | **571047330544** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails — approximate). |
+| MedicineMan | `vertex_medicineman_key.txt` | `BZIg` | `50748b` | **456875530590** | Vertex express LIVE. **Expires ~Oct 8-14 2026** (registered ~Jul 10-14 + 90 days; Keith, from trial emails 2026-09-28 — approximate; supersedes an earlier Dec reading). |
+| Fruitaholics | `vertex_fruitaholics_key.txt` | `B9Rg` | `b1b221` | **953760228233** | Vertex express LIVE. **Expires ~Oct 8-14 2026** (same basis — approximate). |
+| PatriotFuelStop | `vertex_patriotfuelstop_key.txt` | `2qDQ` | `5986e9` | **571047330544** | Vertex express LIVE. **Expires ~Oct 8-14 2026** (same basis — approximate). |
 
 - Registration/expiry dates NOT recorded anywhere locally; read per account
   in console > Billing > Credits. If July-registered: 90-day cliff lands
@@ -47,13 +47,14 @@ User-level env `FORGE_GEMINI_KEY_FILE` points at `vertex_key.txt`, so every
 engine run draws Joanna by default. The ledger records `draw: vertex_key.txt`
 per call. To burn a different wallet, override the env var for that run.
 
-1. **Joanna — the only near-dated wallet.** $142.36 measured, ends **Oct 10**
-   (12 days from measurement). Spend to $0 first. CONFIRMED ORDER.
-2. **December cluster — MedicineMan, Fruitaholics, PatriotFuelStop** (~Dec 1-8
-   each, $300 each, approximate dates from trial emails). Behind Joanna; draw
-   them after her window closes, earliest-dated first once exact dates are read.
-3. **Kelly** — $300 through 2026-12-04; the stable rail, spend last of the
-   cluster unless a read shows it earliest.
+1. **The October cluster — ALL FOUR wallets die Oct 8-14.** Joanna ($142.36,
+   Oct 10) + MedicineMan / Fruitaholics / PatriotFuelStop ($300 each,
+   ~Oct 8-14). ~$1,042 total, ~2 weeks to burn. Plan: stay on Joanna (default
+   draw) through Oct 10, then rotate medicineman -> fruitaholics ->
+   patriotfuelstop daily until they die. Unspendable by hand at ~3k
+   tokens/build — the risk is forgetting to switch, not running out.
+2. **Kelly — the only December wallet.** $300 through 2026-12-04; the stable
+   rail after the cluster dies. Becomes the default draw on ~Oct 14.
 
 Ranny (both) is Jack's - never draw it from Keith's seats.
 
