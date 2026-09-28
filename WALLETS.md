@@ -31,7 +31,7 @@ discovery (the 404/403 message names the owning project).
 | wallet | key source | last4 | fp | project | status |
 |---|---|---|---|---|---|
 | openwork-csm | env `GEMINI_API_KEY`/`GOOGLE_API_KEY` AND `~/.opencode/auth.json` google (same key, fp match) | `D6rQ` | `704bb5` | **252939746739** | BLOCKED: Agent Platform API never enabled on the project (403). OpenWork + OpenCode draw this one wallet today. |
-| Joanna (Keith's OpenWork target) **<-- ACTIVE DRAW** | `vertex_key.txt` | `3fMQ` | `141811` | `project-5a33f910-1251-4d6a-bf9` | **$142.36 remaining** (Keith, read from Credits page 2026-09-28 — MEASURED, not computed). Discount eligibility offered after credits exhaust. Window ends **2026-10-13**. Vertex express LIVE (re-probed 9/28). |
+| Joanna (Keith's OpenWork target) **<-- ACTIVE DRAW** | `vertex_key.txt` | `3fMQ` | `141811` | `project-5a33f910-1251-4d6a-bf9` | **$142.36 remaining** (Keith, read from Credits page 2026-09-28 — MEASURED, not computed). Discount eligibility offered after credits exhaust. Window ends **2026-10-10** (Keith, read from the console — supersedes the computed Oct 13). Vertex express LIVE (re-probed 9/28). |
 | Kelly / orders.ggn (COSMOS + Crucible) | `vertex_coding_key.txt` | `Ko_A` | `0bc221` | `project-10b3a132-ec5b-41e9-a2c` | $300 through **2026-12-04** |
 | keith.bbf AI Studio "My First Project" | `gemini_key.txt` | `jvmA` | `213147` | **475026348209** | Free tier, rate-capped (RPD 20-22/20; ~300x 429 in Jul) |
 | keith.bbf depleted key | `gemini_key.txt.depleted-2026-08-12.bak` | `rgXw` | `2a00b3` | - | depleted 2026-08-12 |
@@ -41,16 +41,17 @@ discovery (the 404/403 message names the owning project).
 
 ## FIFO draw order (earliest expiry first; expiry = registration + 90, activation never extends it)
 
-**ACTIVE DRAW (Keith, 2026-09-28): Joanna — $142.36 measured, window ends Oct 13.**
+**ACTIVE DRAW (Keith, 2026-09-28): Joanna — $142.36 measured, window ends Oct 10
+(Keith, read from the console; the earlier Oct 13 was computed, not read).**
 User-level env `FORGE_GEMINI_KEY_FILE` points at `vertex_key.txt`, so every
 engine run draws Joanna by default. The ledger records `draw: vertex_key.txt`
 per call. To burn a different wallet, override the env var for that run.
 
 1. MedicineMan / Fruitaholics / PatriotFuelStop - IF July-registered they die
-   before Joanna's Oct 13; confirm dates in console > Billing > Credits.
+   before Joanna's Oct 10; confirm dates in console > Billing > Credits.
    Spending them is the only way to keep the value; activation will not.
-2. Joanna - registered Jul 14, window ends 2026-10-13. **$142.36 measured
-   2026-09-28 — spend to $0 by then.** (Keith's call: this is the active draw.)
+2. Joanna - **$142.36 measured 2026-09-28 — spend to $0 by Oct 10** (12 days
+   from the measurement). Keith's call: this is the active draw.
 3. Kelly - registered ~Sep 5, $300 through 2026-12-04; the stable rail, spend last.
 
 Ranny (both) is Jack's - never draw it from Keith's seats.
