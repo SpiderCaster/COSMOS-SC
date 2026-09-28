@@ -3,8 +3,8 @@
   "generator": "spidercaster/0.1",
   "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
-    "title": "SpiderCaster: Websites from Real Copy, on Free Tokens",
-    "description": "SpiderCaster is a copy-driven static website engine. It builds self-contained static sites from your brief and copy files. Costs are zero tokens for most b",
+    "title": "SpiderCaster: websites from real copy, on free tokens",
+    "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.",
     "lang": "en"
   },
   "theme": {
@@ -16,31 +16,31 @@
   "nav": [
     {
       "label": "Commands",
-      "href": "#commands"
+      "href": "index.html#commands"
     },
     {
       "label": "House Rules",
-      "href": "#house-rules"
+      "href": "index.html#house-rules"
     },
     {
       "label": "Questions",
-      "href": "#questions"
+      "href": "index.html#questions"
     }
   ],
   "pages": [
     {
       "slug": "index",
-      "title": "SpiderCaster: Websites from Real Copy, on Free Tokens",
+      "title": "SpiderCaster: websites from real copy, on free tokens",
       "sections": [
         {
           "id": "hero",
           "type": "hero",
           "data": {
             "eyebrow": "SpiderCaster",
-            "headline": "Websites from Real Copy, on Free Tokens",
+            "headline": "websites from real copy, on free tokens",
             "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
             "primary": {
-              "label": "View Commands",
+              "label": "See Commands",
               "href": "#commands"
             },
             "secondary": {
@@ -48,9 +48,10 @@
               "href": "#why-it-is-cheap"
             },
             "bullets": [
-              "Copy-driven",
-              "Zero-token builds",
-              "Optional AI on free tiers"
+              "Local test build",
+              "Audience: Keith and the free-model seats",
+              "Documents engine, token rules, and commands",
+              "Plain, factual tone"
             ]
           }
         },
@@ -78,49 +79,26 @@
         },
         {
           "id": "house-rules",
-          "type": "about",
+          "type": "steps",
           "data": {
             "title": "House rules the engine enforces",
-            "body": [
-              "The offline planner only uses text it was given.",
-              "OPENWORK_API_KEY. Values are never written to disk by the engine.",
-              "No invented content: the AI prompt is hard-restricted to your source copy,",
-              "Noindex by default: pass --indexable only after a gate is signed."
-            ],
-            "points": []
-          }
-        },
-        {
-          "id": "why-it-is-cheap",
-          "type": "features",
-          "data": {
-            "title": "Why it is cheap",
             "subhead": "",
             "items": [
               {
-                "icon": "layers",
-                "title": "Deterministic assembly",
-                "body": "layout, CSS, icons and pages are code, not tokens."
+                "title": "No invented content",
+                "body": "The AI prompt is hard-restricted to your source copy. Values are never written to disk by the engine. OPENWORK_API_KEY."
               },
               {
-                "icon": "cloud",
-                "title": "Offline mode",
-                "body": "a full draft with zero tokens, mapped straight from your copy."
+                "title": "Noindex by default",
+                "body": "Pass --indexable only after a gate is signed."
               },
               {
-                "icon": "cpu",
-                "title": "One-call AI builds",
-                "body": "a single compact planning call produces the whole site"
+                "title": "No hotlinking",
+                "body": "External stock-photo URLs are dropped at ingest."
               },
               {
-                "icon": "trending",
-                "title": "Refine instead of rebuild",
-                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
-              },
-              {
-                "icon": "code",
-                "title": "Hand edits are first-class",
-                "body": "edit site.json directly and rebuild for free."
+                "title": "Secrets by env var name only",
+                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY."
               }
             ]
           }
@@ -154,12 +132,47 @@
               }
             ]
           }
+        },
+        {
+          "id": "why-it-is-cheap",
+          "type": "features",
+          "data": {
+            "title": "Why it is cheap",
+            "subhead": "",
+            "items": [
+              {
+                "icon": "layers",
+                "title": "Deterministic assembly",
+                "body": "Layout, CSS, icons and pages are code, not tokens."
+              },
+              {
+                "icon": "cloud",
+                "title": "Offline mode",
+                "body": "A full draft with zero tokens, mapped straight from your copy."
+              },
+              {
+                "icon": "cpu",
+                "title": "One-call AI builds",
+                "body": "A single compact planning call produces the whole site, with at most one JSON-repair retry."
+              },
+              {
+                "icon": "trending",
+                "title": "Refine instead of rebuild",
+                "body": "Edits touch one section, so a revision costs a few hundred tokens instead of a full build."
+              },
+              {
+                "icon": "code",
+                "title": "Hand edits are first-class",
+                "body": "Edit site.json directly and rebuild for free."
+              }
+            ]
+          }
         }
       ]
     }
   ],
   "footer": {
-    "text": "SpiderCaster: websites from real copy, on free tokens",
+    "text": "SpiderCaster. Local test build.",
     "links": [],
     "credit": true
   }

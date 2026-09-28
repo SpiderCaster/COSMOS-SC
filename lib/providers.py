@@ -13,6 +13,7 @@ import re
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 
 DEFAULT_TIMEOUT = 90.0
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
@@ -349,9 +350,15 @@ def complete(*, system: str, user: str, opts: dict, ledger: Ledger, purpose: str
                 timeout=float(opts.get("timeout") or DEFAULT_TIMEOUT))
             cost = estimate_cost(cand["provider"].id, cand["model"],
                                  r["usage"]["in_tokens"], r["usage"]["out_tokens"])
-            ledger.add(provider=cand["provider"].id, model=cand["model"], purpose=purpose,
-                       ok=True, error="", ms=int((time.time() - t0) * 1000),
-                       est_cost_usd=cost, **r["usage"])
+            entry = dict(provider=cand["provider"].id, model=cand["model"], purpose=purpose,
+                         ok=True, error="", ms=int((time.time() - t0) * 1000),
+                         est_cost_usd=cost, **r["usage"])
+            key_file = os.environ.get("FORGE_GEMINI_KEY_FILE")
+            if cand["provider"].id == "gemini" and key_file:
+                # credit-backed draw: record WHICH wallet paid (name only, never values)
+                entry["draw"] = Path(key_file).name
+                entry["note"] = "draws wallet credit at vendor list rates; est_cost reflects free tier only"
+            ledger.add(**entry)
             return {"text": r["text"], "provider": cand["provider"].id, "model": cand["model"]}
         except ProviderError as exc:
             ledger.add(provider=cand["provider"].id, model=cand["model"], purpose=purpose,

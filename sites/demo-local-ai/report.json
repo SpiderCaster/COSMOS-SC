@@ -13,7 +13,7 @@
     "requests": 1,
     "ok": 1,
     "in_tokens": 1445,
-    "out_tokens": 1596,
+    "out_tokens": 1678,
     "est_cost_usd": 0
   },
   "attempts": [
@@ -23,12 +23,14 @@
       "purpose": "plan+fit",
       "ok": true,
       "error": "",
-      "ms": 4556,
+      "ms": 4509,
       "est_cost_usd": 0.0,
       "in_tokens": 1445,
-      "out_tokens": 1596,
-      "at": "2026-09-28 18:21:27"
+      "out_tokens": 1678,
+      "draw": "vertex_key.txt",
+      "note": "draws wallet credit at vendor list rates; est_cost reflects free tier only",
+      "at": "2026-09-28 18:30:59"
     }
   ],
-  "built_at": "2026-09-28 18:21:27"
+  "built_at": "2026-09-28 18:30:59"
 }
