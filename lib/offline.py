@@ -96,17 +96,25 @@ def plan_offline(copy, opts: dict) -> dict:
         brand = first_line[:60] or "Local Build"
 
     sections: list[dict] = []
+    hero_sub = _first_paragraph(hero_block)
     sections.append({
         "id": "hero", "type": "hero",
         "data": {
             "eyebrow": "",
             "headline": hero_block.title or brand,
-            "subhead": _first_paragraph(hero_block),
+            "subhead": hero_sub,
             "primary": {"label": "Read on", "href": "#learn-more"},
             "secondary": None,
             "bullets": hero_block.bullets[:4],
         },
     })
+    # remaining real paragraphs from the hero block keep their place on the page
+    extra_paras = [p for p in hero_block.paragraphs if p != hero_sub]
+    if extra_paras:
+        sections.append({
+            "id": "about", "type": "about",
+            "data": {"title": "About", "body": extra_paras[:3], "points": []},
+        })
 
     # 2) map remaining blocks by what they contain
     for b in blocks:
@@ -120,15 +128,21 @@ def plan_offline(copy, opts: dict) -> dict:
         has_images = bool(b.images) or bool(copy.assets)
 
         if is_contact:
+            paras = b.paragraphs[:]
+            addr = next((p for p in paras if re.match(r"^\d{1,4}\s+\w", p)), "")
+            hours = next((p for p in paras
+                          if re.search(r"\bam\b|\bpm\b|closed|\b(?:mon|tue|wed|thu|fri|sat|sun)", p, re.I)
+                          and p != addr), "")
+            body = [p for p in paras if p not in (addr, hours)]
             sections.append({
                 "id": "contact", "type": "contact",
                 "data": {
                     "title": title or "Contact",
-                    "body": " ".join(b.paragraphs[:2]),
+                    "body": " ".join(body[:2]),
                     "email": (b.emails or copy.emails or [""])[0],
                     "phone": (b.phones or copy.phones or [""])[0],
-                    "address": "",
-                    "hours": "",
+                    "address": addr,
+                    "hours": hours,
                 },
             })
             continue

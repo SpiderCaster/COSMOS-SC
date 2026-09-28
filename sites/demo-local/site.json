@@ -15,6 +15,10 @@
   },
   "nav": [
     {
+      "label": "About",
+      "href": "#about"
+    },
+    {
       "label": "Build",
       "href": "#features"
     },
@@ -33,10 +37,6 @@
     {
       "label": "Questions about the engine",
       "href": "#faq"
-    },
-    {
-      "label": "Why it is cheap",
-      "href": "#features-3"
     }
   ],
   "pages": [
@@ -53,10 +53,23 @@
             "subhead": "Siteforge is a copy-driven static website engine. You give it a brief and",
             "primary": {
               "label": "Read on",
-              "href": "#features"
+              "href": "#about"
             },
             "secondary": null,
             "bullets": []
+          }
+        },
+        {
+          "id": "about",
+          "type": "about",
+          "data": {
+            "title": "About",
+            "body": [
+              "real copy files; it returns a self-contained static site. The structure,",
+              "layout, styling and assembly are deterministic code, so the bulk of every",
+              "build costs zero tokens. AI is optional and rides the free chain: the Gemini"
+            ],
+            "points": []
           }
         },
         {

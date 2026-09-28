@@ -117,10 +117,38 @@ The server enforces the write rules itself (role param): content/editor cannot
 change section types or add pages; only builder writes full models. Config
 allowlists are defense in depth on top.
 
+## GitHub MCP (repo: github.com/SpiderCaster/COSMOS-SC)
+
+The engine repo is live. Wire the official GitHub MCP so agents can read
+issues/PRs/files without pasting. Two routes:
+
+**Remote (Streamable HTTP, official):**
+
+```
+claude mcp add --transport http github https://api.githubcopilot.com/mcp
+codex mcp add github --url https://api.githubcopilot.com/mcp --bearer-token-env-var GITHUB_PAT
+```
+
+Cursor / Antigravity (JSON):
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": { "Authorization": "Bearer ${GITHUB_PAT}" }
+    }
+  }
+}
+```
+
+`GITHUB_PAT` is set by Keith in the environment (name only, never pasted into
+files or chat). Claude Code can also use its OAuth flow on first `/mcp` use —
+no PAT handling at all. Scope the PAT to `repo` on the SpiderCaster account.
+
 ## Later (when the capability is needed)
 
 - `chrome-devtools-mcp` OR `@playwright/mcp` - reviewer inspects rendered
-  output in a real browser (pick one)
-- GitHub MCP - once the engine repo lands on github.com/SpiderCaster (account
-  created 2026-09-28, 0 repos so far - nothing to connect yet)
+  output in a real browser (pick one). Note: the kit's `browser_check.py`
+  already does this for bench rounds via Playwright.
 - Not needed for MVP: database/analytics/payments MCPs
