@@ -11,9 +11,9 @@ discovery (the 404/403 message names the owning project).
 
 | wallet | key file (V:\Research4\.secrets\) | last4 | fp | project number | status measured 9/28 |
 |---|---|---|---|---|---|
-| MedicineMan | `vertex_medicineman_key.txt` | `BZIg` | `50748b` | **456875530590** | Vertex express LIVE |
-| Fruitaholics | `vertex_fruitaholics_key.txt` | `B9Rg` | `b1b221` | **953760228233** | Vertex express LIVE |
-| PatriotFuelStop | `vertex_patriotfuelstop_key.txt` | `2qDQ` | `5986e9` | **571047330544** | Vertex express LIVE |
+| MedicineMan | `vertex_medicineman_key.txt` | `BZIg` | `50748b` | **456875530590** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails 2026-09-28 — approximate; reg ≈ early Sep). |
+| Fruitaholics | `vertex_fruitaholics_key.txt` | `B9Rg` | `b1b221` | **953760228233** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails — approximate). |
+| PatriotFuelStop | `vertex_patriotfuelstop_key.txt` | `2qDQ` | `5986e9` | **571047330544** | Vertex express LIVE. **Expires ~first week Dec 2026** (Keith, from trial emails — approximate). |
 
 - Registration/expiry dates NOT recorded anywhere locally; read per account
   in console > Billing > Credits. If July-registered: 90-day cliff lands
@@ -47,12 +47,13 @@ User-level env `FORGE_GEMINI_KEY_FILE` points at `vertex_key.txt`, so every
 engine run draws Joanna by default. The ledger records `draw: vertex_key.txt`
 per call. To burn a different wallet, override the env var for that run.
 
-1. MedicineMan / Fruitaholics / PatriotFuelStop - IF July-registered they die
-   before Joanna's Oct 10; confirm dates in console > Billing > Credits.
-   Spending them is the only way to keep the value; activation will not.
-2. Joanna - **$142.36 measured 2026-09-28 — spend to $0 by Oct 10** (12 days
-   from the measurement). Keith's call: this is the active draw.
-3. Kelly - registered ~Sep 5, $300 through 2026-12-04; the stable rail, spend last.
+1. **Joanna — the only near-dated wallet.** $142.36 measured, ends **Oct 10**
+   (12 days from measurement). Spend to $0 first. CONFIRMED ORDER.
+2. **December cluster — MedicineMan, Fruitaholics, PatriotFuelStop** (~Dec 1-8
+   each, $300 each, approximate dates from trial emails). Behind Joanna; draw
+   them after her window closes, earliest-dated first once exact dates are read.
+3. **Kelly** — $300 through 2026-12-04; the stable rail, spend last of the
+   cluster unless a read shows it earliest.
 
 Ranny (both) is Jack's - never draw it from Keith's seats.
 
