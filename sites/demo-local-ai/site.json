@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "generator": "siteforge/0.1",
+  "brief": "# Brief\n\nLocal test build for Siteforge, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "meta": {
+    "title": "Siteforge: Websites from Real Copy, on Free Tokens",
+    "description": "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, ",
+    "lang": "en"
+  },
+  "theme": {
+    "template": "modern",
+    "dark": false,
+    "accent": "#2a9d8f",
+    "accent2": "#e9c46a"
+  },
+  "nav": [
+    {
+      "label": "Commands",
+      "href": "#commands"
+    },
+    {
+      "label": "House Rules",
+      "href": "#house-rules"
+    },
+    {
+      "label": "Questions",
+      "href": "#questions"
+    },
+    {
+      "label": "About",
+      "href": "#about"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Siteforge: Websites from Real Copy, on Free Tokens",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "data": {
+            "eyebrow": "Siteforge",
+            "headline": "Websites from Real Copy, on Free Tokens",
+            "subhead": "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain.",
+            "primary": {
+              "label": "View Commands",
+              "href": "#commands"
+            },
+            "secondary": {
+              "label": "Why it is Cheap",
+              "href": "#cheap"
+            },
+            "bullets": [
+              "Deterministic code, zero token bulk builds",
+              "AI optional on free chains",
+              "No invented content",
+              "Noindex by default"
+            ]
+          }
+        },
+        {
+          "id": "commands",
+          "type": "steps",
+          "data": {
+            "title": "Commands",
+            "subhead": "",
+            "items": [
+              {
+                "title": "Build",
+                "body": "- forge init PROJECT: scaffold a project with brief.md and a copy folder.\n- forge build PROJECT --offline: zero-token build mapped from your copy.\n- forge build PROJECT: AI build on the free chain, with offline fallback.\n- forge build --from SITE/site.json: rebuild after hand edits, zero tokens."
+              },
+              {
+                "title": "Iterate",
+                "body": "- forge refine SITE \"instruction\": patch one section, small token cost.\n- forge refine SITE \"light theme\" --offline: theme flips cost nothing."
+              },
+              {
+                "title": "Gate and preview",
+                "body": "- forge check SITE: fleet-aligned checks (no_sample, links, noindex, meta).\n- forge serve SITE: preview on localhost before anything goes anywhere."
+              }
+            ]
+          }
+        },
+        {
+          "id": "house-rules",
+          "type": "features",
+          "data": {
+            "title": "House rules the engine enforces",
+            "subhead": "",
+            "items": [
+              {
+                "icon": "check",
+                "title": "No invented content",
+                "body": "The AI prompt is hard-restricted to your source copy, and the offline planner only uses text it was given. OPENWORK_API_KEY. Values are never written to disk by the engine."
+              },
+              {
+                "icon": "lock",
+                "title": "Noindex by default",
+                "body": "Pass --indexable only after a gate is signed."
+              },
+              {
+                "icon": "sparkles",
+                "title": "No hotlinking",
+                "body": "External stock-photo URLs are dropped at ingest."
+              },
+              {
+                "icon": "code",
+                "title": "Secrets by env var name only",
+                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY."
+              }
+            ]
+          }
+        },
+        {
+          "id": "questions",
+          "type": "faq",
+          "data": {
+            "title": "Questions about the engine",
+            "subhead": "",
+            "items": [
+              {
+                "q": "Does the offline build really cost zero tokens?",
+                "a": "Yes. The offline planner maps your copy files into sections with deterministic rules, and the renderer assembles the HTML from code. No model is called."
+              },
+              {
+                "q": "What does an AI build cost?",
+                "a": "One planning call, plus at most one repair retry if the reply is not valid JSON. On the Gemini free tier the estimated cost is zero dollars; the ledger in report.json records the exact token counts."
+              },
+              {
+                "q": "Can the AI invent content?",
+                "a": "No. The planning prompt restricts the model to facts and wording present in your source copy. It may reorganize and tighten, but it may not invent facts, prices, names or claims."
+              },
+              {
+                "q": "How do I change something without tokens?",
+                "a": "Edit sites/NAME/site.json by hand and rebuild with forge build --from. The renderer is deterministic, so the rebuild is free."
+              },
+              {
+                "q": "How does this fit the fleet checks?",
+                "a": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."
+              }
+            ]
+          }
+        },
+        {
+          "id": "cheap",
+          "type": "steps",
+          "data": {
+            "title": "Why it is cheap",
+            "subhead": "",
+            "items": [
+              {
+                "title": "Deterministic assembly",
+                "body": "layout, CSS, icons and pages are code, not tokens."
+              },
+              {
+                "title": "Offline mode",
+                "body": "a full draft with zero tokens, mapped straight from your copy."
+              },
+              {
+                "title": "One-call AI builds",
+                "body": "a single compact planning call produces the whole site, with at most one JSON-repair retry."
+              },
+              {
+                "title": "Refine instead of rebuild",
+                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
+              },
+              {
+                "title": "Hand edits are first-class",
+                "body": "edit site.json directly and rebuild for free. The renderer is deterministic, so the rebuild is free."
+              }
+            ]
+          }
+        },
+        {
+          "id": "about",
+          "type": "about",
+          "data": {
+            "title": "Siteforge: websites from real copy, on free tokens",
+            "body": [
+              "Siteforge is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
+              "The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable."
+            ],
+            "points": []
+          }
+        }
+      ]
+    }
+  ],
+  "footer": {
+    "text": "Siteforge.io",
+    "links": [],
+    "credit": true
+  }
+}

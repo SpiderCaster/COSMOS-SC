@@ -1,0 +1,34 @@
+{
+  "generator": "siteforge/0.1",
+  "mode": "ai",
+  "brief": "# Brief\n\nLocal test build for Siteforge, the copy-driven website engine in\nopenwork_space. Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "provider": "gemini",
+  "model": "gemini-2.5-flash-lite",
+  "noindex": true,
+  "files": [
+    "index.html"
+  ],
+  "warnings": [],
+  "tokens": {
+    "requests": 1,
+    "ok": 1,
+    "in_tokens": 1435,
+    "out_tokens": 1889,
+    "est_cost_usd": 0
+  },
+  "attempts": [
+    {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-lite",
+      "purpose": "plan+fit",
+      "ok": true,
+      "error": "",
+      "ms": 15814,
+      "est_cost_usd": 0.0,
+      "in_tokens": 1435,
+      "out_tokens": 1889,
+      "at": "2026-09-28 11:51:44"
+    }
+  ],
+  "built_at": "2026-09-28 11:51:44"
+}
