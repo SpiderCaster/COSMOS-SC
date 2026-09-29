@@ -69,7 +69,22 @@ Tool allowlist per agent role: Content sees `pagemodel_read` + `pagemodel_write`
 
 ## Antigravity
 
-Workspace `.agents/mcp_config.json` (or global `~/.gemini/config/mcp_config.json`):
+**VERIFIED against the SDK source** (github.com/google-antigravity/antigravity-sdk-python, cloned to `V:\a\ai\spidercaster\antigravity-sdk-python`):
+
+- SDK route: `pip install google-antigravity` — the compiled runtime ships in
+  the PyPI wheels; **the git clone alone is NOT sufficient** (README states this).
+- MCP wiring in code: `types.McpStdioServer(name=..., command=..., args=[...], env={...})`
+  passed via `LocalAgentConfig(mcp_servers=[...])`. `env` merges into the
+  subprocess — `SPIDERCASTER_SURFACE_ROOT` travels with the server.
+- Per-tool policies: `policy.deny_all()` + `policy.allow(server, [tools])` —
+  this is how the per-role allowlists below are enforced (agent never sees
+  out-of-role tools). `disabled_tools=[...]` filtering also exists per server.
+- **Ready-made seat script: `antigravity_seat.py --role planner|builder|content|reviewer`**
+  in the tree — wires the spidercaster MCP server + role policies + interactive loop.
+- Agent defaults to READ-ONLY; `CapabilitiesConfig()` enables writes.
+
+IDE route (config files — verify paths once the IDE install finishes):
+workspace `.agents/mcp_config.json` (or global `~/.gemini/config/mcp_config.json`):
 
 ```json
 {
@@ -83,8 +98,8 @@ Workspace `.agents/mcp_config.json` (or global `~/.gemini/config/mcp_config.json
 }
 ```
 
-Ask mode is default: add the SpiderCaster tools to the allowlist so they run
-without per-call approval (local, trusted).
+Ask mode is default in the IDE: add the spidercaster tools to the allowlist
+so they run without per-call approval (local, trusted operations).
 
 ## OpenCode
 
