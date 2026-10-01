@@ -1,0 +1,85 @@
+{
+  "schema": "spidercaster-library/1",
+  "root": "V:\\streams\\webdev",
+  "rule": "Unique templates are the SEO rule. Do not pull the OceanWP or GeneratePress demo catalogs. A new site is a new permutation of a seed already here. Two live sites do not share one template.",
+  "vendor_frames_not_the_library": [
+    "templates/owp/_catalog.json",
+    "templates/owp/core-frames",
+    "templates/gp/_catalog.json",
+    "templates/owp/simpleblog",
+    "templates/gp/marketer"
+  ],
+  "seeds": [
+    {
+      "id": "warmth-authority",
+      "kind": "static-mold",
+      "theme": "static",
+      "parent_frame": null,
+      "path": "templates/static-molds/mold-warmth-authority",
+      "built": "builds/movelixir.com",
+      "used_by": ["movelixir.com"],
+      "checker": "manifest only",
+      "unique": true,
+      "note": "Serif-led teal/amber editorial mold. First site of this palette, type-lead, and segmented nav."
+    },
+    {
+      "id": "teavital-owp",
+      "kind": "sandbox-permutation",
+      "theme": "oceanwp",
+      "parent_frame": "yoga",
+      "path": "environments/owp-sandbox/sites/teavital-owp",
+      "built": null,
+      "used_by": ["teavital.com"],
+      "checker": "pass 2026-09-27 17:39 CDT",
+      "unique": true,
+      "note": "Yoga frame permuted onto teavital. Deployed twice; the later origin and public check failed."
+    },
+    {
+      "id": "teavital-gp",
+      "kind": "sandbox-permutation",
+      "theme": "generatepress",
+      "parent_frame": "Lifestyle",
+      "path": "environments/owp-sandbox/sites/teavital-gp",
+      "built": null,
+      "used_by": ["teavital.com"],
+      "checker": "pass 2026-09-27 17:25 CDT",
+      "unique": true,
+      "note": "Lifestyle frame on GeneratePress. Local pass. Not the live teavital face."
+    },
+    {
+      "id": "teavital-block",
+      "kind": "sandbox-permutation",
+      "theme": "block",
+      "parent_frame": "twentytwentyfive",
+      "path": "environments/owp-sandbox/sites/teavital-block",
+      "built": null,
+      "used_by": [],
+      "checker": "pass 2026-09-27 17:25 CDT",
+      "unique": true,
+      "note": "Plain block theme with pages from copy. Local pass."
+    }
+  ],
+  "assigned_not_yet_permuted": [
+    {
+      "id": "floelixir-gp-marketer",
+      "theme": "generatepress",
+      "parent_frame": "Marketer",
+      "path": "environments/owp-sandbox/sites/floelixir-gp-marketer",
+      "note": "Demo name on a floelixir sandbox. Not a unique template until palette, type, and nav diverge from gp/marketer."
+    },
+    {
+      "id": "floelixir-owp-simpleblog",
+      "theme": "oceanwp",
+      "parent_frame": "simpleblog",
+      "path": "environments/owp-sandbox/sites/floelixir-owp-simpleblog",
+      "note": "simpleblog restore under a floelixir name. Same rule."
+    },
+    {
+      "id": "owp-photos",
+      "theme": "oceanwp",
+      "parent_frame": "photos",
+      "path": "environments/owp-sandbox/sites/owp-photos",
+      "note": "Checker failed 2026-09-27 16:32 CDT. Not a seed."
+    }
+  ]
+}
