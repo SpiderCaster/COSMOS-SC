@@ -61,3 +61,5 @@ service-account*.json
 *.tmp
 .coverage
 *.egg-info/
+# optional no-key AI path cache (lib/ai_chain)
+.sc_ai_cache/
