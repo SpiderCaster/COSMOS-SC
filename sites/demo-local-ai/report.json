@@ -1,36 +1,21 @@
 {
   "generator": "spidercaster/0.1",
-  "mode": "ai",
+  "mode": "rebuild",
   "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
-  "provider": "gemini",
-  "model": "gemini-2.5-flash-lite",
+  "provider": null,
+  "model": null,
   "noindex": true,
   "files": [
-    "index.html"
+    "index.html",
+    "favicon.svg"
   ],
   "warnings": [],
   "tokens": {
-    "requests": 1,
-    "ok": 1,
-    "in_tokens": 1445,
-    "out_tokens": 1678,
+    "requests": 0,
+    "ok": 0,
+    "in_tokens": 0,
+    "out_tokens": 0,
     "est_cost_usd": 0
   },
-  "attempts": [
-    {
-      "provider": "gemini",
-      "model": "gemini-2.5-flash-lite",
-      "purpose": "plan+fit",
-      "ok": true,
-      "error": "",
-      "ms": 4509,
-      "est_cost_usd": 0.0,
-      "in_tokens": 1445,
-      "out_tokens": 1678,
-      "draw": "vertex_key.txt",
-      "note": "draws wallet credit at vendor list rates; est_cost reflects free tier only",
-      "at": "2026-09-28 18:30:59"
-    }
-  ],
-  "built_at": "2026-09-28 18:30:59"
+  "attempts": []
 }
