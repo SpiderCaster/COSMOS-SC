@@ -71,12 +71,36 @@ def _pick_hero(blocks):
     return blocks[0]
 
 
-def _nav_label(text: str, limit: int = 28) -> str:
-    t = (text or "").strip()
-    if len(t) <= limit:
-        return t
-    cut = t[:limit].rsplit(" ", 1)[0]
-    return (cut or t[:limit]).strip()
+def _nav_label(text: str) -> str:
+    return (text or "").strip()
+
+
+def _titled_follow(sections: list) -> dict | None:
+    """First section after the hero whose title is non-empty."""
+    for sec in sections:
+        if sec.get("type") == "hero" or sec.get("id") == "hero":
+            continue
+        data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+        if str(data.get("title") or "").strip():
+            return sec
+    return None
+
+
+def _cut_description(text: str, limit: int = 160) -> str:
+    """Cut on the last sentence end inside limit, else the last space.
+
+    Does not add punctuation. Text that already fits is returned unchanged.
+    """
+    if len(text) <= limit:
+        return text
+    window = text[:limit]
+    last = max(window.rfind("."), window.rfind("!"), window.rfind("?"))
+    if last >= 0:
+        return window[: last + 1].rstrip()
+    space = window.rfind(" ")
+    if space >= 0:
+        return window[:space].rstrip()
+    return window
 
 
 def plan_offline(copy, opts: dict) -> dict:
@@ -103,7 +127,7 @@ def plan_offline(copy, opts: dict) -> dict:
             "eyebrow": "",
             "headline": hero_block.title or brand,
             "subhead": hero_sub,
-            "primary": {"label": "Read on", "href": "#learn-more"},
+            "primary": None,
             "secondary": None,
             "bullets": hero_block.bullets[:4],
         },
@@ -113,7 +137,7 @@ def plan_offline(copy, opts: dict) -> dict:
     if extra_paras:
         sections.append({
             "id": "about", "type": "about",
-            "data": {"title": "About", "body": extra_paras[:3], "points": []},
+            "data": {"title": "", "body": extra_paras[:3], "points": []},
         })
 
     # 2) map remaining blocks by what they contain
@@ -133,14 +157,17 @@ def plan_offline(copy, opts: dict) -> dict:
             hours = next((p for p in paras
                           if re.search(r"\bam\b|\bpm\b|closed|\b(?:mon|tue|wed|thu|fri|sat|sun)", p, re.I)
                           and p != addr), "")
-            body = [p for p in paras if p not in (addr, hours)]
+            phone = (b.phones or copy.phones or [""])[0]
+            email = (b.emails or copy.emails or [""])[0]
+            exact = {x.strip() for x in (phone, email, addr) if str(x).strip()}
+            body = [p for p in paras if p != hours and p.strip() not in exact]
             sections.append({
                 "id": "contact", "type": "contact",
                 "data": {
                     "title": title or "Contact",
                     "body": " ".join(body[:2]),
-                    "email": (b.emails or copy.emails or [""])[0],
-                    "phone": (b.phones or copy.phones or [""])[0],
+                    "email": email,
+                    "phone": phone,
                     "address": addr,
                     "hours": hours,
                 },
@@ -156,10 +183,13 @@ def plan_offline(copy, opts: dict) -> dict:
         if has_prices and (PRICING_TITLE_RE.search(title) or MENU_TITLE_RE.search(title)):
             kind = "menu" if MENU_TITLE_RE.search(title) else "pricing"
             if kind == "menu":
+                group_name = title or "Menu"
+                if group_name.strip() == title.strip():
+                    group_name = ""
                 sections.append({
                     "id": "menu", "type": "menu",
                     "data": {"title": title, "subhead": " ".join(b.paragraphs[:1]),
-                             "groups": [{"name": title or "Menu",
+                             "groups": [{"name": group_name,
                                          "items": [{"name": p["name"], "desc": p["desc"], "price": p["price"]}
                                                    for p in b.prices[:8]]}]},
                 })
@@ -210,14 +240,6 @@ def plan_offline(copy, opts: dict) -> dict:
                                     for x in (b.bullets + b.numbered)[:4]]},
             })
 
-    # hero CTA: point at the first real anchor target
-    targets = [sec["id"] for sec in sections if sec["id"] not in ("hero",)]
-    if targets:
-        sections[0]["data"]["primary"] = {"label": "Read on", "href": f"#{targets[0]}"}
-        contact = next((sec for sec in sections if sec["type"] == "contact"), None)
-        if contact:
-            sections[0]["data"]["secondary"] = {"label": "Contact", "href": f"#{contact['id']}"}
-
     # de-dup ids like faq/faq
     seen: set = set()
     for sec in sections:
@@ -228,6 +250,31 @@ def plan_offline(copy, opts: dict) -> dict:
             n += 1
         seen.add(sec["id"])
 
+    # Contact is the last stop on a phone. Hours and menu stay above it.
+    # The hero button is chosen after this move, so it names that earlier title.
+    sections[:] = (
+        [sec for sec in sections if sec["type"] != "contact"]
+        + [sec for sec in sections if sec["type"] == "contact"]
+    )
+
+    # Primary names the next titled section. Skip an empty-title about.
+    # No titled section: leave primary unset. Do not slice the subhead.
+    target = _titled_follow(sections)
+    if target:
+        title = str(target["data"].get("title") or "").strip()
+        sections[0]["data"]["primary"] = {"label": title, "href": f"#{target['id']}"}
+    # A secondary that repeats the primary href or label is the same button twice.
+    contact = next((sec for sec in sections if sec["type"] == "contact"), None)
+    if contact:
+        secondary = {"label": "Contact", "href": f"#{contact['id']}"}
+        primary = sections[0]["data"].get("primary")
+        same = isinstance(primary, dict) and (
+            secondary["href"] == primary.get("href")
+            or secondary["label"] == primary.get("label")
+        )
+        if not same:
+            sections[0]["data"]["secondary"] = secondary
+
     theme = {
         "template": opts.get("template") or "modern",
         "dark": opts.get("dark") if isinstance(opts.get("dark"), bool) else True,
@@ -235,11 +282,125 @@ def plan_offline(copy, opts: dict) -> dict:
         "accent2": None,
     }
     return {
-        "meta": {"title": brand, "description": _first_paragraph(hero_block)[:155] or f"{brand} - local build"},
+        "meta": {"title": brand, "description": _cut_description(_first_paragraph(hero_block)) or f"{brand} - local build"},
         "theme": theme,
-        "nav": [{"label": _nav_label(s["data"].get("title") or ir.title_case(s["id"])),
-                 "href": f"#{s['id']}"}
-                for s in sections if s["type"] not in ("hero",)][:6],
+        "nav": [{"label": label, "href": f"#{s['id']}"}
+                for s in sections if s["type"] not in ("hero",)
+                for label in [_nav_label(s["data"].get("title") or "")] if label][:6],
         "pages": [{"slug": "index", "title": brand, "sections": sections}],
         "footer": {"text": f"(c) {date.today().year} {brand}", "links": [], "credit": True},
     }
+
+
+def _selftest() -> int:
+    from .ingest import Block, Copy
+
+    overview = (
+        "SpiderCaster is a copy-driven static website engine. "
+        "You give it a brief and real copy files; it returns a self-contained static site. "
+        + "The structure stays deterministic. " * 8
+    )
+    assert len(overview) > 160
+    desc = _cut_description(overview)
+    assert overview.startswith(desc)
+    assert len(desc) <= 160
+    assert desc.endswith((".", "!", "?"))
+    assert not desc.endswith(" and")
+    assert "award" not in desc.lower()
+    assert "review" not in desc.lower()
+    window = overview[:160]
+    last = max(window.rfind("."), window.rfind("!"), window.rfind("?"))
+    assert desc == window[: last + 1].rstrip()
+
+    words = " ".join(["river"] * 40)
+    assert "." not in words and "!" not in words and "?" not in words
+    cut = _cut_description(words)
+    assert words.startswith(cut)
+    assert len(cut) <= 160
+    assert words[len(cut)] == " "
+    assert not cut.endswith((".", "!", "?"))
+    assert "award" not in cut.lower()
+    assert "review" not in cut.lower()
+
+    short = "A quiet tea room that seats walk-ins by the water."
+    assert _cut_description(short) == short
+
+    copy = Copy()
+    block = Block("overview.md", 1, "SpiderCaster")
+    block.paragraphs = [overview, "Second paragraph stays whole."]
+    copy.blocks = [block]
+    site = plan_offline(copy, {})
+    meta = site["meta"]["description"]
+    assert meta == desc
+    hero = site["pages"][0]["sections"][0]["data"]["subhead"]
+    assert hero == overview
+    assert "award" not in meta.lower()
+    assert "review" not in meta.lower()
+    assert site["pages"][0]["sections"][0]["data"]["primary"] is None
+
+    contact_only = Copy()
+    contact_hero = Block("overview.md", 1, "Harbor Tea Room")
+    contact_hero.paragraphs = ["A quiet tea room that seats walk-ins by the water."]
+    contact_block = Block("contact.md", 1, "Contact")
+    contact_block.paragraphs = ["Walk-ins only."]
+    contact_only.blocks = [contact_hero, contact_block]
+    contact_hero_data = plan_offline(contact_only, {})["pages"][0]["sections"][0]["data"]
+    assert contact_hero_data["primary"]["label"] == "Contact"
+    assert contact_hero_data["primary"]["href"] == "#contact"
+    contact_secondary = contact_hero_data["secondary"]
+    assert contact_secondary is None or contact_secondary.get("href") != contact_hero_data["primary"]["href"]
+
+    kept = Copy()
+    kept_hero = Block("overview.md", 1, "Harbor Tea Room")
+    kept_hero.paragraphs = ["A quiet tea room that seats walk-ins by the water."]
+    kept_hours = Block("hours.md", 1, "Hours")
+    kept_hours.paragraphs = ["Open Tuesday to Sunday."]
+    kept_contact = Block("contact.md", 1, "Contact")
+    kept_contact.paragraphs = ["Walk-ins only."]
+    kept.blocks = [kept_hero, kept_hours, kept_contact]
+    kept_data = plan_offline(kept, {})["pages"][0]["sections"][0]["data"]
+    assert kept_data["primary"] == {"label": "Hours", "href": "#hours"}
+    assert kept_data["secondary"] == {"label": "Contact", "href": "#contact"}
+
+    hours = Block("hours.md", 1, "Hours")
+    hours.paragraphs = ["Open Tuesday to Sunday."]
+    copy.blocks.append(hours)
+    linked = plan_offline(copy, {})["pages"][0]["sections"]
+    button = linked[0]["data"]["primary"]
+    assert button == {"label": "Hours", "href": "#hours"}
+    assert any(sec["id"] == "hours" for sec in linked)
+    about = next(sec for sec in linked if sec["id"] == "about")
+    assert not str(about["data"].get("title") or "").strip()
+
+    bare = Copy()
+    titled = Block("overview.md", 1, "Harbor Tea")
+    titled.bullets = ["Loose leaf", "Walk ins", "Quiet room"]
+    bare.blocks = [titled]
+    fallback = plan_offline(bare, {})["meta"]["description"]
+    assert fallback == "Harbor Tea - local build"
+    assert "award" not in fallback.lower()
+    assert "review" not in fallback.lower()
+
+    menu_copy = Copy()
+    menu_hero = Block("overview.md", 1, "Harbor Tea Room")
+    menu_hero.paragraphs = ["A quiet tea room that seats walk-ins by the water."]
+    menu_block = Block("menu.md", 1, "Menu")
+    menu_block.paragraphs = ["12oz cups, brewed to order."]
+    menu_block.prices = [
+        {"name": "Jasmine Pearl", "desc": "", "price": "$4.50"},
+        {"name": "Assam Malt", "desc": "", "price": "$3.75"},
+    ]
+    menu_copy.blocks = [menu_hero, menu_block]
+    menu_sec = next(sec for sec in plan_offline(menu_copy, {})["pages"][0]["sections"] if sec["type"] == "menu")
+    assert menu_sec["data"]["title"] == "Menu"
+    menu_group = menu_sec["data"]["groups"][0]
+    assert menu_group["name"] != menu_sec["data"]["title"]
+    assert menu_group["name"] == ""
+    assert [it["name"] for it in menu_group["items"]] == ["Jasmine Pearl", "Assam Malt"]
+    assert [it["price"] for it in menu_group["items"]] == ["$4.50", "$3.75"]
+    print("offline selftest ok")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_selftest())

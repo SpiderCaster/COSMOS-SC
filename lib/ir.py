@@ -81,6 +81,17 @@ def normalize_data(kind: str, d: dict) -> dict:
         out["primary"] = link_obj(d.get("primary"))
         out["secondary"] = link_obj(d.get("secondary"))
         out["bullets"] = [s(b) for b in clamp(d.get("bullets"), 4) if is_str(b)]
+        raw_img = d.get("image")
+        src = s(raw_img) if isinstance(raw_img, str) else ""
+        alt = ""
+        if isinstance(raw_img, dict):
+            src = s(raw_img.get("src"))
+            alt = s(raw_img.get("alt"))
+        parts = src.replace("\\", "/").split("/")
+        if src.startswith(("http://", "https://", "//")) or ".." in parts:
+            src = ""
+        out["image"] = src
+        out["image_alt"] = alt
 
     elif kind == "features":
         out["title"] = s(d.get("title"))
@@ -175,7 +186,7 @@ def normalize_data(kind: str, d: dict) -> dict:
         out["hours"] = s(d.get("hours"))
 
     elif kind == "about":
-        out["title"] = s(d.get("title")) or "About"
+        out["title"] = s(d.get("title"))
         body = d.get("body")
         if isinstance(body, list):
             out["body"] = [s(b) for b in clamp(body, 4) if is_str(b)]
@@ -303,7 +314,9 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
         for sec in pages[0]["sections"]:
             if sec["type"] in ("hero", "cta"):
                 continue
-            label = s(sec["data"].get("title")) or title_case(re.sub(r"-\d+$", "", sec["id"]))
+            label = s(sec["data"].get("title"))
+            if not label:
+                continue
             nav.append({"label": label, "href": f"#{sec['id']}"})
         site["nav"] = nav[:6]
 

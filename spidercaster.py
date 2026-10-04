@@ -9,6 +9,11 @@ Commands:
   serve    preview a built site on localhost
   models   show the provider chain (free tiers first); --probe queries live
   sections list the section types and their data fields
+  library  vendor vault index, molds we made, live-use ledger
+  crew     run the seven hands on one project (does not publish)
+  doctor   report python, molds, frames, seats, and hand order
+  shipcheck say whether the app is ship-ready
+  seat     print one seat pack
 
 Token rules: offline/rebuild = 0 tokens; AI build = 1-2 calls on the free
 chain (Gemini free tier -> OpenRouter :free -> OpenWork inference); paid
@@ -34,11 +39,34 @@ from lib import offline as offline_mod       # noqa: E402
 from lib import providers                    # noqa: E402
 from lib import render                       # noqa: E402
 from lib import serve as serve_mod           # noqa: E402
+from lib.crew import ROLES, run_job          # noqa: E402
+from lib.doctor import report as doctor_report  # noqa: E402
+from lib.library import Library, LibraryError  # noqa: E402
+from lib.seatpack import pack as seat_pack   # noqa: E402
+from lib.shipcheck import main as shipcheck_main  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
 
 
 # ---------------------------------------------------------------- helpers
+
+def build_stamp() -> str | None:
+    """Timestamp for report.json, or None so the output stays byte-reproducible.
+
+    SOURCE_DATE_EPOCH (reproducible-builds.org) set -> that instant, in UTC.
+    SPIDERCASTER_STAMP_BUILD=1 -> wall clock (opt in; breaks byte-identical rebuilds).
+    Neither -> no built_at key at all.
+    """
+    epoch = os.environ.get("SOURCE_DATE_EPOCH", "").strip()
+    if epoch:
+        try:
+            return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(int(epoch)))
+        except (ValueError, OverflowError, OSError):
+            pass
+    if os.environ.get("SPIDERCASTER_STAMP_BUILD") == "1":
+        return time.strftime("%Y-%m-%d %H:%M:%S")
+    return None
+
 
 def write_report(site_dir: Path, *, mode: str, brief: str, ledger: providers.Ledger,
                  provider: str | None, model: str | None, files: list[str],
@@ -55,8 +83,10 @@ def write_report(site_dir: Path, *, mode: str, brief: str, ledger: providers.Led
         "warnings": warnings,
         "tokens": totals,
         "attempts": ledger.attempts,
-        "built_at": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
+    stamp = build_stamp()
+    if stamp:
+        data["built_at"] = stamp
     (site_dir / "report.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -433,6 +463,162 @@ def cmd_sections(_args) -> int:
     return 0
 
 
+# ---------------------------------------------------------------- library + crew
+
+PACKAGE_LIBRARY = ROOT / "library"
+DEFAULT_VAULT = Path(os.environ.get("SPIDERCASTER_VAULT") or r"V:\streams\webdev\vendor-vault")
+DEFAULT_OWP = Path(r"V:\streams\webdev\templates\owp\_catalog.json")
+DEFAULT_GP = Path(r"V:\streams\webdev\templates\gp\_catalog.json")
+DEFAULT_FRAMES = Path(r"V:\streams\webdev\templates\owp\core-frames")
+
+
+def _library(args) -> Library:
+    vault = Path(getattr(args, "vault", None) or DEFAULT_VAULT)
+    return Library(PACKAGE_LIBRARY, vault)
+
+
+def cmd_library(args) -> int:
+    lib = _library(args)
+    if args.library_cmd == "selftest":
+        import tempfile
+        from lib.library import selftest as library_selftest
+        with tempfile.TemporaryDirectory() as tmp:
+            return library_selftest(Path(tmp))
+    if args.library_cmd == "index":
+        summary = lib.index_catalogs(Path(args.owp), Path(args.gp), Path(args.frames))
+        print(f"vault indexed: {summary['frames']} frame name(s)")
+        print(f"  {summary['vault']}")
+        print("  photos and theme files are not downloaded by this command")
+        return 0
+    if args.library_cmd == "list":
+        molds = lib.list_molds()
+        frames = lib.frames().get("frames", [])
+        print(f"molds (package): {len(molds)}")
+        for mold in molds:
+            print(f"  {mold['id']}  {mold['origin']}  {mold['type_lead']}  {mold['nav']}")
+        from lib.frames import list_frames
+        section_frames = list_frames()
+        print(f"section frames (package): {len(section_frames)}")
+        for frame in section_frames:
+            print(f"  {frame['id']}  {frame['nav']}  {frame['template']}")
+        print(f"vendor frames (vault, not packaged): {len(frames)}")
+        return 0
+    if args.library_cmd == "mold":
+        try:
+            mold = lib.save_mold({
+                "id": args.id, "origin": args.origin, "parents": args.parent or [],
+                "palette": args.palette, "type_lead": args.type_lead, "nav": args.nav,
+                "template": args.template, "sections": args.section or [],
+                "note": args.note or "",
+            })
+        except LibraryError as exc:
+            print(f"mold refused: {exc}")
+            return 2
+        print(f"mold saved: {mold['id']} ({mold['origin']})")
+        return 0
+    if args.library_cmd == "bind":
+        try:
+            row = lib.bind(args.site, args.mold, vendor_frame=args.vendor, live=args.live)
+        except LibraryError as exc:
+            print(f"bind refused: {exc}")
+            return 2
+        flag = "live" if row["live"] else "draft"
+        print(f"bound {row['site']} -> {row['mold']} ({flag})")
+        return 0
+    if args.library_cmd == "accept":
+        try:
+            row = lib.accept_snapshot(args.frame, Path(args.snapshot))
+        except LibraryError as exc:
+            print(f"snapshot refused: {exc}")
+            return 2
+        print(f"vault snapshot {row['id']}: {row['photos']} photo(s)")
+        return 0
+    print("library command missing")
+    return 2
+
+
+def cmd_image(args) -> int:
+    from lib.imagine import ImagineError, generate
+    dest = Path(args.out)
+    try:
+        receipt = generate(
+            args.prompt, dest,
+            provider=args.provider, model=args.model or "",
+            aspect_ratio=args.aspect, quality=args.quality,
+        )
+    except ImagineError as exc:
+        print(f"image refused: {exc}")
+        return 2
+    print(f"saved {dest if dest.suffix else dest.with_suffix('.png')}")
+    print(f"  {receipt['provider']}/{receipt['model']}  {receipt['bytes']} bytes")
+    print("  provider URL was not stored")
+    return 0
+
+
+def cmd_crew(args) -> int:
+    if args.crew_cmd == "roles":
+        for role in ROLES:
+            hands = ", ".join(role["hands"])
+            print(f"{role['n']}. {role['label']}")
+            print(f"   hands: {hands}")
+            print(f"   does not: {role['does_not']}")
+        return 0
+    if args.crew_cmd == "selftest":
+        import tempfile
+        from lib.crew import selftest as crew_selftest
+        with tempfile.TemporaryDirectory() as tmp:
+            return crew_selftest(Path(tmp), ROOT / "projects" / "demo-local")
+    if args.crew_cmd == "run":
+        lib = _library(args)
+        mold_id = args.mold
+        if args.scratch:
+            mold_id = args.mold or ir_mod.slugify(args.site)
+            try:
+                lib.save_mold({
+                    "id": mold_id, "origin": "scratch",
+                    "palette": args.palette, "type_lead": args.type_lead, "nav": args.nav,
+                    "template": args.template, "note": "scratch mold for this site",
+                })
+            except LibraryError as exc:
+                print(f"scratch mold refused: {exc}")
+                return 2
+        if not mold_id:
+            print("pass --mold or --scratch")
+            return 2
+        out = Path(args.out) if args.out else ROOT / "sites" / ir_mod.slugify(args.site)
+        ticket = run_job(
+            lib, Path(args.project), args.site, out, mold_id,
+            frame_id=getattr(args, "frame", "") or "",
+        )
+        for hand in ticket["hands"]:
+            print(f"  [{hand['status']}] {hand['role']}: {hand['detail']}")
+        print(ticket["publish"])
+        print(f"  ticket: {out / 'crew-ticket.json'}")
+        return 0 if ticket["ok"] else 1
+    print("crew command missing")
+    return 2
+
+
+def cmd_doctor(_args) -> int:
+    data = doctor_report(ROOT)
+    print(json.dumps(data, separators=(",", ":")))
+    return 0 if data["ok"] else 2
+
+
+def cmd_shipcheck(_args) -> int:
+    return shipcheck_main()
+
+
+def cmd_seat(args) -> int:
+    try:
+        data = seat_pack(ROOT, args.seat)
+    except KeyError:
+        print("unknown seat")
+        return 2
+    print(json.dumps(data, separators=(",", ":")))
+    return 0
+
+
 # ---------------------------------------------------------------- parser
 
 def add_provider_opts(p: argparse.ArgumentParser) -> None:
@@ -498,6 +684,72 @@ def main(argv=None) -> int:
 
     p = sub.add_parser("sections", help="list section types")
     p.set_defaults(fn=cmd_sections)
+
+    p = sub.add_parser("image", help="prompt xAI or OpenRouter and save a local image")
+    p.add_argument("--prompt", required=True)
+    p.add_argument("--out", required=True)
+    p.add_argument("--provider", choices=["xai", "openrouter"], default="xai")
+    p.add_argument("--model", default="")
+    p.add_argument("--aspect", default="16:9")
+    p.add_argument("--quality", default="low", choices=["low", "medium", "auto"])
+    p.set_defaults(fn=cmd_image)
+
+    libp = sub.add_parser("library", help="vault, molds, and the live-use ledger")
+    libp.add_argument("--vault", help="private vendor vault (default SPIDERCASTER_VAULT)")
+    libsub = libp.add_subparsers(dest="library_cmd", required=True)
+    p = libsub.add_parser("index", help="register OWP and GP catalog names into the vault")
+    p.add_argument("--owp", default=str(DEFAULT_OWP))
+    p.add_argument("--gp", default=str(DEFAULT_GP))
+    p.add_argument("--frames", default=str(DEFAULT_FRAMES))
+    p = libsub.add_parser("list", help="list package molds and vault frame count")
+    p = libsub.add_parser("mold", help="save a scratch, mutation, or mix mold")
+    p.add_argument("--id", required=True)
+    p.add_argument("--origin", required=True, choices=["scratch", "mutate", "mix"])
+    p.add_argument("--palette", required=True, help="#rrggbb accent")
+    p.add_argument("--type-lead", required=True, choices=["serif", "sans", "slab", "mono-display"])
+    p.add_argument("--nav", required=True, choices=["segmented", "top-bar", "sidebar", "one-page", "footer-only"])
+    p.add_argument("--template", default="editorial", choices=ir_mod.TEMPLATES)
+    p.add_argument("--parent", action="append", help="parent mold or vendor frame id; repeat for a mix")
+    p.add_argument("--section", action="append")
+    p.add_argument("--note", default="")
+    p = libsub.add_parser("bind", help="attach one mold to a site")
+    p.add_argument("--site", required=True)
+    p.add_argument("--mold", required=True)
+    p.add_argument("--vendor", help="one as-is vendor frame, mutate molds only")
+    p.add_argument("--live", action="store_true", help="mark live; refuses a frame or mold already live elsewhere")
+    p = libsub.add_parser("accept", help="record a snapshot directory that already sits in the vault")
+    p.add_argument("--frame", required=True)
+    p.add_argument("--snapshot", required=True)
+    p = libsub.add_parser("selftest", help="run the library rule checks")
+    libp.set_defaults(fn=cmd_library)
+
+    crewp = sub.add_parser("crew", help="seven hands; does not publish")
+    crewp.add_argument("--vault", help="private vendor vault")
+    crewsub = crewp.add_subparsers(dest="crew_cmd", required=True)
+    crewsub.add_parser("roles", help="print the seven seats and their hands")
+    p = crewsub.add_parser("run", help="build one site through all seven hands")
+    p.add_argument("project")
+    p.add_argument("--site", required=True)
+    p.add_argument("--out")
+    p.add_argument("--mold")
+    p.add_argument("--scratch", action="store_true")
+    p.add_argument("--palette", default="#1f6f5b")
+    p.add_argument("--type-lead", default="serif", choices=["serif", "sans", "slab", "mono-display"])
+    p.add_argument("--nav", default="segmented", choices=["segmented", "top-bar", "sidebar", "one-page", "footer-only"])
+    p.add_argument("--template", default="editorial", choices=ir_mod.TEMPLATES)
+    p.add_argument("--frame", default="", help="package section frame id from library/frames")
+    crewsub.add_parser("selftest", help="run the crew against the demo-local project")
+    crewp.set_defaults(fn=cmd_crew)
+
+    p = sub.add_parser("doctor", help="report python, molds, frames, seats, and hand order")
+    p.set_defaults(fn=cmd_doctor)
+
+    p = sub.add_parser("shipcheck", help="say whether the app is ship-ready")
+    p.set_defaults(fn=cmd_shipcheck)
+
+    p = sub.add_parser("seat", help="print one seat pack")
+    p.add_argument("seat", help="seat id")
+    p.set_defaults(fn=cmd_seat)
 
     args = ap.parse_args(argv)
     return args.fn(args)
