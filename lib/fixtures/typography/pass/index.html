@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pass fixture</title>
+<style>
+html{font-size:18px}
+:root{--bg:#ffffff;--text:#1a1a1a;--muted:#595959;--accent:#0d47a1}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,serif;line-height:1.6}
+h1{font-size:clamp(1.8rem,5vw,3rem)}
+h2{font-size:1.5rem}
+p{font-size:1rem}
+.muted{color:var(--muted)}
+.big{font-size:24px;color:#888888}              /* large text: 3.54:1 clears 3:1 */
+.bold-mid{font-size:20px;font-weight:700;color:#777777} /* large bold: 4.48:1 clears 3:1 */
+.ghost{opacity:.9}
+.cta{display:inline-block;padding:10px 16px;color:#ffffff;background:linear-gradient(135deg,#1a237e,#0d47a1)}
+.dark{background:#111111;color:#eeeeee;padding:12px}
+.dark a{color:#ffd54f}
+nav a{font-size:16px;color:var(--accent)}
+footer{font-size:.9rem;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;font-size:10px;color:#fafafa}
+.gone{display:none;font-size:8px;color:#eee}
+li:not(.skip){color:var(--text)}
+p.fixed{color:#000 !important}
+p.fixed{color:#f0f0f0}
+@media (max-width:600px){ p{font-size:1rem} .muted{font-size:1.05rem} }
+@media (prefers-reduced-motion:reduce){ p{font-size:8px} }
+@media print{ p{font-size:8px;color:#fff} }
+</style>
+</head>
+<body>
+<header><nav><a href="#main">Home</a> <a href="#about">About</a></nav></header>
+<main id="main">
+<h1>Readable page</h1>
+<h2>Section heading</h2>
+<p>Body copy at one rem of an eighteen pixel root, dark on white.</p>
+<p class="muted">Muted copy with a seven to one ratio.</p>
+<p class="big">Large and softer</p>
+<p class="bold-mid">Bold twenty pixel text</p>
+<p class="ghost">Slightly faded copy.</p>
+<p class="fixed">Important wins over the later rule.</p>
+<a class="cta" href="#main">Call to action</a>
+<div class="dark"><p style="color:#eeeeee">Light text on a dark panel with <a href="#main">a link</a>.</p></div>
+<ul><li>One</li><li class="skip">Two</li></ul>
+<span class="sr-only">Skip to content</span>
+<p class="gone">Hidden entirely</p>
+</main>
+<footer><p>Footer text at sixteen point two pixels.</p></footer>
+</body>
+</html>
