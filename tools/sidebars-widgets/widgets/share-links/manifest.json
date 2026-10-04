@@ -1,0 +1,97 @@
+{
+ "name": "Share links",
+ "slug": "share-links",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Share links for X, Facebook, LinkedIn and email, plus a copy link button. The caller passes the page address and title already percent-encoded.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Share this page"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "url",
+   "type": "string",
+   "required": true,
+   "description": "Page address, plain."
+  },
+  {
+   "name": "url_enc",
+   "type": "string",
+   "required": true,
+   "description": "Page address, percent-encoded."
+  },
+  {
+   "name": "text_enc",
+   "type": "string",
+   "required": true,
+   "description": "Page title, percent-encoded."
+  },
+  {
+   "name": "copied",
+   "type": "string",
+   "required": false,
+   "description": "Message after copying.",
+   "default": "Link copied."
+  },
+  {
+   "name": "copy_failed",
+   "type": "string",
+   "required": false,
+   "description": "Message when copying fails.",
+   "default": "Copy failed. Copy the address from the address bar."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "share-links.html",
+  "share-links.css",
+  "share-links.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6000,
+ "tags": [
+  "social",
+  "share",
+  "js"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 75,
+  "failed": 0,
+  "total": 75
+ },
+ "bytes": 3323,
+ "gzip_bytes": 1255
+}

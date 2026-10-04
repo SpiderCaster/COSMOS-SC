@@ -1,0 +1,16 @@
+{
+ "data": {
+  "title": "Questions",
+  "uid": "1",
+  "items": [
+   {
+    "q": "Fixture question one?",
+    "a": "Fixture answer one."
+   },
+   {
+    "q": "Fixture question two?",
+    "a": "Fixture answer two, a little longer to check wrapping on a narrow screen."
+   }
+  ]
+ }
+}

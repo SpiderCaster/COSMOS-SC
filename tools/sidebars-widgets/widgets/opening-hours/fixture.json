@@ -1,0 +1,44 @@
+{
+ "data": {
+  "title": "Hours",
+  "uid": "1",
+  "rows": [
+   {
+    "day": "Sunday",
+    "hours": "Closed",
+    "n": "0"
+   },
+   {
+    "day": "Monday",
+    "hours": "9:00 to 17:00",
+    "n": "1"
+   },
+   {
+    "day": "Tuesday",
+    "hours": "9:00 to 17:00",
+    "n": "2"
+   },
+   {
+    "day": "Wednesday",
+    "hours": "9:00 to 17:00",
+    "n": "3"
+   },
+   {
+    "day": "Thursday",
+    "hours": "9:00 to 17:00",
+    "n": "4"
+   },
+   {
+    "day": "Friday",
+    "hours": "9:00 to 15:00",
+    "n": "5"
+   },
+   {
+    "day": "Saturday",
+    "hours": "Closed",
+    "n": "6"
+   }
+  ],
+  "note": "Fixture note."
+ }
+}

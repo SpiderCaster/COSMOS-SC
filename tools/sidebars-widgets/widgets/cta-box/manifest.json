@@ -1,0 +1,80 @@
+{
+ "name": "Call to action box",
+ "slug": "cta-box",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Heading, one sentence and one button link.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": true,
+   "description": "Heading."
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "text",
+   "type": "string",
+   "required": true,
+   "description": "One sentence."
+  },
+  {
+   "name": "url",
+   "type": "string",
+   "required": true,
+   "description": "Button address."
+  },
+  {
+   "name": "label",
+   "type": "string",
+   "required": true,
+   "description": "Button text."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "cta-box.html",
+  "cta-box.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "cta",
+  "content"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 62,
+  "failed": 0,
+  "total": 62
+ },
+ "bytes": 1942,
+ "gzip_bytes": 686
+}

@@ -1,0 +1,20 @@
+{
+ "data": {
+  "title": "Follow",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture network one",
+    "url": "https://social.example/fixture"
+   },
+   {
+    "label": "Fixture network two",
+    "url": "https://social.example/fixture-two"
+   },
+   {
+    "label": "Fixture three",
+    "url": "https://social.example/f3"
+   }
+  ]
+ }
+}

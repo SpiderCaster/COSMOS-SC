@@ -1,0 +1,75 @@
+{
+ "name": "Sticky left sidebar",
+ "slug": "sidebar-sticky-left",
+ "kind": "sidebar",
+ "version": "1.0.0",
+ "purpose": "Left rail that stays in view while the content scrolls, from 900 px up. Suited to a table of contents. Content stays first in the HTML. Under 900 px the rail is a normal block under the content. Same overflow note as the sticky right layout.",
+ "inputs": [
+  {
+   "name": "main",
+   "type": "html",
+   "required": true,
+   "description": "Page content region.",
+   "slot": true
+  },
+  {
+   "name": "aside",
+   "type": "html",
+   "required": true,
+   "description": "Rail HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside_label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name of the rail.",
+   "default": "On this page"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-sticky-left.html",
+  "sidebar-sticky-left.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 2800,
+ "tags": [
+  "layout",
+  "left",
+  "sticky",
+  "toc",
+  "grid"
+ ],
+ "external_hosts": [],
+ "notes": [
+  "Pair with the toc widget in the rail. Sticky fails if an ancestor sets overflow hidden, auto or scroll."
+ ],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 58,
+  "failed": 0,
+  "total": 58
+ },
+ "bytes": 778,
+ "gzip_bytes": 389
+}

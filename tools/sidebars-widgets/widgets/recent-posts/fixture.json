@@ -1,0 +1,27 @@
+{
+ "data": {
+  "title": "Recent posts",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture post one",
+    "url": "/fixture-post-one/",
+    "date": "Oct 1, 2026",
+    "iso": "2026-10-01"
+   },
+   {
+    "label": "Fixture post two, with a longer title that wraps on a narrow screen",
+    "url": "/fixture-post-two/",
+    "date": "Sep 28, 2026",
+    "iso": "2026-09-28",
+    "current": "1"
+   },
+   {
+    "label": "Fixture post three",
+    "url": "/fixture-post-three/",
+    "date": "Sep 20, 2026",
+    "iso": "2026-09-20"
+   }
+  ]
+ }
+}

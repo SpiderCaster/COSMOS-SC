@@ -1,0 +1,769 @@
+{
+ "slice": "sidebars-widgets",
+ "generated": "2026-10-03 21:06 Central Daylight Time",
+ "items": [
+  {
+   "slug": "sidebar-collapsible-groups",
+   "name": "Collapsible sidebar groups",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-collapsible-groups",
+   "purpose": "Right sidebar whose sections fold with native details elements. On screens under 900 px all sections except the first start closed. On wider screens all start open.",
+   "tags": [
+    "layout",
+    "right",
+    "details",
+    "js"
+   ],
+   "status": "pass",
+   "bytes": 1969,
+   "gzip_bytes": 902,
+   "files": [
+    "manifest.json",
+    "sidebar-collapsible-groups.html",
+    "sidebar-collapsible-groups.css",
+    "sidebar-collapsible-groups.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-drawer-mobile",
+   "name": "Sidebar drawer for phones",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-drawer-mobile",
+   "purpose": "Under 900 px the sidebar becomes an off-canvas drawer opened by a button. Escape, the Close button and the dark overlay all close it, focus stays inside while open, and focus returns to the opener. From 900 px the sidebar is a normal column on the chosen side.",
+   "tags": [
+    "layout",
+    "drawer",
+    "mobile",
+    "js",
+    "a11y"
+   ],
+   "status": "pass",
+   "bytes": 3989,
+   "gzip_bytes": 1522,
+   "files": [
+    "manifest.json",
+    "sidebar-drawer-mobile.html",
+    "sidebar-drawer-mobile.css",
+    "sidebar-drawer-mobile.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-left-layout",
+   "name": "Left sidebar layout",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-left-layout",
+   "purpose": "Sidebar on the left from 900 px up. The content stays first in the HTML, so the page reads content first on phones and for screen readers.",
+   "tags": [
+    "layout",
+    "left",
+    "grid"
+   ],
+   "status": "pass",
+   "bytes": 521,
+   "gzip_bytes": 269,
+   "files": [
+    "manifest.json",
+    "sidebar-left-layout.html",
+    "sidebar-left-layout.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-right-layout",
+   "name": "Right sidebar layout",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-right-layout",
+   "purpose": "Content column with a 300 px sidebar on the right from 900 px up. Below 900 px the sidebar stacks under the content.",
+   "tags": [
+    "layout",
+    "right",
+    "grid"
+   ],
+   "status": "pass",
+   "bytes": 425,
+   "gzip_bytes": 247,
+   "files": [
+    "manifest.json",
+    "sidebar-right-layout.html",
+    "sidebar-right-layout.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-sticky-left",
+   "name": "Sticky left sidebar",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-sticky-left",
+   "purpose": "Left rail that stays in view while the content scrolls, from 900 px up. Suited to a table of contents. Content stays first in the HTML. Under 900 px the rail is a normal block under the content. Same overflow note as the sticky right layout.",
+   "tags": [
+    "layout",
+    "left",
+    "sticky",
+    "toc",
+    "grid"
+   ],
+   "status": "pass",
+   "bytes": 778,
+   "gzip_bytes": 389,
+   "files": [
+    "manifest.json",
+    "sidebar-sticky-left.html",
+    "sidebar-sticky-left.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-sticky-right",
+   "name": "Sticky right sidebar",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-sticky-right",
+   "purpose": "Right sidebar that stays in view while the content scrolls, from 900 px up. It scrolls on its own when taller than the screen. Under 900 px it is a normal block under the content. A :has() rule clears overflow hidden on the OceanWP wrappers, which would otherwise stop sticky.",
+   "tags": [
+    "layout",
+    "right",
+    "sticky",
+    "grid"
+   ],
+   "status": "pass",
+   "bytes": 682,
+   "gzip_bytes": 367,
+   "files": [
+    "manifest.json",
+    "sidebar-sticky-right.html",
+    "sidebar-sticky-right.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-three-column",
+   "name": "Three column layout",
+   "kind": "sidebar",
+   "path": "sidebars/sidebar-three-column",
+   "purpose": "Left sidebar, content, right sidebar from 1100 px. From 700 to 1099 px the content spans the top and the two sidebars sit side by side below it. Under 700 px everything stacks.",
+   "tags": [
+    "layout",
+    "three-column",
+    "grid"
+   ],
+   "status": "pass",
+   "bytes": 811,
+   "gzip_bytes": 324,
+   "files": [
+    "manifest.json",
+    "sidebar-three-column.html",
+    "sidebar-three-column.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "ad-slot",
+   "name": "Ad slot",
+   "kind": "widget",
+   "path": "widgets/ad-slot",
+   "purpose": "Labelled box with fixed height for an ad unit. Reserves the space before the ad loads so the page does not shift. Hides itself while empty. The caller supplies the ad code.",
+   "tags": [
+    "ads",
+    "layout-stable"
+   ],
+   "status": "pass",
+   "bytes": 2271,
+   "gzip_bytes": 758,
+   "files": [
+    "manifest.json",
+    "ad-slot.html",
+    "ad-slot.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "archives",
+   "name": "Archive list by month",
+   "kind": "widget",
+   "path": "widgets/archives",
+   "purpose": "Monthly archive links with post counts.",
+   "tags": [
+    "taxonomy",
+    "list",
+    "nav",
+    "archive"
+   ],
+   "status": "pass",
+   "bytes": 1988,
+   "gzip_bytes": 737,
+   "files": [
+    "manifest.json",
+    "archives.html",
+    "archives.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "author-box",
+   "name": "Author box",
+   "kind": "widget",
+   "path": "widgets/author-box",
+   "purpose": "Author name, short bio and a profile link. Shows a photo only when the caller supplies an owned image address.",
+   "tags": [
+    "author",
+    "content",
+    "no-fake-avatar"
+   ],
+   "status": "pass",
+   "bytes": 2399,
+   "gzip_bytes": 871,
+   "files": [
+    "manifest.json",
+    "author-box.html",
+    "author-box.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "back-to-top",
+   "name": "Back to top button",
+   "kind": "widget",
+   "path": "widgets/back-to-top",
+   "purpose": "Fixed button that appears after the visitor scrolls 400 px and jumps to the top of the page.",
+   "tags": [
+    "navigation",
+    "js",
+    "fixed"
+   ],
+   "status": "pass",
+   "bytes": 1151,
+   "gzip_bytes": 697,
+   "files": [
+    "manifest.json",
+    "back-to-top.html",
+    "back-to-top.css",
+    "back-to-top.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "categories",
+   "name": "Category list",
+   "kind": "widget",
+   "path": "widgets/categories",
+   "purpose": "Category links with optional post counts. The current category is marked.",
+   "tags": [
+    "taxonomy",
+    "list",
+    "nav"
+   ],
+   "status": "pass",
+   "bytes": 2346,
+   "gzip_bytes": 875,
+   "files": [
+    "manifest.json",
+    "categories.html",
+    "categories.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "contact-card",
+   "name": "Contact card",
+   "kind": "widget",
+   "path": "widgets/contact-card",
+   "purpose": "Business name, address lines, phone and email as tap-ready links. Uses the address element.",
+   "tags": [
+    "contact",
+    "local",
+    "tel"
+   ],
+   "status": "pass",
+   "bytes": 2282,
+   "gzip_bytes": 798,
+   "files": [
+    "manifest.json",
+    "contact-card.html",
+    "contact-card.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "cta-box",
+   "name": "Call to action box",
+   "kind": "widget",
+   "path": "widgets/cta-box",
+   "purpose": "Heading, one sentence and one button link.",
+   "tags": [
+    "cta",
+    "content"
+   ],
+   "status": "pass",
+   "bytes": 1942,
+   "gzip_bytes": 686,
+   "files": [
+    "manifest.json",
+    "cta-box.html",
+    "cta-box.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "faq-accordion",
+   "name": "FAQ accordion",
+   "kind": "widget",
+   "path": "widgets/faq-accordion",
+   "purpose": "Question and answer pairs in native details elements. Works without script. Does not add structured data.",
+   "tags": [
+    "faq",
+    "details",
+    "no-js-needed"
+   ],
+   "status": "pass",
+   "bytes": 2397,
+   "gzip_bytes": 824,
+   "files": [
+    "manifest.json",
+    "faq-accordion.html",
+    "faq-accordion.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "link-list",
+   "name": "Link list",
+   "kind": "widget",
+   "path": "widgets/link-list",
+   "purpose": "Plain list of links with an optional one-line note under each. Use for resources, pages or partner sites.",
+   "tags": [
+    "links",
+    "list",
+    "nav"
+   ],
+   "status": "pass",
+   "bytes": 1881,
+   "gzip_bytes": 705,
+   "files": [
+    "manifest.json",
+    "link-list.html",
+    "link-list.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "newsletter-form-stub",
+   "name": "Newsletter form (stub)",
+   "kind": "widget",
+   "path": "widgets/newsletter-form-stub",
+   "purpose": "Email signup form with validation and a honeypot field. It does not send anywhere on its own. Set action to the mail service form address to enable submission. With no action it shows the stub message and stays on the page.",
+   "tags": [
+    "form",
+    "email",
+    "stub",
+    "js"
+   ],
+   "status": "pass",
+   "bytes": 4023,
+   "gzip_bytes": 1495,
+   "files": [
+    "manifest.json",
+    "newsletter-form-stub.html",
+    "newsletter-form-stub.css",
+    "newsletter-form-stub.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "notice-box",
+   "name": "Notice box",
+   "kind": "widget",
+   "path": "widgets/notice-box",
+   "purpose": "Short note in a bordered box, such as an affiliate disclosure or a date notice. Two tones: info and warning. Both keep 4.5:1 contrast.",
+   "tags": [
+    "notice",
+    "content",
+    "disclosure"
+   ],
+   "status": "pass",
+   "bytes": 2047,
+   "gzip_bytes": 719,
+   "files": [
+    "manifest.json",
+    "notice-box.html",
+    "notice-box.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "opening-hours",
+   "name": "Opening hours table",
+   "kind": "widget",
+   "path": "widgets/opening-hours",
+   "purpose": "Weekly hours table. Marks today's row with aria-current=date using the visitor's clock.",
+   "tags": [
+    "local",
+    "table",
+    "js"
+   ],
+   "status": "pass",
+   "bytes": 2737,
+   "gzip_bytes": 1086,
+   "files": [
+    "manifest.json",
+    "opening-hours.html",
+    "opening-hours.css",
+    "opening-hours.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "popular-posts",
+   "name": "Popular posts list",
+   "kind": "widget",
+   "path": "widgets/popular-posts",
+   "purpose": "Numbered list of the most read posts. The caller supplies the order from its own analytics or a fixed list.",
+   "tags": [
+    "posts",
+    "list",
+    "ranked"
+   ],
+   "status": "pass",
+   "bytes": 2218,
+   "gzip_bytes": 784,
+   "files": [
+    "manifest.json",
+    "popular-posts.html",
+    "popular-posts.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "post-nav",
+   "name": "Previous and next post",
+   "kind": "widget",
+   "path": "widgets/post-nav",
+   "purpose": "Links to the previous and next post. Each side is optional.",
+   "tags": [
+    "navigation",
+    "posts"
+   ],
+   "status": "pass",
+   "bytes": 2180,
+   "gzip_bytes": 735,
+   "files": [
+    "manifest.json",
+    "post-nav.html",
+    "post-nav.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "recent-posts",
+   "name": "Recent posts list",
+   "kind": "widget",
+   "path": "widgets/recent-posts",
+   "purpose": "Text list of the newest posts. Title and date per row. No thumbnails.",
+   "tags": [
+    "posts",
+    "list",
+    "no-thumbnail"
+   ],
+   "status": "pass",
+   "bytes": 2071,
+   "gzip_bytes": 765,
+   "files": [
+    "manifest.json",
+    "recent-posts.html",
+    "recent-posts.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "related-posts",
+   "name": "Related posts list",
+   "kind": "widget",
+   "path": "widgets/related-posts",
+   "purpose": "Posts related to the one being read. Each row shows a kicker (category) above the title. No thumbnails.",
+   "tags": [
+    "posts",
+    "list",
+    "no-thumbnail",
+    "related"
+   ],
+   "status": "pass",
+   "bytes": 2006,
+   "gzip_bytes": 736,
+   "files": [
+    "manifest.json",
+    "related-posts.html",
+    "related-posts.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "search",
+   "name": "Search form",
+   "kind": "widget",
+   "path": "widgets/search",
+   "purpose": "Visible label, search field and button. Submits a GET request to the site search address.",
+   "tags": [
+    "search",
+    "form"
+   ],
+   "status": "pass",
+   "bytes": 2229,
+   "gzip_bytes": 780,
+   "files": [
+    "manifest.json",
+    "search.html",
+    "search.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "share-links",
+   "name": "Share links",
+   "kind": "widget",
+   "path": "widgets/share-links",
+   "purpose": "Share links for X, Facebook, LinkedIn and email, plus a copy link button. The caller passes the page address and title already percent-encoded.",
+   "tags": [
+    "social",
+    "share",
+    "js"
+   ],
+   "status": "pass",
+   "bytes": 3323,
+   "gzip_bytes": 1255,
+   "files": [
+    "manifest.json",
+    "share-links.html",
+    "share-links.css",
+    "share-links.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "sidebar-skip-link",
+   "name": "Skip link past the sidebar",
+   "kind": "widget",
+   "path": "widgets/sidebar-skip-link",
+   "purpose": "Link that is visible only on keyboard focus. Place it before the sidebar so keyboard users can jump to the content or to a landmark.",
+   "tags": [
+    "a11y",
+    "navigation"
+   ],
+   "status": "pass",
+   "bytes": 376,
+   "gzip_bytes": 272,
+   "files": [
+    "manifest.json",
+    "sidebar-skip-link.html",
+    "sidebar-skip-link.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "social-links",
+   "name": "Social links",
+   "kind": "widget",
+   "path": "widgets/social-links",
+   "purpose": "Text links to the site's social profiles. Each link uses rel=me. No brand icons, so there is nothing to hotlink or license.",
+   "tags": [
+    "social",
+    "links",
+    "no-icons"
+   ],
+   "status": "pass",
+   "bytes": 1835,
+   "gzip_bytes": 702,
+   "files": [
+    "manifest.json",
+    "social-links.html",
+    "social-links.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "tabbed-posts",
+   "name": "Tabbed post lists",
+   "kind": "widget",
+   "path": "widgets/tabbed-posts",
+   "purpose": "Two or three tabs, each with a list of posts, such as Recent and Popular. Follows the ARIA tabs pattern with arrow key support. Without script the lists show one under another.",
+   "tags": [
+    "posts",
+    "tabs",
+    "js",
+    "aria"
+   ],
+   "status": "pass",
+   "bytes": 3809,
+   "gzip_bytes": 1399,
+   "files": [
+    "manifest.json",
+    "tabbed-posts.html",
+    "tabbed-posts.css",
+    "tabbed-posts.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "tag-cloud",
+   "name": "Tag cloud",
+   "kind": "widget",
+   "path": "widgets/tag-cloud",
+   "purpose": "Tags as wrapping chips. All chips share one size. Count is optional.",
+   "tags": [
+    "taxonomy",
+    "chips",
+    "nav"
+   ],
+   "status": "pass",
+   "bytes": 1942,
+   "gzip_bytes": 741,
+   "files": [
+    "manifest.json",
+    "tag-cloud.html",
+    "tag-cloud.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "toc",
+   "name": "Table of contents",
+   "kind": "widget",
+   "path": "widgets/toc",
+   "purpose": "Builds a contents list from the h2 and h3 headings in the article. Adds missing heading ids. Stays hidden when the page has fewer headings than the minimum.",
+   "tags": [
+    "navigation",
+    "js",
+    "headings"
+   ],
+   "status": "pass",
+   "bytes": 3116,
+   "gzip_bytes": 1250,
+   "files": [
+    "manifest.json",
+    "toc.html",
+    "toc.css",
+    "toc.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  }
+ ]
+}

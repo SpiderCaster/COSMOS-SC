@@ -1,0 +1,38 @@
+{
+  "schema": "cosmos-plugin/1",
+  "id": "spidercaster",
+  "title": "SpiderCaster",
+  "module": "motif",
+  "hosts": ["standalone", "cosmos", "cosmos-code"],
+  "standalone": {
+    "command": "python spidercaster.py",
+    "home": "SPIDERCASTER_HOME"
+  },
+  "cosmos": {
+    "profile": "website",
+    "cdeck_tab": "website",
+    "sidebar": "left",
+    "editable": ["roles", "agents", "workflow"]
+  },
+  "cosmos_code": {
+    "seats": "library/seats",
+    "hands": "lib/hands"
+  },
+  "cdeck": {
+    "tab": "website",
+    "label": "Spidercaster",
+    "sidebar": "left"
+  },
+  "publish": "human",
+  "package_molds_only": true,
+  "roles": [
+    {"id": "architect", "label": "Architect", "model": "upstage/solar-pro4", "hands": ["brief_read", "frame_pick", "mold_pick", "library_bind"]},
+    {"id": "content", "label": "Content", "model": "upstage/solar-pro4", "hands": ["copy_read", "copy_gap"]},
+    {"id": "frontend", "label": "Frontend", "model": "upstage/solar-pro4", "hands": ["plan_offline", "render"]},
+    {"id": "graphics", "label": "Graphics", "model": "google/gemma-4-31b-it", "hands": ["asset_list", "vault_photos"]},
+    {"id": "visual", "label": "Visual critic", "model": "google/gemma-4-31b-it", "hands": ["check_site"]},
+    {"id": "seo", "label": "SEO", "model": "deepseek/deepseek-v4-flash", "hands": ["uniqueness", "meta_basics"]},
+    {"id": "deployer", "label": "Deployer", "model": "deepseek/deepseek-v4-flash", "hands": ["ticket_write"]}
+  ],
+  "workflow": ["architect", "content", "frontend", "graphics", "visual", "seo", "deployer"]
+}

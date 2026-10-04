@@ -1,0 +1,3 @@
+.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:900px){.sc-lay-l{grid-template-columns:var(--sc-side,300px) minmax(0,1fr);gap:32px}.sc-lay-l .sc-lay-side{grid-column:1;grid-row:1}.sc-lay-l .sc-lay-main{grid-column:2;grid-row:1}}

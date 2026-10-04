@@ -1,0 +1,76 @@
+{
+ "name": "Collapsible sidebar groups",
+ "slug": "sidebar-collapsible-groups",
+ "kind": "sidebar",
+ "version": "1.0.0",
+ "purpose": "Right sidebar whose sections fold with native details elements. On screens under 900 px all sections except the first start closed. On wider screens all start open.",
+ "inputs": [
+  {
+   "name": "main",
+   "type": "html",
+   "required": true,
+   "description": "Page content region. Pass the page body HTML.",
+   "slot": true
+  },
+  {
+   "name": "groups",
+   "type": "list",
+   "required": true,
+   "description": "Sidebar sections. Body is HTML.",
+   "fields": [
+    "title",
+    "body"
+   ]
+  },
+  {
+   "name": "aside_label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name of the sidebar.",
+   "default": "Sidebar"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-collapsible-groups.html",
+  "sidebar-collapsible-groups.css",
+  "sidebar-collapsible-groups.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 4500,
+ "tags": [
+  "layout",
+  "right",
+  "details",
+  "js"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 67,
+  "failed": 0,
+  "total": 67
+ },
+ "bytes": 1969,
+ "gzip_bytes": 902
+}

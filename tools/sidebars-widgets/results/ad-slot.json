@@ -1,0 +1,384 @@
+{
+ "slug": "ad-slot",
+ "status": "pass",
+ "passed": 73,
+ "failed": 0,
+ "total": 73,
+ "seconds": 7.4,
+ "extra": {
+  "bytes": 2271,
+  "gzip_bytes": 758,
+  "measured_360": {
+   "text_nodes": 2,
+   "tap_targets": 1,
+   "min_contrast": 6.67
+  }
+ },
+ "checks": [
+  {
+   "id": "manifest.keys",
+   "ok": true,
+   "detail": "missing: []"
+  },
+  {
+   "id": "slug.shape",
+   "ok": true,
+   "detail": "slug 'ad-slot' folder 'ad-slot'"
+  },
+  {
+   "id": "manifest.kind",
+   "ok": true,
+   "detail": "widget"
+  },
+  {
+   "id": "manifest.test_command",
+   "ok": true,
+   "detail": "python test.py"
+  },
+  {
+   "id": "files.exist",
+   "ok": true,
+   "detail": "absent: []"
+  },
+  {
+   "id": "files.named",
+   "ok": true,
+   "detail": "['manifest.json', 'ad-slot.html', 'ad-slot.css', 'fixture.json', 'test.behavior.js', 'test.py']"
+  },
+  {
+   "id": "tokens.declared",
+   "ok": true,
+   "detail": "undeclared tokens: []"
+  },
+  {
+   "id": "tokens.loop_fields",
+   "ok": true,
+   "detail": "unknown loop fields: []"
+  },
+  {
+   "id": "tokens.used",
+   "ok": true,
+   "detail": "declared but unused: []"
+  },
+  {
+   "id": "template.no_nested_if",
+   "ok": true,
+   "detail": "nested if blocks"
+  },
+  {
+   "id": "html.lint.full",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.required_only",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.variant.empty",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.variant.tall",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.variant.banner",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "css.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.lint",
+   "ok": true,
+   "detail": "no js"
+  },
+  {
+   "id": "secrets.none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "size.budget",
+   "ok": true,
+   "detail": "2271 bytes > budget 6144"
+  },
+  {
+   "id": "browser.error.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "browser.root62.oceanwp@360",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.slot_height_reserved_250.oceanwp@360",
+   "ok": true,
+   "detail": 250
+  },
+  {
+   "id": "behavior.slot_width_300_or_fits.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.label_text.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.slot_id_attr.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.empty_hides_slot.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.size_600_reserves_600.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "browser.root62.oceanwp@1280",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.slot_height_reserved_250.oceanwp@1280",
+   "ok": true,
+   "detail": 250
+  },
+  {
+   "id": "behavior.slot_width_300_or_fits.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.label_text.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.slot_id_attr.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.empty_hides_slot.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.size_600_reserves_600.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.slot_height_reserved_250.generatepress@360",
+   "ok": true,
+   "detail": 250
+  },
+  {
+   "id": "behavior.slot_width_300_or_fits.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.label_text.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.slot_id_attr.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.empty_hides_slot.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.size_600_reserves_600.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.slot_height_reserved_250.generatepress@1280",
+   "ok": true,
+   "detail": 250
+  },
+  {
+   "id": "behavior.slot_width_300_or_fits.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.label_text.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.slot_id_attr.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.empty_hides_slot.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.size_600_reserves_600.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  }
+ ]
+}

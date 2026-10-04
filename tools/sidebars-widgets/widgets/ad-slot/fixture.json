@@ -1,0 +1,19 @@
+{
+ "data": {
+  "label": "Advertisement",
+  "size": "300x250",
+  "slot_id": "fixture-sidebar-1",
+  "ad_code": "<a href=\"/advertise/\">Fixture ad link</a>"
+ },
+ "variants": {
+  "empty": {
+   "ad_code": ""
+  },
+  "tall": {
+   "size": "300x600"
+  },
+  "banner": {
+   "size": "320x100"
+  }
+ }
+}

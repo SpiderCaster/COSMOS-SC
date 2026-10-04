@@ -1,0 +1,74 @@
+{
+ "name": "FAQ accordion",
+ "slug": "faq-accordion",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Question and answer pairs in native details elements. Works without script. Does not add structured data.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Questions"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Pairs.",
+   "fields": [
+    "q",
+    "a"
+   ]
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "faq-accordion.html",
+  "faq-accordion.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "faq",
+  "details",
+  "no-js-needed"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 70,
+  "failed": 0,
+  "total": 70
+ },
+ "bytes": 2397,
+ "gzip_bytes": 824
+}

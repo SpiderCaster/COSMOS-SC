@@ -1,0 +1,19 @@
+{
+ "data": {
+  "title": "Post navigation",
+  "prev_url": "/fixture-previous/",
+  "prev_label": "Fixture previous post title",
+  "next_url": "/fixture-next/",
+  "next_label": "Fixture next post title",
+  "prev_kicker": "Previous post",
+  "next_kicker": "Next post"
+ },
+ "variants": {
+  "first_post": {
+   "prev_url": ""
+  },
+  "last_post": {
+   "next_url": ""
+  }
+ }
+}

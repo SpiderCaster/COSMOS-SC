@@ -1,0 +1,2 @@
+.sc-skip{position:absolute;left:-9999px;top:8px;z-index:10000;display:inline-flex;align-items:center;min-height:44px;padding:8px 16px;background:#fff;color:var(--sc-accent,#0b5cad);font-size:18px;font-weight:700;text-decoration:underline;border:2px solid var(--sc-accent,#0b5cad);border-radius:4px}
+.sc-skip:focus{left:8px}

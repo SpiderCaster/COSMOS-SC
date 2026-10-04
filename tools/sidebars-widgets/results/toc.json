@@ -1,0 +1,354 @@
+{
+ "slug": "toc",
+ "status": "pass",
+ "passed": 67,
+ "failed": 0,
+ "total": 67,
+ "seconds": 5.2,
+ "extra": {
+  "bytes": 3116,
+  "gzip_bytes": 1250,
+  "measured_360": {
+   "text_nodes": 6,
+   "tap_targets": 5,
+   "min_contrast": 6.67
+  }
+ },
+ "checks": [
+  {
+   "id": "manifest.keys",
+   "ok": true,
+   "detail": "missing: []"
+  },
+  {
+   "id": "slug.shape",
+   "ok": true,
+   "detail": "slug 'toc' folder 'toc'"
+  },
+  {
+   "id": "manifest.kind",
+   "ok": true,
+   "detail": "widget"
+  },
+  {
+   "id": "manifest.test_command",
+   "ok": true,
+   "detail": "python test.py"
+  },
+  {
+   "id": "files.exist",
+   "ok": true,
+   "detail": "absent: []"
+  },
+  {
+   "id": "files.named",
+   "ok": true,
+   "detail": "['manifest.json', 'toc.html', 'toc.css', 'toc.js', 'fixture.json', 'test.behavior.js', 'test.py']"
+  },
+  {
+   "id": "tokens.declared",
+   "ok": true,
+   "detail": "undeclared tokens: []"
+  },
+  {
+   "id": "tokens.loop_fields",
+   "ok": true,
+   "detail": "unknown loop fields: []"
+  },
+  {
+   "id": "tokens.used",
+   "ok": true,
+   "detail": "declared but unused: []"
+  },
+  {
+   "id": "template.no_nested_if",
+   "ok": true,
+   "detail": "nested if blocks"
+  },
+  {
+   "id": "html.lint.full",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.required_only",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "css.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.syntax",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "secrets.none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "size.budget",
+   "ok": true,
+   "detail": "3116 bytes > budget 5000"
+  },
+  {
+   "id": "browser.error.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "browser.root62.oceanwp@360",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.shown.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.one_link_per_heading.oceanwp@360",
+   "ok": true,
+   "detail": "5 vs 5"
+  },
+  {
+   "id": "behavior.hrefs_resolve.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.ids_unique.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.h3_indented.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "browser.root62.oceanwp@1280",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.shown.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.one_link_per_heading.oceanwp@1280",
+   "ok": true,
+   "detail": "5 vs 5"
+  },
+  {
+   "id": "behavior.hrefs_resolve.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.ids_unique.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.h3_indented.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.shown.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.one_link_per_heading.generatepress@360",
+   "ok": true,
+   "detail": "5 vs 5"
+  },
+  {
+   "id": "behavior.hrefs_resolve.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.ids_unique.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.h3_indented.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.shown.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.one_link_per_heading.generatepress@1280",
+   "ok": true,
+   "detail": "5 vs 5"
+  },
+  {
+   "id": "behavior.hrefs_resolve.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.ids_unique.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.h3_indented.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  }
+ ]
+}

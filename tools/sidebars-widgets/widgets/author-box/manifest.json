@@ -1,0 +1,104 @@
+{
+ "name": "Author box",
+ "slug": "author-box",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Author name, short bio and a profile link. Shows a photo only when the caller supplies an owned image address.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "About the author"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "required": true,
+   "description": "Author name."
+  },
+  {
+   "name": "bio",
+   "type": "string",
+   "required": true,
+   "description": "Two or three sentences."
+  },
+  {
+   "name": "avatar",
+   "type": "string",
+   "required": false,
+   "description": "Path to an owned photo. Leave empty for no photo.",
+   "default": ""
+  },
+  {
+   "name": "avatar_size",
+   "type": "string",
+   "required": false,
+   "description": "Photo width and height in px.",
+   "default": "96"
+  },
+  {
+   "name": "profile_url",
+   "type": "string",
+   "required": false,
+   "description": "Author page path.",
+   "default": ""
+  },
+  {
+   "name": "profile_label",
+   "type": "string",
+   "required": false,
+   "description": "Link text.",
+   "default": "More from this author"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "author-box.html",
+  "author-box.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "author",
+  "content",
+  "no-fake-avatar"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 64,
+  "failed": 0,
+  "total": 64
+ },
+ "bytes": 2399,
+ "gzip_bytes": 871
+}

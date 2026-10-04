@@ -1,0 +1,299 @@
+{
+ "slug": "sidebar-three-column",
+ "status": "pass",
+ "passed": 56,
+ "failed": 0,
+ "total": 56,
+ "seconds": 7.3,
+ "extra": {
+  "bytes": 811,
+  "gzip_bytes": 324,
+  "measured_360": {
+   "text_nodes": 26,
+   "tap_targets": 13,
+   "min_contrast": 6.67
+  }
+ },
+ "checks": [
+  {
+   "id": "manifest.keys",
+   "ok": true,
+   "detail": "missing: []"
+  },
+  {
+   "id": "slug.shape",
+   "ok": true,
+   "detail": "slug 'sidebar-three-column' folder 'sidebar-three-column'"
+  },
+  {
+   "id": "manifest.kind",
+   "ok": true,
+   "detail": "sidebar"
+  },
+  {
+   "id": "manifest.test_command",
+   "ok": true,
+   "detail": "python test.py"
+  },
+  {
+   "id": "files.exist",
+   "ok": true,
+   "detail": "absent: []"
+  },
+  {
+   "id": "files.named",
+   "ok": true,
+   "detail": "['manifest.json', 'sidebar-three-column.html', 'sidebar-three-column.css', 'fixture.json', 'test.behavior.js', 'test.py']"
+  },
+  {
+   "id": "tokens.declared",
+   "ok": true,
+   "detail": "undeclared tokens: []"
+  },
+  {
+   "id": "tokens.loop_fields",
+   "ok": true,
+   "detail": "unknown loop fields: []"
+  },
+  {
+   "id": "tokens.used",
+   "ok": true,
+   "detail": "declared but unused: []"
+  },
+  {
+   "id": "template.no_nested_if",
+   "ok": true,
+   "detail": "nested if blocks"
+  },
+  {
+   "id": "html.lint.full",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.required_only",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "css.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.lint",
+   "ok": true,
+   "detail": "no js"
+  },
+  {
+   "id": "secrets.none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "size.budget",
+   "ok": true,
+   "detail": "811 bytes > budget 2800"
+  },
+  {
+   "id": "browser.error.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "browser.root62.oceanwp@360",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.all_stacked.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.two_aside_landmarks.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "browser.root62.oceanwp@1280",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.left_main_right_order.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.widths_240_280.oceanwp@1280",
+   "ok": true,
+   "detail": "240,280"
+  },
+  {
+   "id": "behavior.two_aside_landmarks.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.all_stacked.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.two_aside_landmarks.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.left_main_right_order.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.widths_240_280.generatepress@1280",
+   "ok": true,
+   "detail": "240,280"
+  },
+  {
+   "id": "behavior.two_aside_landmarks.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "name": "Sticky right sidebar",
+ "slug": "sidebar-sticky-right",
+ "kind": "sidebar",
+ "version": "1.0.0",
+ "purpose": "Right sidebar that stays in view while the content scrolls, from 900 px up. It scrolls on its own when taller than the screen. Under 900 px it is a normal block under the content. A :has() rule clears overflow hidden on the OceanWP wrappers, which would otherwise stop sticky.",
+ "inputs": [
+  {
+   "name": "main",
+   "type": "html",
+   "required": true,
+   "description": "Page content region. Pass the page body HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside",
+   "type": "html",
+   "required": true,
+   "description": "Sidebar region. Pass widget HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside_label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name of the sidebar.",
+   "default": "Sidebar"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-sticky-right.html",
+  "sidebar-sticky-right.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 2800,
+ "tags": [
+  "layout",
+  "right",
+  "sticky",
+  "grid"
+ ],
+ "external_hosts": [],
+ "notes": [
+  "Sticky fails if any ancestor sets overflow hidden, auto or scroll. The :has() rule handles the OceanWP wrappers #outer-wrap, #wrap and #main. Other ancestors need the same fix.",
+  "Set --sc-sticky-top to the height of a fixed header, in px."
+ ],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 54,
+  "failed": 0,
+  "total": 54
+ },
+ "bytes": 682,
+ "gzip_bytes": 367
+}

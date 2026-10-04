@@ -1,0 +1,64 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Opening hours table demo, generatepress context</title><style>/* Test context. Approximates GeneratePress base rules that touch widgets and layout.
+   Not vendor CSS. Root size is the browser default. */
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;color:#222;background:#fff}
+a{color:#1e73be;text-decoration:none}
+h1,h2,h3,h4{font-weight:inherit;margin:0 0 20px;line-height:1.2}
+p{margin:0 0 1.5em}
+ul,ol{margin:0 0 1.5em 3em;padding:0}
+.grid-container{max-width:1200px;margin:0 auto;padding:0 20px;box-sizing:border-box}
+.site-content{display:block}
+.content-area,.widget-area{width:100%}
+.inside-article{padding:20px 0}
+.widget-area .widget{padding:20px 0;margin-bottom:30px}
+.widget ul{margin:0;list-style:none}
+.widget li{margin-bottom:.5em}
+.widget-title{font-size:20px;margin:0 0 30px;font-weight:inherit}
+input[type=search],input[type=email],input[type=text]{border:1px solid #ccc;padding:10px 15px;font-size:17px;box-sizing:border-box}
+button,input[type=submit]{font-family:inherit;font-size:17px;padding:10px 20px}
+@media(min-width:769px){.site-content{display:flex}.content-area{width:70%}.is-right-sidebar{width:30%;padding-left:20px;box-sizing:border-box}}
+.sc-tall{height:420px;margin:0}
+</style><style>.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-hours .sc-hr-t{width:100%;border-collapse:collapse;font-size:18px}
+.sc-hours .sc-hr-t th,.sc-hours .sc-hr-t td{padding:10px 8px 10px 0;border:0;border-top:1px solid var(--sc-line,#c9d1d9);text-align:left;font-weight:400;vertical-align:top}
+.sc-hours .sc-hr-t td{text-align:right;padding-right:0}
+.sc-hours .sc-hr-t tr:first-child th,.sc-hours .sc-hr-t tr:first-child td{border-top:0}
+.sc-hours tr[aria-current] th,.sc-hours tr[aria-current] td{font-weight:700;background:#eef2f6}
+.sc-hours .sc-hr-note{margin:8px 0 0}
+</style></head><body class="wp-theme-generatepress no-sidebar"><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main"><article class="inside-article"><div class="entry-content"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div></article></main></div><div class="widget-area sidebar is-right-sidebar" id="right-sidebar"><div class="inside-right-sidebar"><aside class="widget inner-padding widget_custom_html"><div id="sc-under-test"><section class="sc-w sc-hours" data-sc="hours" aria-labelledby="sc-hr-t-1">
+<h2 class="sc-w-title" id="sc-hr-t-1">Hours</h2>
+<table class="sc-hr-t"><tbody><tr data-day="0"><th scope="row">Sunday</th><td>Closed</td></tr><tr data-day="1"><th scope="row">Monday</th><td>9:00 to 17:00</td></tr><tr data-day="2"><th scope="row">Tuesday</th><td>9:00 to 17:00</td></tr><tr data-day="3"><th scope="row">Wednesday</th><td>9:00 to 17:00</td></tr><tr data-day="4"><th scope="row">Thursday</th><td>9:00 to 17:00</td></tr><tr data-day="5"><th scope="row">Friday</th><td>9:00 to 15:00</td></tr><tr data-day="6"><th scope="row">Saturday</th><td>Closed</td></tr></tbody></table>
+<p class="sc-body sc-hr-note">Fixture note.</p>
+</section>
+</div></aside></div></div></div></div><script>(function(){"use strict";
+function run(){var n=document.querySelectorAll('[data-sc="hours"]'),d=String(new Date().getDay());
+ for(var i=0;i<n.length;i++){var r=n[i].querySelector('tr[data-day="'+d+'"]');if(r)r.setAttribute("aria-current","date")}}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

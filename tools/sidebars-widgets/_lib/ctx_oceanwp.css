@@ -1,0 +1,23 @@
+/* Test context. Approximates OceanWP base rules that touch widgets and layout.
+   Not vendor CSS. Root size is 62.5% to catch any rem use. */
+html{font-size:62.5%}
+body{margin:0;font-family:"Open Sans",Arial,sans-serif;font-size:14px;line-height:1.8;color:#3a3a3a;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#333;text-decoration:none}
+h1,h2,h3,h4{font-weight:600;line-height:1.4;margin:0 0 20px;color:#333}
+p{margin:0 0 20px}
+ul,ol{margin:0 0 20px 20px;padding:0}
+#wrap{overflow:hidden}
+.container{width:1200px;max-width:90%;margin:0 auto}
+#content-wrap{padding:30px 0}
+#primary{width:100%}
+#right-sidebar,#left-sidebar{width:100%;margin-top:30px}
+.widget-area ul{list-style:none;margin:0;padding:0}
+.widget-area li{padding:4px 0;border-bottom:1px solid #f1f1f1;list-style:none}
+.widget-area a{color:#555;text-decoration:none}
+.widget-area p{margin:0 0 20px;font-size:13px}
+.widget-title{font-size:13px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #f1f1f1;margin:0 0 20px}
+.sidebar-box{margin-bottom:30px}
+button,input[type=submit]{font-family:inherit}
+input[type=search],input[type=email],input[type=text]{border:1px solid #ddd;padding:6px 12px;font-size:14px;line-height:1.5}
+@media(min-width:960px){#content-wrap::after{content:"";display:block;clear:both}#primary{float:left;width:72%}#right-sidebar{float:right;width:24%;margin-top:0}}
+.sc-tall{height:420px;margin:0}

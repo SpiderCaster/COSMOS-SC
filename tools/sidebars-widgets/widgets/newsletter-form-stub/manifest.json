@@ -1,0 +1,114 @@
+{
+ "name": "Newsletter form (stub)",
+ "slug": "newsletter-form-stub",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Email signup form with validation and a honeypot field. It does not send anywhere on its own. Set action to the mail service form address to enable submission. With no action it shows the stub message and stays on the page.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Email updates"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "intro",
+   "type": "string",
+   "required": true,
+   "description": "One sentence on what subscribers get."
+  },
+  {
+   "name": "action",
+   "type": "string",
+   "required": false,
+   "description": "Form address from the mail service. Empty keeps the stub.",
+   "default": ""
+  },
+  {
+   "name": "email_label",
+   "type": "string",
+   "required": false,
+   "description": "Label for the email field.",
+   "default": "Email address"
+  },
+  {
+   "name": "button",
+   "type": "string",
+   "required": false,
+   "description": "Button text.",
+   "default": "Subscribe"
+  },
+  {
+   "name": "consent",
+   "type": "string",
+   "required": false,
+   "description": "Consent line. Empty hides the checkbox.",
+   "default": ""
+  },
+  {
+   "name": "error_message",
+   "type": "string",
+   "required": false,
+   "description": "Shown when the address is invalid.",
+   "default": "Enter a valid email address."
+  },
+  {
+   "name": "stub_message",
+   "type": "string",
+   "required": false,
+   "description": "Shown when the form has no action.",
+   "default": "This form is not connected yet."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "newsletter-form-stub.html",
+  "newsletter-form-stub.css",
+  "newsletter-form-stub.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6500,
+ "tags": [
+  "form",
+  "email",
+  "stub",
+  "js"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 85,
+  "failed": 0,
+  "total": 85
+ },
+ "bytes": 4023,
+ "gzip_bytes": 1495
+}

@@ -1,0 +1,9 @@
+{
+ "data": {
+  "title": "Fixture heading",
+  "uid": "1",
+  "text": "Fixture sentence for the call to action.",
+  "url": "/fixture-target/",
+  "label": "Fixture button"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "data": {
+  "aside_label": "Sidebar",
+  "groups": [
+   {
+    "title": "Fixture group one",
+    "body": "<ul><li><a href=\"/fixture-a/\">Fixture link A</a></li><li><a href=\"/fixture-b/\">Fixture link B</a></li></ul>"
+   },
+   {
+    "title": "Fixture group two",
+    "body": "<ul><li><a href=\"/fixture-c/\">Fixture link C</a></li></ul>"
+   },
+   {
+    "title": "Fixture group three",
+    "body": "<ul><li><a href=\"/fixture-d/\">Fixture link D</a></li></ul>"
+   }
+  ]
+ }
+}

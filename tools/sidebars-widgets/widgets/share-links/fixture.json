@@ -1,0 +1,11 @@
+{
+ "data": {
+  "title": "Share this page",
+  "uid": "1",
+  "url": "/fixture-post-one/",
+  "url_enc": "https%3A%2F%2Fsite.example%2Ffixture-post-one%2F",
+  "text_enc": "Fixture%20post%20one",
+  "copied": "Link copied.",
+  "copy_failed": "Copy failed. Copy the address from the address bar."
+ }
+}

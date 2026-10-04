@@ -1,0 +1,33 @@
+{
+ "data": {
+  "title": "Tags",
+  "uid": "1",
+  "items": [
+   {
+    "label": "fixture-one",
+    "url": "/tag/fixture-one/",
+    "count": "5"
+   },
+   {
+    "label": "fixture-two",
+    "url": "/tag/fixture-two/",
+    "count": ""
+   },
+   {
+    "label": "fixture-three",
+    "url": "/tag/fixture-three/",
+    "count": "2"
+   },
+   {
+    "label": "fixture-four",
+    "url": "/tag/fixture-four/",
+    "count": ""
+   },
+   {
+    "label": "fixture-five",
+    "url": "/tag/fixture-five/",
+    "count": "9"
+   }
+  ]
+ }
+}
