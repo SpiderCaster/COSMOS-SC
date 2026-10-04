@@ -1,5 +1,12 @@
 # SpiderCaster - a website building engine on free and nearly-free tokens
 
+Standalone CLI, and a Cosmos motif plugin. `plugin/cosmos.json` is the
+contract: hosts `standalone`, `cosmos`, and `cosmos-code`. Installed, it is
+the Spidercaster tab on the cDeck left sidebar (`website`). That page edits
+role labels, models, and workflow order. Hands stay in this package. Publish
+stays a human click. Set `SPIDERCASTER_HOME` to this directory on a machine
+that does not use the default path.
+
 Copy-driven static site engine for the WebDev fleet. Real copy in, self-contained
 static site out. The structure, layout and assembly are deterministic code, so
 the bulk of every build costs **zero tokens**. AI is optional and rides the free
@@ -101,6 +108,8 @@ check     run the built-in checks
 serve     preview on localhost (default port 4173, auto-increments)
 models    show the provider chain           [--probe queries live]
 sections  list section types and data fields
+library   vault index, molds we made, live-use ledger
+crew      seven hands on one project; does not publish
 ```
 
 Build flags: `--out DIR`, `--template modern|editorial|bold`, `--dark/--light`,

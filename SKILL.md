@@ -54,8 +54,15 @@ description: >-
 - `--indexable` (removes noindex): only after a gate is signed. Ask first.
 - Any deploy of SpiderCaster output to a host: out of scope here; hand back.
 
+## Crew
+Seven seats, one project. They run in package order unless cDeck has saved another seven-seat workflow:
+
+`python spidercaster.py crew run projects\<name> --site <host> --mold <id> --out sites\<name>`
+
+That command writes the site and `crew-ticket.json`. It does not publish. A seat may not say the build is done unless that ticket has `"ok": true` and the visual row is PASS with zero FAIL checks. Publish is `python spidercaster.py library bind --site <host> --mold <id> --live`, and that is a Keith click.
+
 ## Exit
-Return the build/check summary and the token ledger line. Stop after report.
+Return the build/check summary and the token ledger line. Stop after report. For a crew run, quote `crew-ticket.json` `ok` and the visual row.
 
 ## Do not
 - Do not fabricate copy, prices, names, quotes or stats to fill sections.

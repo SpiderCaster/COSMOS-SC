@@ -132,6 +132,24 @@ The server enforces the write rules itself (role param): content/editor cannot
 change section types or add pages; only builder writes full models. Config
 allowlists are defense in depth on top.
 
+## Seven seats (2026-10-01)
+
+Skills and wrappers: `library/seats/<id>/`. Hands: `lib/hands/__init__.py` (`HANDS`). Resource map: `library/resources/INDEX.md`. Research: `library/research/BUILDER_PATTERNS.md`.
+
+Give each seat a `tools` allowlist. Do not use a skill `allowed-tools` grant as the only fence. Do not put `library bind --live` or `Library.accept_snapshot` on any seat. There is no MCP tool for either.
+
+| Seat | MCP tools | Hands |
+|---|---|---|
+| architect | `catalog_read`, `tokens_read`, `brand_read`, `mold_list`, `frame_list`, `frame_pick`, `draft_offline` | `brief_read`, `frame_pick`, `mold_pick`, `library_bind` (draft only) |
+| content | `brand_read`, `pagemodel_read`, `pagemodel_write` (role=content, patch only) | `copy_read`, `copy_gap` |
+| frontend | `tokens_read`, `pagemodel_read`, `pagemodel_write` (role=builder), `render_trigger` | `plan_offline`, `render` |
+| graphics | `brand_read` | `asset_list`, `vault_photos` |
+| visual | `validate_run` | `check_site` |
+| seo | `mold_list`, `validate_run` | `uniqueness`, `meta_basics` |
+| deployer | none | `ticket_write` |
+
+`mold_list` returns package molds only. It does not return vault frames or photo paths. `frame_list` and `frame_pick` return package section frames from `library/frames`. They do not return vault paths, photos, or HTML. The crew seat calls `frame_pick`. An empty frame id is not a FAIL. Content does not get a web-search tool. Graphics does not get an image-generation or stock-URL tool.
+
 ## GitHub MCP (repo: github.com/SpiderCaster/COSMOS-SC)
 
 The engine repo is live. Wire the official GitHub MCP so agents can read

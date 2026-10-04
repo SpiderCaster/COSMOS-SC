@@ -28,6 +28,9 @@ from lib import ingest                  # noqa: E402
 from lib import ir as ir_mod            # noqa: E402
 from lib import offline as offline_mod  # noqa: E402
 from lib import render                  # noqa: E402
+from lib.crew import ROLES              # noqa: E402
+from lib.frames import FrameError, list_frames, load_frame  # noqa: E402
+from lib.library import Library         # noqa: E402
 
 SURFACE_ROOT = Path(os.environ.get("SPIDERCASTER_SURFACE_ROOT") or (ROOT / "sites"))
 SECRETS_DIR = Path(os.environ.get("SPIDERCASTER_SECRETS_DIR") or r"V:\Research4\.secrets")
@@ -260,6 +263,164 @@ def tool_wallets(args: dict) -> dict:
     return out
 
 
+def tool_crew_roles(_args: dict) -> dict:
+    return {"roles": [{k: role[k] for k in ("id", "n", "label", "hands", "does_not")} for role in ROLES]}
+
+
+def tool_mold_list(_args: dict) -> dict:
+    lib = Library(ROOT / "library", Path(os.environ.get("SPIDERCASTER_VAULT") or r"V:\streams\webdev\vendor-vault"))
+    return {"molds": lib.package_manifest()["molds"], "publish": "Keith click. crew does not deploy."}
+
+
+def _public_frame(frame: dict) -> dict:
+    return {
+        "id": frame["id"],
+        "intent": frame["intent"],
+        "sections": list(frame["sections"]),
+        "nav": frame["nav"],
+        "template": frame["template"],
+    }
+
+
+def tool_frame_list(_args: dict) -> dict:
+    return {"frames": [_public_frame(frame) for frame in list_frames()]}
+
+
+def tool_frame_pick(args: dict) -> dict:
+    frame_id = str((args or {}).get("frame_id") or "").strip()
+    if not frame_id:
+        return {"isError": True, "message": "frame_id is required"}
+    try:
+        frame = load_frame(frame_id)
+    except FrameError as exc:
+        return {"isError": True, "message": str(exc)}
+    return _public_frame(frame)
+
+
+def tool_env_doctor(_args: dict) -> dict:
+    try:
+        from lib.doctor import report
+        return report(ROOT)
+    except Exception:
+        return {"isError": True, "message": "doctor unavailable"}
+
+
+def tool_seat_pack(args: dict) -> dict:
+    seat_id = (args or {}).get("seat_id")
+    if not isinstance(seat_id, str) or not seat_id.strip():
+        return {"isError": True, "message": "seat_id is required"}
+    try:
+        from lib.seatpack import pack
+        return pack(ROOT, seat_id)
+    except KeyError:
+        return {"isError": True, "message": "unknown seat"}
+
+
+# ---------------------------------------------------------------- read-only library tools
+# These call library functions. They do not publish, read secrets, or run commands.
+
+
+def _lib_fn(module: str, fn_name: str):
+    try:
+        fn = getattr(__import__(module, fromlist=[fn_name]), fn_name)
+    except ImportError:
+        return None, {"isError": True, "message": "missing"}
+    except Exception as exc:
+        return None, {"isError": True, "message": type(exc).__name__}
+    return fn, None
+
+
+def _lib_call(fn, *call_args) -> dict:
+    try:
+        result = fn(*call_args)
+    except Exception as exc:
+        return {"isError": True, "message": type(exc).__name__}
+    if not isinstance(result, dict):
+        return {"isError": True, "message": "bad result"}
+    return result
+
+
+def tool_skill_read(args: dict) -> dict:
+    fn, err = _lib_fn("lib.skill_read", "skill_read")
+    if err:
+        return err
+    args = args or {}
+    rel = args.get("rel")
+    if not isinstance(rel, str) or rel.strip() == "":
+        return {"isError": True, "message": "rel is required"}
+    root = args["root"] if "root" in args else ROOT
+    return _lib_call(fn, root, rel)
+
+
+def tool_hook_match(args: dict) -> dict:
+    fn, err = _lib_fn("lib.hook_match", "hook_match")
+    if err:
+        return err
+    args = args or {}
+    return _lib_call(fn, args.get("event"), args.get("tool_name", ""), args.get("hooks"))
+
+
+def tool_perm_rule(args: dict) -> dict:
+    fn, err = _lib_fn("lib.perm_rule", "perm_rule")
+    if err:
+        return err
+    args = args or {}
+    return _lib_call(fn, args.get("tool"), args.get("arg"), args.get("allow", []), args.get("deny", []))
+
+
+def tool_tool_search_local(args: dict) -> dict:
+    fn, err = _lib_fn("lib.tool_search_local", "tool_search_local")
+    if err:
+        return err
+    args = args or {}
+    return _lib_call(fn, args.get("query"), args.get("catalog"))
+
+
+def tool_seat_tools(args: dict) -> dict:
+    fn, err = _lib_fn("lib.seat_tools", "seat_tools")
+    if err:
+        return err
+    args = args or {}
+    tools = args.get("tools") if "tools" in args else None
+    disallowed = args.get("disallowed") if "disallowed" in args else None
+    return _lib_call(fn, args.get("parent"), tools, disallowed)
+
+
+def tool_seat_gate(args: dict) -> dict:
+    fn, err = _lib_fn("lib.seat_gate", "seat_gate")
+    if err:
+        return err
+    args = args or {}
+    return _lib_call(fn, args.get("caller"), args.get("seat"), args.get("hand"))
+
+
+def tool_layer_read(args: dict) -> dict:
+    args = args or {}
+    if "write" in args:
+        return {"isError": True, "message": "write refused"}
+    fn, err = _lib_fn("lib.layer_read", "layer_read")
+    if err:
+        return err
+    return _lib_call(fn, args.get("out"), args.get("root"))
+
+
+def tool_code_refuse(args: dict) -> dict:
+    fn, err = _lib_fn("lib.code_refuse", "code_refuse")
+    if err:
+        return err
+    return _lib_call(fn, (args or {}).get("kind"))
+
+
+def tool_mold_panel(args: dict) -> dict:
+    args = args or {}
+    if "live" in args:
+        return {"isError": True, "message": "live refused"}
+    fn, err = _lib_fn("lib.mold_panel", "mold_panel")
+    if err:
+        return err
+    return _lib_call(fn, ROOT, args.get("mold_id"))
+
+
 TOOLS = {
     "catalog_read": tool_catalog_read,
     "tokens_read": tool_tokens_read,
@@ -272,6 +433,21 @@ TOOLS = {
     "brand_write": tool_brand_write,
     "draft_offline": tool_draft_offline,
     "wallets": tool_wallets,
+    "crew_roles": tool_crew_roles,
+    "mold_list": tool_mold_list,
+    "frame_list": tool_frame_list,
+    "frame_pick": tool_frame_pick,
+    "env_doctor": tool_env_doctor,
+    "seat_pack": tool_seat_pack,
+    "skill_read": tool_skill_read,
+    "hook_match": tool_hook_match,
+    "perm_rule": tool_perm_rule,
+    "tool_search_local": tool_tool_search_local,
+    "seat_tools": tool_seat_tools,
+    "seat_gate": tool_seat_gate,
+    "layer_read": tool_layer_read,
+    "code_refuse": tool_code_refuse,
+    "mold_panel": tool_mold_panel,
 }
 
 OBJ = {"type": "object", "properties": {}, "additionalProperties": False}
@@ -310,6 +486,49 @@ TOOL_SPECS = [
          "dark": {"type": "boolean"}, "brand": {"type": "string"}}}},
     {"name": "wallets", "description": "Fingerprint map of recorded Google wallets (last4 + fp only). FIFO planning.",
      "inputSchema": {"type": "object", "properties": {"secretsDir": {"type": "string"}}}},
+    {"name": "crew_roles", "description": "The seven SpiderCaster seats, the hands each may call, and what each refuses.",
+     "inputSchema": OBJ},
+    {"name": "mold_list", "description": "Package molds only. Vendor frames are not listed.",
+     "inputSchema": OBJ},
+    {"name": "frame_list", "description": "Package section frames. Not molds, not vendor themes, no photos.",
+     "inputSchema": OBJ},
+    {"name": "frame_pick", "description": "Load one package section frame by id. No vault, photos, or HTML.",
+     "inputSchema": {"type": "object", "required": ["frame_id"], "properties": {"frame_id": {"type": "string"}}}},
+    {"name": "env_doctor", "description": "Read-only environment report. Does not publish and does not read secrets.",
+     "inputSchema": OBJ},
+    {"name": "seat_pack", "description": "Read-only pack for one seat. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["seat_id"], "properties": {"seat_id": {"type": "string"}}}},
+    {"name": "skill_read", "description": "Read one SKILL.md. root defaults to the package root. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["rel"], "properties": {
+         "root": {"type": "string"}, "rel": {"type": "string"}}}},
+    {"name": "hook_match", "description": "Match hook rows in memory. Never runs a command. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["event", "tool_name", "hooks"], "properties": {
+         "event": {"type": "string"}, "tool_name": {"type": "string"}, "hooks": {"type": "object"}}}},
+    {"name": "perm_rule", "description": "Decide allow, deny, or ask from rule lists. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["tool", "arg", "allow", "deny"], "properties": {
+         "tool": {"type": "string"}, "arg": {"type": "string"},
+         "allow": {"type": "array", "items": {"type": "string"}},
+         "deny": {"type": "array", "items": {"type": "string"}}}}},
+    {"name": "tool_search_local", "description": "Search an in-memory tool catalog. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["query", "catalog"], "properties": {
+         "query": {"type": "string"},
+         "catalog": {"type": "array", "items": {"type": "object", "properties": {
+             "name": {"type": "string"}, "description": {"type": "string"}}}}}}},
+    {"name": "seat_tools", "description": "Filter a seat tool list offline. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["parent"], "properties": {
+         "parent": {"type": "array", "items": {"type": "string"}},
+         "tools": {"type": ["array", "null"], "items": {"type": "string"}},
+         "disallowed": {"type": ["array", "null"], "items": {"type": "string"}}}}},
+    {"name": "seat_gate", "description": "Allow a hand only when the caller is that seat. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["caller", "seat", "hand"], "properties": {
+         "caller": {"type": "string"}, "seat": {"type": "string"}, "hand": {"type": "string"}}}},
+    {"name": "layer_read", "description": "Read the first page layer list. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["out", "root"], "properties": {
+         "out": {"type": "string"}, "root": {"type": "string"}}}},
+    {"name": "code_refuse", "description": "Refuse a code-file kind. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["kind"], "properties": {"kind": {"type": "string"}}}},
+    {"name": "mold_panel", "description": "Read one package mold's tokens. Does not publish and does not read secrets.",
+     "inputSchema": {"type": "object", "required": ["mold_id"], "properties": {"mold_id": {"type": "string"}}}},
 ]
 
 
