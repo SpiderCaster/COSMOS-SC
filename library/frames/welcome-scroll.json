@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "welcome-scroll",
+  "intent": "A single scrolling page whose menu jumps from a welcome to the story, the offer, and contact.",
+  "sections": ["hero", "about", "features", "gallery", "faq", "contact"],
+  "nav": "one-page",
+  "template": "bold",
+  "package": true,
+  "note": "Original section order for a single scrolling welcome page. Not a vendor theme."
+}

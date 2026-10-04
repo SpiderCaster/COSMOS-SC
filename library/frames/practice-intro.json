@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "practice-intro",
+  "intent": "A professional practice that introduces the firm and the people before the contact path.",
+  "sections": ["hero", "about", "team", "features", "testimonials", "contact"],
+  "nav": "sidebar",
+  "template": "modern",
+  "package": true,
+  "note": "Original section order for a professional practice. Not a vendor theme."
+}

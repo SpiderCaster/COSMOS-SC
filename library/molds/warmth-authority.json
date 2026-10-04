@@ -1,0 +1,12 @@
+{
+  "id": "warmth-authority",
+  "origin": "scratch",
+  "parents": [],
+  "palette": "#c8923e",
+  "type_lead": "serif",
+  "nav": "segmented",
+  "template": "editorial",
+  "sections": ["hero", "about", "features", "faq", "contact"],
+  "package": true,
+  "note": "Serif editorial mold made for SpiderCaster. First live use is movelixir.com. Not an OceanWP or GeneratePress demo."
+}

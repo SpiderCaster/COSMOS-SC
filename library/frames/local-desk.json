@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "local-desk",
+  "intent": "A local service page that says the job and the place, then shows the offer, numbers, and how to ask.",
+  "sections": ["hero", "features", "stats", "about", "testimonials", "faq", "contact"],
+  "nav": "top-bar",
+  "template": "modern",
+  "package": true,
+  "note": "Original section order for a local service page. Not a vendor theme."
+}

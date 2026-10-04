@@ -1,0 +1,12 @@
+{
+  "id": "clarify-mix",
+  "origin": "mix",
+  "parents": ["warmth-authority", "discover-grid"],
+  "palette": "#6b4c3b",
+  "type_lead": "slab",
+  "nav": "one-page",
+  "template": "bold",
+  "sections": ["hero", "faq", "about", "contact"],
+  "package": true,
+  "note": "Mix of warmth-authority and discover-grid. FAQ-forward pages. Not an OceanWP or GeneratePress frame, and not an as-is parent."
+}

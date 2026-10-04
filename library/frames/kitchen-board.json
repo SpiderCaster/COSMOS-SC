@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "kitchen-board",
+  "intent": "food or drink menu from copy only",
+  "sections": ["hero", "about", "menu", "gallery", "faq", "contact"],
+  "nav": "sidebar",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order. Not a Wix, Shopify, Squarespace, Webflow, OceanWP, or GeneratePress theme."
+}

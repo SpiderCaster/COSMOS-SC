@@ -1,0 +1,12 @@
+{
+  "id": "discover-grid",
+  "origin": "mutate",
+  "parents": ["warmth-authority"],
+  "palette": "#2a6f8f",
+  "type_lead": "sans",
+  "nav": "top-bar",
+  "template": "modern",
+  "sections": ["hero", "features", "steps", "faq", "contact"],
+  "package": true,
+  "note": "Mutation of warmth-authority. Palette, type-lead, and nav all change. Card-grid discover pages. Not an OceanWP or GeneratePress demo."
+}

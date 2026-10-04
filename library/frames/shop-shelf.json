@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "shop-shelf",
+  "intent": "small catalog, no remote product feed",
+  "sections": ["hero", "logocloud", "features", "pricing", "testimonials", "cta"],
+  "nav": "segmented",
+  "template": "bold",
+  "package": true,
+  "note": "Original section order. Not a Wix, Shopify, Squarespace, Webflow, OceanWP, or GeneratePress theme."
+}

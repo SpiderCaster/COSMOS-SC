@@ -1,7 +1,7 @@
 {
   "schema": "spidercaster-library/1",
   "root": "V:\\streams\\webdev",
-  "rule": "Unique templates are the SEO rule. Do not pull the OceanWP or GeneratePress demo catalogs. A new site is a new permutation of a seed already here. Two live sites do not share one template.",
+  "rule": "Pull OceanWP and GeneratePress demos into the private vault only. The package ships molds we made (scratch, mutate, mix). One vendor frame per site. A mold or frame already live is not used live again.",
   "vendor_frames_not_the_library": [
     "templates/owp/_catalog.json",
     "templates/owp/core-frames",

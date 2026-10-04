@@ -2,9 +2,9 @@
 
 Live root: `V:\streams\webdev`. Paths below are relative to that root.
 
-Unique templates are the SEO rule. A fleet of sites on one host must not wear one OceanWP demo or one GeneratePress starter. The vendor catalogs under `templates/owp` and `templates/gp` stay on disk as frames to permute. They are not the library, and they are not pulled further.
+Unique templates are the SEO rule. A live site does not wear a mold, or an OceanWP / GeneratePress frame, that another live site already wears.
 
-The library grows when a build diverges: palette, type-lead, and nav pattern, then a checker pass. Record the new permutation here. Do not snapshot the 160 OceanWP demos or the 50 GeneratePress starters.
+Vendor demos and their photos are pulled into the private vault (`V:\streams\webdev\vendor-vault`). They are not the package. The package ships molds SpiderCaster made: scratch, a mutation (new palette, type-lead, and nav), or a mix of two or more parents. One vendor frame per site, and only as the parent of a mutation. The machine list is `seed.json` plus `molds\`.
 
 Machine list: `seed.json`.
 
