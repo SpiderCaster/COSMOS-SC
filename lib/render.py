@@ -218,8 +218,11 @@ p{margin:0 0 14px}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 6px 18px $accent_shadow}
 .btn.primary:hover{transform:translateY(-1px)}
 .btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface)}
-.site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:$header_bg;border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease}
+.site-header{position:sticky;top:0;z-index:50;background:$header_bg;border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease}
 .site-header.is-stuck{background:var(--bg);box-shadow:0 10px 28px $shadow}
+/* blur lives on a pseudo-element layer: backdrop-filter on .site-header itself would make the header the
+   containing block for the position:fixed mobile drawer and trap it in the 65px bar (DEFECT_4) */
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);pointer-events:none}
 .nav{display:flex;align-items:center;gap:12px;min-height:64px;flex-wrap:wrap}
 .brand{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;font-weight:700;font-size:1.05rem;text-decoration:none;color:var(--text);font-family:var(--font-head)}
 .brand-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -361,9 +364,9 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .nav{flex-wrap:nowrap}
 .brand{flex:1 1 auto;min-width:0}
 .reveal{opacity:1;transform:none}
-.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow:auto}
+.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;flex-wrap:nowrap;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow-y:auto;overscroll-behavior:contain}
 .nav-links.open{display:flex}
-.nav-links a{width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
+.nav-links a{flex:none;width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
 .hero-cta{flex-direction:column;align-items:stretch}
 .hero-cta .btn{width:100%;justify-content:center}
 .nav-toggle{display:inline-flex}
@@ -416,7 +419,7 @@ body.nav-open .phone-bar{display:none}
 @media(max-width:860px) and (scripting:none){
 .nav{flex-wrap:wrap}
 .nav-toggle{display:none}
-.nav-links{display:flex;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
+.nav-links{display:flex;flex-wrap:wrap;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
 }
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.site-header,.btn{transition:none}.btn:hover{transform:none}}
 .tpl-bold .btn{border-radius:999px;padding:13px 22px}
