@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org",
+  "name": "spidercaster-agentic-architecture",
+  "version": "1.0.0",
+  "description": "SpiderCaster module boundaries: engine/seats/parts/tools/nest isolated; sessions+cosmos_core are COSMOS-side black boxes.",
+  "communication_protocol": "MCP (Model Context Protocol) over JSON-RPC",
+  "modules": {
+    "engine": {
+      "root_dir": "V:/A/Ai/spidercaster/working/lib",
+      "entry_point": "V:/A/Ai/spidercaster/working/spidercaster.py",
+      "interface_definition": "mcp/schema.json",
+      "live_interface": "mcp_server.py TOOLS (schema.json formalization pending playbook section 3 job)",
+      "allowed_dependencies": [],
+      "isolation_level": "strict_black_box"
+    },
+    "seats": {
+      "root_dir": "V:/A/Ai/spidercaster/working/library/seats",
+      "entry_point": "SKILL.md per seat",
+      "interface_definition": "WRAPPER.md per seat",
+      "lanes": ["architect", "content", "deployer", "frontend", "graphics", "seo", "visual"],
+      "allowed_dependencies": ["engine"],
+      "isolation_level": "lane_only"
+    },
+    "parts": {
+      "root_dir": "V:/streams/webdev/tools/parts",
+      "entry_point": "manifest.json per part",
+      "interface_definition": "catalog.json per family",
+      "allowed_dependencies": [],
+      "isolation_level": "data_only"
+    },
+    "tools_nest": {
+      "root_dir": "V:/A/Ai/spidercaster/working/tools and P:/SpiderCaster_Nest",
+      "entry_point": "per-tool entry",
+      "interface_definition": "JSON in/out",
+      "allowed_dependencies": [],
+      "isolation_level": "sandboxed"
+    },
+    "sessions_cosmos": {
+      "root_dir": "COSMOS side (boundary: not ours)",
+      "entry_point": "none",
+      "interface_definition": "JSON contracts only",
+      "allowed_dependencies": [],
+      "isolation_level": "untouchable_black_box"
+    }
+  },
+  "enforcement_policies": {
+    "block_cross_imports": true,
+    "require_localized_tests": true,
+    "schema_validation": "strict"
+  }
+}
