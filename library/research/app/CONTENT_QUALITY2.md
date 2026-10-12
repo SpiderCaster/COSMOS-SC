@@ -4,7 +4,7 @@ Scored on 2026-10-01 after `inbox/restage-harbor.md`, `inbox/restage-demo.md`, a
 
 Both restage notes say they built before `prose.md` showed DONE. `prose.md` is DONE now. This score is the HTML on disk, not a new render. No publish. No HTML, lib, or copy edits.
 
-Paths are under `V:\a\Ai\spidercaster\working`.
+Paths are under `<repo-root>`.
 
 ## What was on disk
 

@@ -10,7 +10,7 @@ Scope: the single HTML file `render_page` writes. Server cache headers, CDN dist
 
 Shipped:
 
-- The hero picture, when the IR has a relative `src`, is an `<img>` in the first HTML, not a script-built node. Attributes on that tag: `width="1600"`, `height="900"`, `fetchpriority="high"`, `decoding="async"`. It does not set `loading="lazy"`. `http://`, `https://`, and `//` hero sources are dropped. The box around it has a CSS height (`168px`, and `320px` or `380px` from the `min-width: 861px` rules).
+- The hero picture, when the IR has a relative `src`, is an `<img>` in the first HTML, not a script-built node. Attributes on that tag: `width="1600"`, `height="900"`, `fetchpriority="high"`, `decoding="async"`. It does not set `loading="lazy"`. `htt<local-path>`, `https://`, and `//` hero sources are dropped. The box around it has a CSS height (`168px`, and `320px` or `380px` from the `min-width: 861px` rules).
 - CSS is one `<style>` block in `<head>`. There is no `<link rel="stylesheet">`.
 - Fonts are `ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`, plus Georgia and Times New Roman for an editorial heading and the letter mark. There is no `@font-face` and no font file URL.
 - The only executable script is one inline function at the end of `<body>`. It has no `src`. It is not a framework. It toggles the menu, marks the sticky header, writes the current section title, builds a `mailto:` link, and adds `.in` to `.reveal`.
@@ -84,7 +84,7 @@ At most these six. Each one is still in the file that was read.
 
 1. Hero `width` and `height` are the constants 1600 and 900, not the file's intrinsic pixels. Gallery images, which are the lazy ones, have neither attribute. MDN's rule is the file's intrinsic size on every image, and especially on a lazy image. CSS does reserve a hero height and a 4/3 tile, so the attributes are not the only box on the page. That CSS box is not a measurement of the file.
 
-2. One `src` per image. No `srcset`, no `sizes`, no `<picture>`, and no second file in a smaller format. `lib/imagine.py` and `lib/hands/__init__.py` do not resize or recompress. The LCP page's load-duration step is a smaller, modern, compressed image (it names AVIF or WebP as the format example). A `.webp` already chosen as the `src` can pass through. The renderer does not make one. Gallery `src` is not run through the hero check, so a remote gallery URL is still emitted. The hero path rejects `http://`, `https://`, and `//`.
+2. One `src` per image. No `srcset`, no `sizes`, no `<picture>`, and no second file in a smaller format. `lib/imagine.py` and `lib/hands/__init__.py` do not resize or recompress. The LCP page's load-duration step is a smaller, modern, compressed image (it names AVIF or WebP as the format example). A `.webp` already chosen as the `src` can pass through. The renderer does not make one. Gallery `src` is not run through the hero check, so a remote gallery URL is still emitted. The hero path rejects `htt<local-path>`, `https://`, and `//`.
 
 3. `.reveal` is `opacity:0` until the inline script adds `.in`. That class is on feature cards, steps, gallery tiles, price cards, quotes, and team cards. It is not on the hero. The LCP page's render-delay case is an element kept hidden until JavaScript runs. `prefers-reduced-motion: reduce` forces `.reveal` to `opacity:1` with no transition. A visitor who does not match that query still waits on the script for those blocks.
 

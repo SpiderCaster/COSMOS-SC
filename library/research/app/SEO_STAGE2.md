@@ -2,7 +2,7 @@
 
 Scored on 2026-10-01 after both restage inbox files had a DONE line. Harbor line: `STATUS: DONE`. Demo line: `DONE 2026-10-01`. Neither restage was missing. Read-only. No publish. No HTML, lib, or copy edits. No crew. No --live.
 
-Paths are under `V:\a\Ai\spidercaster\working`. Both `stage/harbor/out/index.html` and `stage/demo/out/index.html` were present.
+Paths are under `<repo-root>`. Both `stage/harbor/out/index.html` and `stage/demo/out/index.html` were present.
 
 Checks are yes/no from those two files. A missing `aggregateRating` is correct. Do not add reviews, stars, or rating markup.
 

@@ -6,7 +6,7 @@ DONE
 
 lib/mobile_selftest.py builds a temp project and calls plan_offline, then render.assemble. Waited 2 minutes, then ran the selftest. The module retried once after 60 seconds. Asserts were not weakened. That run is the result below. Did not publish. Did not edit lib/render.py. No --live. No secrets.
 
-Set-Location 'V:\a\Ai\spidercaster\working'; py -3.14 -m lib.mobile_selftest
+Set-Location '<repo-root>'; py -3.14 -m lib.mobile_selftest
 missing aspect-ratio:16/9
 still present height:168px
 still present about-panel

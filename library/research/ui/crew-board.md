@@ -59,7 +59,7 @@ No studio page exists. `serve` only hosts a finished site folder. These commands
 
 `seat_gate` is a library function and an MCP tool. It is not a CLI verb. The crew already calls it. This screen does not add a second gate and does not change the function.
 
-The saved workflow file (`SPIDERCASTER_PROFILE_ENGINE`, else `V:\A\Ai\COSMOS\live\state\profiles\website\engine.json`) was not opened for this report. When that file has a valid seven-id list, `run_job` uses it and still forces deployer last. Otherwise the package order stands. The board must show the order the run will use, not a second order.
+The saved workflow file (`SPIDERCASTER_PROFILE_ENGINE`, else `<local-path>`) was not opened for this report. When that file has a valid seven-id list, `run_job` uses it and still forces deployer last. Otherwise the package order stands. The board must show the order the run will use, not a second order.
 
 ## 5. Proposal
 

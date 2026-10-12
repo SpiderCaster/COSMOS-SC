@@ -1,7 +1,7 @@
 ---
 name: spidercaster
 description: >-
-  use this to build static sites from the SpiderCaster tree (V:\a\ai\spidercaster\working) from REAL copy with zero or
+  use this to build static sites from the SpiderCaster tree (<repo-root>) from REAL copy with zero or
   free-tier AI tokens (offline draft, Gemini free tier, OpenRouter :free) — not
   for live deploys, domain/CF work, or inventing content
 ---
@@ -47,7 +47,7 @@ description: >-
   invented content; no hotlinking (external stock URLs dropped at ingest);
   secrets by env var name only (GEMINI_API_KEY, OPENROUTER_API_KEY,
   OPENWORK_API_KEY) or `FORGE_GEMINI_KEY_FILE` pointing at a recorded key
-  file (e.g. `V:\Research4\.secrets\vertex_medicineman_key.txt`) — never
+  file (e.g. `<key-file>`) — never
   print or paste key values; token ledger written to report.json every run.
 
 ## Confirm before consequential

@@ -4,13 +4,13 @@ Date of this brief: 2026-10-08. Same text for every research hero. One hero, one
 
 ## What SpiderCaster already is
 
-Engine: `V:\A\Ai\spidercaster\working`. Python 3.11+ standard library. Offline build spends zero tokens. A site stays noindex until a human runs `library bind --live`. The crew does not publish. Do not invent copy. Do not copy vendor HTML, CSS, or marketing text into a report beyond package names, file roles, and short public identifiers.
+Engine: `<repo-root>`. Python 3.11+ standard library. Offline build spends zero tokens. A site stays noindex until a human runs `library bind --live`. The crew does not publish. Do not invent copy. Do not copy vendor HTML, CSS, or marketing text into a report beyond package names, file roles, and short public identifiers.
 
 Commands that exist: `init`, `build`, `refine`, `check`, `serve`, `compose`, `visit`, `tools list`, `tools apply`, `parts scan`, `parts assemble`, `crew`, `library`, `doctor`, `shipcheck`, `seat`, `sections`, `image`.
 
 `compose` plans from real `copy/` files, applies a package frame only by reordering sections the copy already produced, paints one mold, and inserts one catalog part per section plus a header and a footer. It writes `structure.json`, `site.json`, and `report.json`. Frame `welcome-scroll` plus mold `discover-grid` on `projects/demo-local` checked 34 pass, 0 fail, 0 warn, 1 skip (grey tile still needs a rendered photo).
 
-Parts: 208 catalog rows, all built, under `V:\streams\webdev\tools\parts`. Routes: hooks-blocks 80, headers 44, popups-callouts 43, sidebars-widgets 41. `tools apply` can append, replace, paint a mold, and refuse a path listed in `lock.txt`.
+Parts: 208 catalog rows, all built, under `<local-path>`. Routes: hooks-blocks 80, headers 44, popups-callouts 43, sidebars-widgets 41. `tools apply` can append, replace, paint a mold, and refuse a path listed in `lock.txt`.
 
 Checker floors already in `lib/check.py`: body text 18px, chrome 16px, contrast 4.5:1 (large text 3:1), tap 44px, no SAMPLE/lorem/placeholder, no hotlinked images, relative canonical, one h1, WebSite JSON-LD and no aggregateRating, FAQ text visible when FAQPage is present, skip link, scroll-margin, sticky header, mobile drawer, no sideways overflow at 360/390/412. `visit` measures at 390 and 1280 when Playwright is installed.
 

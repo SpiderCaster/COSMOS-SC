@@ -2,7 +2,7 @@
 
 Read-only, 2026-10-01. Not published. Stage HTML, Python, and `lib/` were not edited.
 
-Read: `V:\a\Ai\spidercaster\working\stage\harbor\out\index.html` and `stage\demo\out\index.html`. Both are the sheet rebuilt after the phone passes. A 390px width is inside `@media(max-width:860px)`. `.wrap{padding:0 16px}` leaves a 358px column. `html` is 18px and `body` line-height is 1.6. Widths below are that column plus a Segoe UI measurement of the strings already on the page (the body stack names Segoe UI). This is not a browser capture.
+Read: `<repo-root>\stage\harbor\out\index.html` and `stage\demo\out\index.html`. Both are the sheet rebuilt after the phone passes. A 390px width is inside `@media(max-width:860px)`. `.wrap{padding:0 16px}` leaves a 358px column. `html` is 18px and `body` line-height is 1.6. Widths below are that column plus a Segoe UI measurement of the strings already on the page (the body stack names Segoe UI). This is not a browser capture.
 
 No new copy and no remote image are proposed below.
 

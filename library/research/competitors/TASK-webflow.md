@@ -2,7 +2,7 @@
 
 Competitor: Webflow AI site builder and Webflow MCP
 Report file: library/research/competitors/webflow.md
-Engine root: V:\A\Ai\spidercaster\working
+Engine root: <repo-root>
 
 Read library/research/competitors/BRIEF.md and follow its outline and contract line. Also read the Webflow sections of library/research/HOW_PRO_BUILDERS.md and library/research/app/HOW_CODE_BUILDERS_TOOLS.md before the web. Those notes are from 2026-10-01. A live page wins when they disagree.
 

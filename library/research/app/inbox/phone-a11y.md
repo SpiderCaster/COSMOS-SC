@@ -9,7 +9,7 @@ Read `lib/render.py` only. Did not edit Python, `stage/`, or `library/rules/mobi
 - safe_area_header enforced. `.site-header` sets `padding-top:env(safe-area-inset-top)`. The 860px block does not remove it.
 - safe_area_footer pending. `.site-footer` is `padding:32px 0`. `env(safe-area-inset-bottom)` is on the 860px `.nav-links` drawer, not the footer.
 - reduced_motion enforced. `@media(prefers-reduced-motion:reduce)` sets `.reveal{opacity:1;transform:none;transition:none}` and `transition:none` on `.site-header` and `.btn`.
-- no_remote_img pending. `_local_image_src` drops `http://`, `https://`, and `//` for the hero and the about panel. Gallery still writes `it["src"]` with no remote check.
+- no_remote_img pending. `_local_image_src` drops `htt<local-path>`, `https://`, and `//` for the hero and the about panel. Gallery still writes `it["src"]` with no remote check.
 
 Opened https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html (SC 2.5.5, 44 by 44 CSS pixels).
 

@@ -51,9 +51,9 @@ Do not publish. Do not run library bind --live. Do not build floelixir or recove
 
 No selftest needs a rerun from this board. HANDS_CHANGELOG.md quotes `hands selftest ok`. BUILD_STATUS.md quotes `hands selftest ok` and `crew selftest ok`.
 
-Read `V:\a\Ai\spidercaster\working\library\research\PREVIEW_RESULT.md` next. That file is on disk, but inbox/preview.md was still only STARTED at the closing poll, so this board does not mark preview DONE and does not treat the result as confirmed.
+Read `<repo-root>\library\research\PREVIEW_RESULT.md` next. That file is on disk, but inbox/preview.md was still only STARTED at the closing poll, so this board does not mark preview DONE and does not treat the result as confirmed.
 
-A local preview directory does exist and was not confirmed by the inbox. `V:\a\Ai\spidercaster\working\preview\demo-hero-out\` lists index.html, favicon.svg, site.json, and crew-ticket.json. It does not list an assets directory. The sibling source `V:\a\Ai\spidercaster\working\preview\demo-hero\` lists assets\hero.png, brief.md, and copy\. Open the result note before treating index.html as a pass. The proof project named by local research remains projects\demo-local, not this preview folder.
+A local preview directory does exist and was not confirmed by the inbox. `<repo-root>\preview\demo-hero-out\` lists index.html, favicon.svg, site.json, and crew-ticket.json. It does not list an assets directory. The sibling source `<repo-root>\preview\demo-hero\` lists assets\hero.png, brief.md, and copy\. Open the result note before treating index.html as a pass. The proof project named by local research remains projects\demo-local, not this preview folder.
 
 ## Parent rerun
 

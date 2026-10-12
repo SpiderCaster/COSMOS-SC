@@ -811,7 +811,7 @@ def website_jsonld(site: dict) -> str:
 
 
 # FAQPage JSON-LD is retired (Google removed the FAQ rich result 2023-2026;
-# P:/SpiderCaster_Nest/seo-research/schema.md section 1). The renderer emits
+# <seo-research>/schema.md section 1). The renderer emits
 # no FAQPage/Question/Answer structured data. Visible FAQ sections
 # (render_section kind "faq", native <details>) are unchanged.
 

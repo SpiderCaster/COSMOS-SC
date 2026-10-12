@@ -65,3 +65,7 @@ service-account*.json
 *.egg-info/
 # optional no-key AI path cache (lib/ai_chain)
 .sc_ai_cache/
+
+# GF38 audit hygiene: local-only wallet notes, gate attempt snapshots
+WALLETS.md
+_attempts/

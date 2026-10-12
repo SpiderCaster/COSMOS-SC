@@ -2,7 +2,7 @@
 
 Local noindex proof only. Nothing was published. `--live` was not passed. `library bind` was not invoked as its own command. No image API was called. Demo copy was not rewritten. This is a style study on DEMO copy, not a floelixir.com site.
 
-Inbox stamp before the wait: `STARTED 2026-10-01 13:53:45` in `library/research/inbox/preview.md`. Working directory for every command: `V:\a\Ai\spidercaster\working`.
+Inbox stamp before the wait: `STARTED 2026-10-01 13:53:45` in `library/research/inbox/preview.md`. Working directory for every command: `<repo-root>`.
 
 ## Engine selftest
 
@@ -85,9 +85,9 @@ Graphics reported `0 local asset(s)`. The project file `preview\demo-hero\assets
 
 ## Flo and reco
 
-`V:\streams\webdev\spidercaster_local\sites\floelixir.com.md` exists (5109 bytes). `V:\streams\webdev\spidercaster_local\sites\recovelixir.com.md` exists (5754 bytes). Both are brief and build-plan notes, not SpiderCaster `copy/` packs.
+`<local-path>` exists (5109 bytes). `<local-path>` exists (5754 bytes). Both are brief and build-plan notes, not SpiderCaster `copy/` packs.
 
-No `copy/` directory for floelixir or recovelixir was found under `V:\a\Ai\spidercaster` or `V:\streams\webdev\builds`. The only `copy/` directories under spidercaster were `projects\demo-local\copy`, `projects\bench-harbor-tearoom\copy`, and the same two under `cosmos-sc-public`. `V:\streams\webdev\builds` contains `movelixir.com` only. `credentials.env` was not read. No Cloudflare ids are copied here.
+No `copy/` directory for floelixir or recovelixir was found under `<local-path>` or `<local-path>`. The only `copy/` directories under spidercaster were `projects\demo-local\copy`, `projects\bench-harbor-tearoom\copy`, and the same two under `cosmos-sc-public`. `<local-path>` contains `movelixir.com` only. `credentials.env` was not read. No Cloudflare ids are copied here.
 
 flo and reco cannot be built without inventing copy; not built.
 

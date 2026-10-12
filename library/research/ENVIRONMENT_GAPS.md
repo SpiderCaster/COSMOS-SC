@@ -4,13 +4,13 @@ Only gaps that block a local noindex site or a distributable static run. Measure
 
 ## Blockers
 
-1. Floelixir has a brief and no copy pack. `V:\streams\webdev\spidercaster_local\sites\floelixir.com.md` exists (provider ids omitted). There is no `floelixir` project under `V:\a\Ai\spidercaster\working\projects`, no `copy` directory beside that brief, and no floelixir folder under `V:\streams\webdev\builds`. Sandbox directories `floelixir-gp-marketer`, `floelixir-gp-restored-v2`, `floelixir-owp-restored-v2`, and `floelixir-owp-simpleblog` each have `public` and no `copy` directory. The content hand and the offline planner refuse to invent copy, so this site cannot be built until a real `copy\` pack exists.
+1. Floelixir has a brief and no copy pack. `<local-path>` exists (provider ids omitted). There is no `floelixir` project under `<repo-root>\projects`, no `copy` directory beside that brief, and no floelixir folder under `<local-path>`. Sandbox directories `floelixir-gp-marketer`, `floelixir-gp-restored-v2`, `floelixir-owp-restored-v2`, and `floelixir-owp-simpleblog` each have `public` and no `copy` directory. The content hand and the offline planner refuse to invent copy, so this site cannot be built until a real `copy\` pack exists.
 
-2. Recovelixir is the same blocker. `V:\streams\webdev\spidercaster_local\sites\recovelixir.com.md` exists (provider ids omitted). No recovelixir project, no `copy` directory, and no build folder were found in those trees.
+2. Recovelixir is the same blocker. `<local-path>` exists (provider ids omitted). No recovelixir project, no `copy` directory, and no build folder were found in those trees.
 
-3. Movelixir cannot be rebuilt by this engine from a copy pack either. `movelixir.com.md` exists (provider ids omitted). `V:\streams\webdev\builds\movelixir.com` is already-built HTML, css, img, and js, and it has no `copy` directory. That HTML is not a pack the content hand reads. `warmth-authority` is already live on `movelixir.com` in `library\ledger.json`, which blocks a second live use of that mold, separate from the missing copy.
+3. Movelixir cannot be rebuilt by this engine from a copy pack either. `movelixir.com.md` exists (provider ids omitted). `<local-path>` is already-built HTML, css, img, and js, and it has no `copy` directory. That HTML is not a pack the content hand reads. `warmth-authority` is already live on `movelixir.com` in `library\ledger.json`, which blocks a second live use of that mold, separate from the missing copy.
 
-4. A distributable static run cannot produce flo or reco. `V:\a\Ai\spidercaster\cosmos-sc-public\projects` has `demo-local` and `bench-harbor-tearoom` only. The snapshot does not add the missing copy packs.
+4. A distributable static run cannot produce flo or reco. `<local-path>` has `demo-local` and `bench-harbor-tearoom` only. The snapshot does not add the missing copy packs.
 
 ## Not blockers
 

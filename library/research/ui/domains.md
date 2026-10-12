@@ -12,7 +12,7 @@ Read on 2026-10-08:
 - `projects/` listed in this working tree. Two directories, and nothing else.
 - `projects/demo-local/brief.md` plus `copy/commands.md`, `copy/faq.md`, `copy/overview.md`. The brief says the build stays noindex.
 - `projects/bench-harbor-tearoom/brief.md` plus `copy/contact.md`, `copy/hours.md`, `copy/menu.md`, `copy/overview.md`. The brief says the business is synthetic: never index, never deploy, never link from live lanes.
-- `V:\streams\webdev\START_HERE.md` section 3, the fleet table only (status as written there, not re-measured live today). The kinds line above that table calls bradleybrandfurniture.com, buyfigs.com, iseark.com, chopncut.com, rareplantbid.com, the Soft five, and teavital.com full WordPress sites, and calls the parks single static landing pages.
+- `<local-path>` section 3, the fleet table only (status as written there, not re-measured live today). The kinds line above that table calls bradleybrandfurniture.com, buyfigs.com, iseark.com, chopncut.com, rareplantbid.com, the Soft five, and teavital.com full WordPress sites, and calls the parks single static landing pages.
 - `library/research/ENVIRONMENT_GAPS.md` (measured 2026-10-01). floelixir and recovelixir have no project and no `copy/` here. movelixir.com has already-built HTML and no copy pack.
 - `library/ledger.json`. `movelixir.com` / `warmth-authority` / `live` true. The other rows are `*.example` and `live` false. They are not copy packs.
 - `lib/copy_pack.py`, `lib/ingest.py`, `lib/offline.py`, `lib/compose.py`, `lib/serve.py`, and the `init`, `compose`, `serve`, and `library bind` parsers in `spidercaster.py`.

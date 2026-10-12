@@ -44,6 +44,14 @@ PATTERNS = [
     ("bearer-token-literal", re.compile(r"(?i)\bBearer\s+(?!<|\{|\$|%|token\b|your|xxx|\*)[A-Za-z0-9_\-\.=]{24,}")),
     ("url-with-credentials", re.compile(r"(?i)\b[a-z][a-z0-9+.\-]*://[^/\s:@\"']+:[^/\s:@\"']{3,}@[^/\s\"']+")),
     ("jwt", re.compile(r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}")),
+    ("pypi-token", re.compile(r"\bpypi-[A-Za-z0-9\-_]{20,}")),
+    ("npm-token", re.compile(r"\bnpm_[A-Za-z0-9]{24,}")),
+    ("gcp-service-account", re.compile(r"\"type\"\s*:\s*\"service_account\"")),
+    ("discord-webhook", re.compile(
+        r"https://discord(?:app)?\.com/api/webhooks/[0-9]+/[A-Za-z0-9_\-]+")),
+    ("slack-webhook", re.compile(
+        r"https://hooks\.slack\.com/(?:services|workflows|triggers)/[A-Za-z0-9/_\-]+")),
+    ("teams-webhook", re.compile(r"https://[a-z0-9]+\.webhook\.office\.com/[A-Za-z0-9/_\-.]+")),
 ]
 
 ASSIGN = re.compile(
@@ -84,7 +92,7 @@ def read_blob(path, staged):
 
 def load_known_values():
     files = [p for p in os.environ.get("SC_KNOWN_SECRET_FILES", "").split(os.pathsep) if p]
-    files += [r"V:\streams\webdev\keys\.env", r"V:\streams\webdev\spidercaster_local\credentials.env"]
+    # No machine-specific default paths: set SC_KNOWN_SECRET_FILES locally if wanted.
     known = {}
     for fp in files:
         try:

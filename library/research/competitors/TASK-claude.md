@@ -2,7 +2,7 @@
 
 Competitor: Claude Code, Claude Design, and artifacts
 Report file: library/research/competitors/claude.md
-Engine root: V:\A\Ai\spidercaster\working
+Engine root: <repo-root>
 
 Read library/research/competitors/BRIEF.md and follow its outline and contract line. Also read library/research/app/HOW_CLAUDE_TOOLS.md and the Claude section of library/research/HOW_PRO_BUILDERS.md before the web. Those notes are from 2026-10-01. A live page wins when they disagree.
 

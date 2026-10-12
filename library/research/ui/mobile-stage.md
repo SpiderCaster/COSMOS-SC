@@ -8,7 +8,7 @@ The stage does not build, compose, refine, or publish. It does not invent a sent
 
 ## 2. Evidence
 
-Read on 2026-10-08 from `V:\A\Ai\spidercaster\working`. Nothing here was published. `library bind --live` was not run. The bench was not run, so a pass or fail of a live capture is not public.
+Read on 2026-10-08 from `<repo-root>`. Nothing here was published. `library bind --live` was not run. The bench was not run, so a pass or fail of a live capture is not public.
 
 - `library/research/ui/BRIEF.md` — studio rules, the 4Cs+, and this outline.
 - `library/research/competitors/framer.md` — what Framer shows before publish. Mobile section especially.
@@ -81,7 +81,7 @@ On a wide window the three frames sit in a row when the window can hold them. On
 
 `python spidercaster.py visit <site>` calls `visit_site`. Static mode always runs: missing header, missing `id="main"`, broken `#` links, missing viewport, and CSS wider than 1280px (or `min-width` over 400px on `html` or `body`). Rendered mode, only if Playwright launches a browser, adds sideways scroll when `scrollWidth` is greater than `clientWidth + 1`, and a missing visible header, at 390×800 and 1280×800. It does not measure tap, type, or the drawer, and it does not click the menu. If the browser is missing, the docstring says that is not a failure. The mode stays `static`. The bench says the opposite for its own gates: missing Playwright is not-run, never pass. This screen follows the bench on that point. A static visit is not a rendered pass.
 
-`python bench\mobile_bench.py` serves a copy, then renders with Playwright at the four default viewports. Gate evidence is already a sentence (`scrollWidth` against `innerWidth` and `clientWidth`, controls under 44px, text under the floors, `aria-expanded` false then true then false). It writes `bench\results\mobile-latest.md` and files under `V:\streams\webdev\OUT\bench-qa`. That is still a log. The run also does a cold start. This screen does not start that run.
+`python bench\mobile_bench.py` serves a copy, then renders with Playwright at the four default viewports. Gate evidence is already a sentence (`scrollWidth` against `innerWidth` and `clientWidth`, controls under 44px, text under the floors, `aria-expanded` false then true then false). It writes `bench\results\mobile-latest.md` and files under `<local-path>`. That is still a log. The run also does a cold start. This screen does not start that run.
 
 Built folders a later compose may use are only `projects/demo-local` and `projects/bench-harbor-tearoom`. This screen does not compose them. Whether any current `sites/` folder fails these four rows was not measured, so it is not public.
 
@@ -91,7 +91,7 @@ The smallest surface is one extra localhost page, standard library only, bound t
 
 The page calls the three commands by calling the functions they already call.
 
-- **Show page** calls `serve(site_dir)` and sets each frame's address to `http://127.0.0.1:<port>/`. Not `localhost`, and not `0.0.0.0`. Whether those names differ on this Windows machine was not measured.
+- **Show page** calls `serve(site_dir)` and sets each frame's address to `htt<local-path><port>/`. Not `localhost`, and not `0.0.0.0`. Whether those names differ on this Windows machine was not measured.
 - **Read failures** calls `check_site(site_dir, quiet=True)` and `visit_site(site_dir)`. It does not shell the full bench.
 
 The four lists print `failure_line` for each failure, and `failure_line(..., warn=True)` for each warn. Overflow also prints each `visit` item whose code is `sideways` or `missing_viewport`, with the word `visit` in front of the detail the command already uses. If `visit` mode is `static`, Overflow gets this line and no pass: `Rendered visit at 390 and 1280 was not run.`

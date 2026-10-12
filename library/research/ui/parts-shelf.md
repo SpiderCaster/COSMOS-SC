@@ -12,7 +12,7 @@ Read on 2026-10-08, from disk, not from a new vendor fetch:
 - `library/research/competitors/v0.md`. What v0 shows before a page exists.
 - `lib/part_pick.py`. Which kinds compose auto-picks, and which it never picks.
 - `lib/tools_index.py`, `lib/tools_apply.py`, `lib/part_swap.py`, `lib/part_fill.py`, `lib/compose.py`, `lib/mold_paint.py`, `lib/heading_rank.py`, `lib/serve.py`, and the `tools`, `parts`, `compose`, `check`, and `serve` parsers in `spidercaster.py`.
-- The local catalog file named in `lib/tools_index.py` (`V:\streams\webdev\templates\components\catalog.jsonl`), joined to built part folders the same way `load_catalog` and `built_dirs` already join them. That join was run on this machine. `tools apply`, `check`, and `visit` were not run. Pixel widths of a studio window were not measured.
+- The local catalog file named in `lib/tools_index.py` (`<local-path>`), joined to built part folders the same way `load_catalog` and `built_dirs` already join them. That join was run on this machine. `tools apply`, `check`, and `visit` were not run. Pixel widths of a studio window were not measured.
 
 The join on this machine: 208 catalog rows, 208 built, 0 missing. Routes: `tools-hooks-blocks` 80, `tools-headers` 44, `tools-popups-callouts` 43, `tools-sidebars-widgets` 41. Rows whose kind is one of the six shelf filters: header 12, hero 11, card 14, faq 8, cta 10, footer 12. That is 67. The other 141 built rows are not on this screen. `cta-bar` is 2 and is not `cta`. `sticky-header` is 5 and is not `header`. `feature-grid` is 2 and is not `card`. `lib/part_pick.py` says feature-grid is unused because card is the kind for the card-like sections.
 

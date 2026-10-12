@@ -77,7 +77,7 @@ Not part of the three changes.
 
 ## After the edit
 
-From `V:\a\Ai\spidercaster\working`, run:
+From `<repo-root>`, run:
 
 - `py -3.14 -m lib.hands.selftest`
 - `py -3.14 -m lib.regress`

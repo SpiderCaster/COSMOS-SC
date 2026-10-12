@@ -6,15 +6,15 @@
   "communication_protocol": "MCP (Model Context Protocol) over JSON-RPC",
   "modules": {
     "engine": {
-      "root_dir": "V:/A/Ai/spidercaster/working/lib",
-      "entry_point": "V:/A/Ai/spidercaster/working/spidercaster.py",
+      "root_dir": "lib",
+      "entry_point": "spidercaster.py",
       "interface_definition": "mcp/schema.json",
       "live_interface": "mcp_server.py TOOLS (schema.json formalization pending playbook section 3 job)",
       "allowed_dependencies": [],
       "isolation_level": "strict_black_box"
     },
     "seats": {
-      "root_dir": "V:/A/Ai/spidercaster/working/library/seats",
+      "root_dir": "library/seats",
       "entry_point": "SKILL.md per seat",
       "interface_definition": "WRAPPER.md per seat",
       "lanes": ["architect", "content", "deployer", "frontend", "graphics", "seo", "visual"],
@@ -22,14 +22,14 @@
       "isolation_level": "lane_only"
     },
     "parts": {
-      "root_dir": "V:/streams/webdev/tools/parts",
+      "root_dir": "<parts-dir>",
       "entry_point": "manifest.json per part",
       "interface_definition": "catalog.json per family",
       "allowed_dependencies": [],
       "isolation_level": "data_only"
     },
     "tools_nest": {
-      "root_dir": "V:/A/Ai/spidercaster/working/tools and P:/SpiderCaster_Nest",
+      "root_dir": "<tools-dir>",
       "entry_point": "per-tool entry",
       "interface_definition": "JSON in/out",
       "allowed_dependencies": [],

@@ -2,7 +2,7 @@
 
 Scored after a three-minute wait on 2026-10-01. Only files on disk. No publish. No HTML, lib, or copy edits.
 
-Paths are under `V:\a\Ai\spidercaster\working`.
+Paths are under `<repo-root>`.
 
 ## What was on disk
 

@@ -64,7 +64,7 @@ https://support.wix.com/en/article/wix-vibe-about-the-wix-vibe-editor
 
 **Copy.** Architect binds one mold, then later seats edit sections and tokens. Mold fields already are the theme: `palette` (`#rrggbb`), `type_lead`, `nav`, and `template` in `modern|editorial|bold` (`lib/library.py` `save_mold`, `lib/ir.py` `TEMPLATES`). A live mold is not restyled into a second site. `Library.bind(..., live=True)` already refuses a second live owner.
 
-**Do not copy.** Do not regenerate a vendor frame in place. Do not put a Wix, OceanWP, or GeneratePress theme file in `library/molds`. Do not let a chat prompt set arbitrary CSS. Do not use Wix AI image tools as a stand-in for owned photos. Media on a Wix site is uploaded into that account. SpiderCaster graphics stay on local files. `lib/ingest.py` already drops `http://` and `https://` asset URLs.
+**Do not copy.** Do not regenerate a vendor frame in place. Do not put a Wix, OceanWP, or GeneratePress theme file in `library/molds`. Do not let a chat prompt set arbitrary CSS. Do not use Wix AI image tools as a stand-in for owned photos. Media on a Wix site is uploaded into that account. SpiderCaster graphics stay on local files. `lib/ingest.py` already drops `htt<local-path>` and `https://` asset URLs.
 
 ## Peer: Relume
 
@@ -96,7 +96,7 @@ These eight items name files that already exist, or one settings file whose job 
 
 2. **Checker owns `ok`.** Keep `lib/crew.py` `_finish` setting `ok` only from hand statuses, and keep the visual hand calling `check_mod.check_site(..., expect_noindex=True)`. In `SKILL.md`, state that a seat may not say done unless `crew-ticket.json` shows visual PASS and names zero FAIL rows. Do not add a model-writable `ok` field.
 
-3. **Deny publish and vault export in the harness.** Add `V:\a\Ai\spidercaster\working\.claude\settings.json` with a `PreToolUse` command hook on Bash. Deny a command that contains `bind` and `--live`, and deny a command that copies `SPIDERCASTER_VAULT` or `vendor-vault` into `library\molds` or `library/molds`. Official hooks: one `deny` wins, including in bypass mode. The hook does not publish anything.
+3. **Deny publish and vault export in the harness.** Add `<repo-root>\.claude\settings.json` with a `PreToolUse` command hook on Bash. Deny a command that contains `bind` and `--live`, and deny a command that copies `SPIDERCASTER_VAULT` or `vendor-vault` into `library\molds` or `library/molds`. Official hooks: one `deny` wins, including in bypass mode. The hook does not publish anything.
 
 4. **Content cites `copy/` files.** In `lib/crew.py`, the content PASS detail lists each `Block.file` from `ingest.load_project`. A block whose file is not under that project's `copy/` is a content FAIL. Do not add a web-search tool to the content seat in `mcp_server.py`.
 
@@ -108,7 +108,7 @@ These eight items name files that already exist, or one settings file whose job 
 
 8. **Package list stays mold-only.** `tool_mold_list` in `mcp_server.py` already returns `package_manifest()["molds"]`. Keep it that way. Do not add `frames.json` or vault photo paths to that tool. A mutation still has to change palette, type-lead, and nav (`save_mold`). A mix still cites two or more parents and is not an as-is frame.
 
-`V:\streams\webdev\DEFAULT_ROLE_MODEL_ASSIGNMENT.md` maps seats to models. It is not a tool allowlist. Do not implement a lane by changing the model name.
+`<local-path>` maps seats to models. It is not a tool allowlist. Do not implement a lane by changing the model name.
 
 ## Sources
 
@@ -134,4 +134,4 @@ These eight items name files that already exist, or one settings file whose job 
 - https://www.relume.io/whats-new/july-2025-release
 - https://vercel.com/blog/introducing-the-new-v0-api
 
-Local engine, not public docs: `V:\a\Ai\spidercaster\working\lib\crew.py`, `lib\library.py`, `lib\ingest.py`, `lib\check.py`, `mcp_server.py`, `library\CREW.md`, `SKILL.md`.
+Local engine, not public docs: `<repo-root>\lib\crew.py`, `lib\library.py`, `lib\ingest.py`, `lib\check.py`, `mcp_server.py`, `library\CREW.md`, `SKILL.md`.

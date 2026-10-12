@@ -2,7 +2,7 @@
 
 Measured 2026-10-01 for the SpiderCaster app environment. Not a site build. No crew run. No `library bind --live`. No key file was opened. Values of env vars were not printed.
 
-Commands started with `Set-Location 'V:\a\Ai\spidercaster\working'`. The shell cwd resets to `V:\a\ai\cosmos` after each command.
+Commands started with `Set-Location '<repo-root>'`. The shell cwd resets to `<local-path>` after each command.
 
 ## Docs read
 
@@ -61,7 +61,7 @@ py -3.14 spidercaster.py doctor
 When: 2026-10-01 14:41:16. Exit code: 0.
 
 ```
-{"python":"3.14.0","root":"V:\\A\\Ai\\spidercaster\\working","molds":["clarify-mix","discover-grid","warmth-authority"],"frames":14,"seats":[{"id":"architect","skill":true,"wrapper":true},{"id":"content","skill":true,"wrapper":true},{"id":"frontend","skill":true,"wrapper":true},{"id":"graphics","skill":true,"wrapper":true},{"id":"visual","skill":true,"wrapper":true},{"id":"seo","skill":true,"wrapper":true},{"id":"deployer","skill":true,"wrapper":true}],"hands_match":true,"vault_exists":true,"ok":true,"errors":[]}
+{"python":"3.14.0","root":"<repo-root>","molds":["clarify-mix","discover-grid","warmth-authority"],"frames":14,"seats":[{"id":"architect","skill":true,"wrapper":true},{"id":"content","skill":true,"wrapper":true},{"id":"frontend","skill":true,"wrapper":true},{"id":"graphics","skill":true,"wrapper":true},{"id":"visual","skill":true,"wrapper":true},{"id":"seo","skill":true,"wrapper":true},{"id":"deployer","skill":true,"wrapper":true}],"hands_match":true,"vault_exists":true,"ok":true,"errors":[]}
 ```
 
 `ok` is true and `errors` is empty, so a present doctor module is not a gap.
@@ -74,11 +74,11 @@ Same result on both passes. Not opened. Not printed.
 |---|---|
 | `XAI_API_KEY` | unset (process, user, machine) |
 | `XAI_API_KEY_FILE` | unset (process, user, machine) |
-| `V:\A\Ai\COSMOS\live\config\xai_api_key.txt` | no |
+| `<local-path>` | no |
 | `OPENROUTER_API_KEY` | unset (process, user, machine) |
 | `OPENROUTER_API_KEY_FILE` | unset (process, user, machine) |
-| `V:\Research4\.secrets\Grok_API_Token-Key.txt` | yes |
-| `V:\A\Ai\COSMOS\live\config\openrouter_api_key.txt` | yes |
+| `<local-path>` | yes |
+| `<local-path>` | yes |
 
 Existence is not a claim that either file is a usable key. `ENVIRONMENT.md` already says image xAI reads the env vars, then the Research4 Grok token path, and OpenRouter reads the env vars, then the COSMOS openrouter key path. Offline crew does not need them. This pass did not call `image`.
 
