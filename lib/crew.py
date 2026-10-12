@@ -29,7 +29,7 @@ ROLES = (
         "id": "content",
         "n": 2,
         "label": "Content writer",
-        "hands": ["copy_read", "copy_gap"],
+        "hands": ["copy_read", "copy_gap", "copy_check"],
         "does_not": "fill a gap with invented facts, prices, or quotes",
     },
     {

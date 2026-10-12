@@ -1,0 +1,12 @@
+{
+  "id": "spidercaster-com",
+  "origin": "scratch",
+  "parents": [],
+  "palette": "#1f6f5b",
+  "type_lead": "sans",
+  "nav": "top-bar",
+  "template": "modern",
+  "sections": [],
+  "package": true,
+  "note": "scratch mold for this site"
+}

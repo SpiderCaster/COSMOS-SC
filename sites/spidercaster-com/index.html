@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SpiderCaster turns words into websites.</title>
+<meta name="description" content="You write what the page should say. SpiderCaster builds the page from your words and hands you the files.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="SpiderCaster turns words into websites.">
+<meta property="og:description" content="You write what the page should say. SpiderCaster builds the page from your words and hands you the files.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/hero-reading-room.jpg">
+<meta name="theme-color" content="#1f6f5b">
+<link rel="canonical" href="index.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "SpiderCaster turns words into websites.", "description": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files."}</script>
+<!-- SpiderCaster: noindex until approved -->
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px;scroll-padding-top:calc(72px + env(safe-area-inset-top));scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+:root{--bg:#080c13;--surface:#0f1622;--surface2:#151e2e;--text:#edf2f8;--muted:#bcc7d4;--faint:#8d99a8;--line:rgba(158,196,220,0.15);--line-soft:rgba(158,196,220,0.09);--accent:#1f6f5b;--accent-deep:#155843;--accent-text:#6cc4a1;--accent-glow:rgba(52,186,148,0.35);--accent-soft:rgba(52,186,148,0.13);--on-accent:#ffffff;--price:#6cc4a1;--radius:20px;--maxw:1140px;--font-head:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--font-body:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--shadow-lg:0 24px 60px rgba(0,0,0,.45);--shadow-card:0 14px 34px rgba(0,0,0,.35)}
+::selection{background:rgba(52,186,148,.35);color:#fff}
+.skip{position:absolute;left:12px;top:-80px;background:#0f1622;color:#edf2f8;padding:10px 14px;min-height:44px;z-index:5;border-radius:10px;text-decoration:none}
+.phone-bar{display:none}
+.skip:focus{top:12px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px;border-radius:6px}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--accent-text)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+section{padding:104px 0;scroll-margin-top:calc(72px + env(safe-area-inset-top));position:relative}
+/* D5 phone order: sections carrying data-sc-order reorder below 1280px only
+   (the mobile block, 360-first); 1280px and up keeps DOM order. */
+@media(max-width:1279px){main:has(>section[data-sc-order]){display:flex;flex-direction:column}}
+h1,h2,h3{font-family:var(--font-head);line-height:1.08;margin:0 0 14px;letter-spacing:-.03em;text-wrap:balance;overflow-wrap:break-word}
+h1,h2{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+h1{font-size:clamp(2.5rem,5.4vw + 1rem,4.4rem);font-weight:800;letter-spacing:-.045em;line-height:1.03}
+h2{font-size:clamp(1.9rem,3.2vw + .6rem,2.8rem);font-weight:780;letter-spacing:-.03em;line-height:1.1}
+h3{font-size:1.18rem;font-weight:700;letter-spacing:-.015em}
+p{margin:0 0 14px}
+.lede{color:var(--muted);font-size:1.16rem;line-height:1.7;max-width:62ch}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);margin-bottom:18px}
+.icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;min-width:44px;padding:14px 28px;border-radius:14px;font-weight:700;text-decoration:none;font-size:1.02rem;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+.btn.primary{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-deep) 100%);color:var(--on-accent);box-shadow:0 10px 30px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn.ghost{border-color:var(--line);color:var(--text);background:rgba(255,255,255,.03)}
+.btn.ghost:hover{border-color:rgba(158,196,220,.35);background:rgba(255,255,255,.06);transform:translateY(-2px)}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(8,12,19,.8);border-bottom:1px solid var(--line-soft);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease,border-color .2s ease}
+.site-header.is-stuck{background:rgba(8,12,19,.94);box-shadow:0 12px 32px rgba(0,0,0,.4);border-bottom-color:var(--line)}
+/* blur lives on a pseudo-element layer: backdrop-filter on .site-header itself would make the header the
+   containing block for the position:fixed mobile drawer and trap it in the bar (DEFECT_4) */
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);pointer-events:none}
+.nav{display:flex;align-items:center;gap:12px;min-height:68px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;font-weight:750;font-size:1.02rem;text-decoration:none;color:var(--text);font-family:var(--font-head);letter-spacing:-.01em}
+.brand-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.brand-mark{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:var(--on-accent);font-family:Georgia,'Times New Roman',serif;font-weight:700;flex:none;box-shadow:0 4px 14px var(--accent-glow)}
+.nav-here{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:1rem}
+.nav-links{display:flex;flex-wrap:wrap;gap:8px 22px;margin-left:auto;align-items:center;min-width:0}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;min-width:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%;transition:color .15s ease}
+.nav-links a:hover,.nav-links a[aria-current="page"]{color:var(--text)}
+.nav-toggle{display:none;margin-left:auto;flex:none;background:none;border:1px solid var(--line);border-radius:12px;color:var(--text);width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
+/* ---------- hero ---------- */
+.hero{padding:96px 0 104px;overflow:clip}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto;height:120%;max-height:900px;background:radial-gradient(52% 46% at 50% 0%,rgba(52,186,148,.16),transparent 70%),radial-gradient(30% 26% at 82% 22%,rgba(84,120,220,.10),transparent 70%);pointer-events:none}
+.hero-stage{display:block;position:relative}
+.hero-visual{position:relative;overflow:hidden;border-radius:24px;border:1px solid rgba(190,220,235,.2);aspect-ratio:16/9;height:auto;margin:0 0 30px;background:linear-gradient(160deg,var(--surface2),var(--bg));box-shadow:var(--shadow-lg),0 0 0 1px rgba(0,0,0,.3),0 0 90px rgba(52,186,148,.12)}
+.hero-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(4,8,14,.55) 100%),radial-gradient(120% 60% at 50% -10%,rgba(52,186,148,.14),transparent 60%);pointer-events:none}
+.hero-mark{display:flex;align-items:center;justify-content:center;padding:18px}
+.hero-mark span{font-family:Georgia,'Times New Roman',serif;font-size:clamp(3rem,12vw,4.6rem);line-height:1;color:var(--accent-text)}
+.hero-copy h1{margin-bottom:20px}
+.hero .lede{margin-bottom:0;font-size:1.22rem}
+.hero .lede + .lede{margin-top:2px}
+.hero .lede:last-of-type{margin-bottom:22px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:10px 0 24px}
+.hero-cta .btn{min-height:52px}
+.cta-sep{color:var(--faint);font-size:1rem}
+.hero-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--text);font-weight:600;text-underline-offset:4px;text-decoration-color:var(--accent-text);text-decoration-thickness:1.5px}
+.hero-more:hover{color:var(--accent-text)}
+.cta-panel .cta-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:inherit;text-underline-offset:3px}
+.bullets{list-style:none;margin:4px 0 0;padding:0;display:flex;gap:10px 12px;flex-wrap:wrap}
+.bullets li{display:inline-flex;align-items:center;gap:9px;color:var(--muted);font-size:1rem;background:rgba(255,255,255,.035);border:1px solid var(--line-soft);border-radius:999px;padding:9px 16px 9px 12px}
+.bullets .icon{color:var(--accent-text);width:1.05em;height:1.05em}
+.hero--modern{text-align:left}
+.hero--editorial h1{max-width:16ch}
+.hero--editorial .eyebrow{border-radius:0;border:none;border-bottom:2px solid var(--accent);background:none;padding:0 0 6px}
+.hero--bold{position:relative}
+.hero--bold h1{font-size:clamp(1.7rem,8vw,4.2rem);font-weight:800;letter-spacing:-.03em}
+@media(min-width:861px){
+.hero{padding:128px 0 136px}
+.hero-stage{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(240px,.92fr);gap:56px;align-items:center}
+.hero-copy{grid-column:1;grid-row:1}
+.hero-visual{grid-column:2;grid-row:1;aspect-ratio:auto;height:400px;margin:0}
+.hero--modern{text-align:center}
+.hero--modern .hero-stage{grid-template-columns:1fr;justify-items:center}
+.hero--modern .hero-copy{grid-column:1;grid-row:2;max-width:72ch}
+.hero--modern .hero-visual{grid-column:1;grid-row:1;width:min(100%,820px);margin-bottom:16px;aspect-ratio:21/9;height:auto;min-height:300px}
+.hero--modern .lede{margin-left:auto;margin-right:auto}
+.hero--modern .bullets,.hero--modern .hero-cta{justify-content:center}
+.hero--bold .hero-visual{height:440px}
+.hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:140px;aspect-ratio:2/1}
+}
+@media(min-width:1280px){
+section{padding:128px 0}
+.hero{padding:150px 0 160px}
+.hero-stage{gap:64px}
+.grid,.quotes,.pricing,.steps,.gallery,.team-grid{gap:24px}
+.wrap{padding:0 32px}
+}
+/* ---------- section rhythm ---------- */
+.sec-head{max-width:72ch;margin-bottom:48px}
+.sec-head h2{margin-bottom:14px}
+.sec-head .lede{margin-bottom:0;font-size:1.14rem}
+.tpl-modern .sec-head{text-align:center;margin-left:auto;margin-right:auto}
+.tpl-modern .sec-head .lede{margin-left:auto;margin-right:auto}
+.sec{border-top:1px solid var(--line-soft)}
+section.hero + section.sec{border-top:none}
+/* ---------- cards / grids ---------- */
+.grid{display:grid;gap:20px}
+.c2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.c3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 34%),var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card),0 0 0 1px rgba(52,186,148,.12);border-color:rgba(120,200,170,.35)}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(52,186,148,.24),rgba(52,186,148,.07));border:1px solid rgba(52,186,148,.32);color:var(--accent-text);margin-bottom:16px}
+.chip .icon{width:22px;height:22px}
+.card h3{margin-bottom:8px}
+.card p{color:var(--muted);margin:0;line-height:1.65}
+/* ---------- stats band ---------- */
+#numbers{background:linear-gradient(180deg,rgba(52,186,148,.07),rgba(52,186,148,.02) 55%,transparent),var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats{display:flex;gap:40px 56px;flex-wrap:wrap;justify-content:center;text-align:center}
+.stat{flex:1 1 150px;max-width:230px}
+.stat-v{font-family:var(--font-head);font-size:clamp(2.4rem,4.6vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1;color:#82d9b6}
+.stat-l{color:var(--muted);font-size:1rem;margin-top:10px;line-height:1.5}
+/* ---------- steps ---------- */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));counter-reset:step}
+.steps li{counter-increment:step;position:relative}
+.step-n{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:var(--on-accent);font-weight:800;font-size:1.02rem;margin-bottom:14px;box-shadow:0 6px 18px var(--accent-glow)}
+.step-n::before{content:counter(step)}
+/* ---------- gallery ---------- */
+.gallery{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.tile{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:16/10;border:1px solid var(--line);background:var(--surface2)}
+.tile img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:34px 18px 16px;font-size:1rem;font-weight:600;color:#fff;background:linear-gradient(180deg,transparent,rgba(3,6,11,.85))}
+.tile.grad{display:flex;align-items:flex-end}
+.tile.grad .fill{position:absolute;inset:0}
+@media(min-width:861px){.tile:hover img{transform:scale(1.045)}}
+/* ---------- pricing / quotes ---------- */
+.pricing{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:stretch}
+.price-card{display:flex;flex-direction:column}
+.price-card .price{font-family:var(--font-head);font-size:2rem;font-weight:700;margin:4px 0}
+.price-card .period{color:var(--muted);font-size:1rem}
+.price-card ul{list-style:none;margin:12px 0 16px;padding:0;display:grid;gap:8px}
+.price-card ul li{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:1rem}
+.price-card ul .icon{color:var(--accent-text);margin-top:.2em}
+.price-card .btn{margin-top:auto;justify-content:center}
+.price-card.featured{border-color:rgba(52,186,148,.5);box-shadow:0 18px 44px rgba(31,111,91,.35)}
+.badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:var(--on-accent);font-size:1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:999px;white-space:nowrap}
+.price-card{position:relative}
+.quotes{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.quote-card .q-ico{color:var(--accent-text);margin-bottom:8px}
+.quote-card blockquote{margin:0 0 14px;color:var(--text);font-size:1rem}
+.quote-card .who{display:flex;align-items:center;gap:10px}
+.avatar{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--on-accent);background:linear-gradient(135deg,var(--accent),var(--accent-deep));flex:none}
+.who .nm{font-weight:600;font-size:1rem}
+.who .rl{color:var(--muted);font-size:1rem}
+/* ---------- faq ---------- */
+.faq-list{display:grid;gap:12px;max-width:840px}
+.tpl-modern .faq-list{margin:0 auto}
+details{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:0;transition:border-color .18s ease,background .18s ease}
+details:hover{border-color:rgba(120,200,170,.35)}
+details[open]{border-color:rgba(52,186,148,.4);background:linear-gradient(180deg,rgba(52,186,148,.06),transparent 40%),var(--surface)}
+summary{cursor:pointer;padding:19px 22px;min-height:44px;font-weight:650;font-size:1.04rem;letter-spacing:-.01em;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font-size:1.4rem;line-height:1;font-weight:300;flex:none}
+details[open] summary::after{content:"2"}
+details .a{padding:0 22px 20px;color:var(--muted);line-height:1.7}
+/* ---------- closing CTA ---------- */
+#start{border-top:1px solid var(--line-soft)}
+.cta-panel{position:relative;overflow:hidden;background:linear-gradient(140deg,#175a44 0%,#0e4133 60%,#0a3328 100%);color:var(--on-accent);border:1px solid rgba(140,230,195,.3);border-radius:calc(var(--radius) + 8px);padding:76px 40px;text-align:center;box-shadow:var(--shadow-lg),0 0 120px rgba(52,186,148,.18)}
+.cta-panel h2{color:inherit}
+.cta-panel .lede{color:#ffffff;margin:0 auto 26px}
+.cta-panel .btn.ghost{border-color:currentColor;color:inherit;background:transparent}
+.cta-panel .btn.primary{background:#080c13;color:#edf2f8;box-shadow:none}
+/* ---------- contact / about / misc ---------- */
+.contact-grid{display:grid;gap:28px;grid-template-columns:1fr;align-items:start}
+@media(min-width:861px){.contact-grid{grid-template-columns:1.1fr .9fr}}
+.contact-info{display:grid;gap:12px}
+.contact-info .row{display:flex;gap:10px;align-items:center;color:var(--muted);min-height:44px}
+.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
+.contact-info .row .icon{color:var(--accent-text)}
+.form{display:grid;gap:12px}
+.form label{font-size:1rem;color:var(--muted);display:grid;gap:6px}
+.form input,.form textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font:inherit;font-size:max(16px,1rem)}
+.form ::placeholder{color:var(--muted);opacity:1}
+.form input:focus,.form textarea:focus{outline:2px solid var(--accent-text);outline-offset:1px;border-color:transparent}
+.about-body{max-width:70ch}
+.tpl-modern .about-body{margin-left:auto;margin-right:auto}
+.about-body p{color:var(--muted);font-size:1.08rem;line-height:1.75}
+.points{display:grid;gap:12px;margin-top:20px}
+.points .pt{display:flex;gap:10px}
+.points .pt .icon{color:var(--accent-text);margin-top:.25em}
+.points .pt b{display:block}
+.points .pt span{color:var(--muted);font-size:1rem}
+.team-grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.team-card .avatar{width:56px;height:56px;font-size:1.05rem;margin-bottom:12px}
+.team-card .role{color:var(--accent-text);font-size:1rem;font-weight:600}
+.team-card .bio{color:var(--muted);font-size:1rem;margin:8px 0 0}
+.menu-group{margin-bottom:28px}
+.menu-group h3{margin-bottom:14px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:7px 0;min-height:48px}
+.menu-item .mi-name{font-weight:600}
+.menu-item .mi-desc{color:var(--muted);font-size:1rem;width:100%}
+.menu-item .dots{flex:0 1 1.5rem;border-bottom:2px dotted var(--line);min-width:12px}
+.menu-item .mi-price{font-weight:700;color:var(--price);white-space:nowrap;flex:none}
+.menu-item .mi-col{display:flex;flex-direction:column;flex:1;min-width:0}
+.logos{display:flex;gap:14px 28px;flex-wrap:wrap;justify-content:center;align-items:center}
+.logos span{color:var(--muted);font-weight:600;font-family:var(--font-head);font-size:1.05rem;letter-spacing:.02em}
+.site-footer{border-top:1px solid var(--line);padding:40px 0 calc(40px + env(safe-area-inset-bottom));color:var(--muted);font-size:1rem;margin-top:0}
+.foot-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.foot-links{display:flex;gap:16px;flex-wrap:wrap}
+.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
+.foot-links a:hover{color:var(--text)}
+.credit{margin-top:10px;font-size:1rem}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:860px){
+.nav{flex-wrap:nowrap;min-height:64px}
+.brand{flex:1 1 auto;min-width:0}
+.reveal{opacity:1;transform:none}
+.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;flex-wrap:nowrap;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow-y:auto;overscroll-behavior:contain}
+.nav-links.open{display:flex}
+.nav-links a{flex:none;width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
+.hero-cta{flex-direction:column;align-items:stretch}
+.hero-cta .btn{width:100%;justify-content:center}
+.cta-sep{display:block;text-align:center}
+.nav-toggle{display:inline-flex}
+.nav-here{display:block;flex:0 1 auto;max-width:4.5rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-here:empty{display:none}
+.wrap{padding:0 18px}
+section{padding:56px 0}
+section.sec{border-top:1px solid var(--line-soft)}
+#numbers{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sec-head{margin-bottom:28px}
+.tpl-modern .sec-head,.tpl-modern .sec-head .lede{text-align:left;margin-left:0;margin-right:0}
+.tpl-modern .about-body{margin-left:0;margin-right:0}
+.card{padding:20px}
+.card:hover{transform:none;box-shadow:none}
+h1{font-size:clamp(2.1rem,9vw,2.9rem)}
+h1,h2{text-wrap:balance;overflow-wrap:break-word}
+.mi-price{font-variant-numeric:tabular-nums}
+.chip{width:40px;height:40px;margin-bottom:12px;border-radius:12px}
+.points{margin-top:12px}
+.hero{padding:48px 0 64px}
+.hero .lede{font-size:1.1rem}
+.hero .lede:last-of-type{margin-bottom:18px}
+.hero-visual{border-radius:18px;margin-bottom:24px}
+.bullets li{font-size:1rem;padding:8px 14px 8px 11px}
+.about-body p:last-child{margin-bottom:0}
+.about-body p{font-size:1.02rem}
+.menu-group{margin-bottom:0}
+.grid{gap:12px}
+.card h3{margin-bottom:6px;text-wrap:balance;overflow-wrap:break-word}
+.card p{text-wrap:pretty}
+.card:has(.chip){display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:14px;align-items:start}
+.card:has(.chip) .chip{grid-row:1 / span 2;margin-bottom:0}
+.card:has(.chip) h3,.card:has(.chip) p{grid-column:2}
+.grid.c3{gap:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.grid.c3 .card{background:transparent;border:0;border-radius:0;box-shadow:none}
+.grid.c3 .card + .card{border-top:1px solid var(--line)}
+.hero-visual.hero-mark{aspect-ratio:2/1;height:auto;max-height:120px}
+.hero-mark span{font-size:clamp(2.8rem,16vw,4rem)}
+.c2,.c3,.quotes,.pricing,.steps,.gallery,.team-grid{grid-template-columns:1fr}
+.stats{gap:26px 20px}
+.stat{flex:1 1 40%;max-width:none}
+.about-body:not(:has(.points)){border-left:3px solid var(--accent);padding-left:14px}
+.about-body:has(.points) > p{border-left:3px solid var(--accent);padding-left:14px}
+.points{gap:0;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.points .pt{padding:12px 14px;align-items:flex-start}
+.points .pt + .pt{border-top:1px solid var(--line)}
+.menu-item{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.menu-item:last-child{border-bottom:0}
+.menu-item .mi-col{display:contents}
+.menu-item .mi-name{grid-column:1;grid-row:1}
+.menu-item .mi-price{grid-column:2;grid-row:1}
+.menu-item .mi-desc{grid-column:1 / -1;grid-row:2;width:auto}
+.menu-item .dots{display:none}
+body.nav-open{overflow:hidden}
+.phone-bar{display:flex;position:fixed;z-index:45;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));min-height:48px;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;background:var(--accent);color:var(--on-accent);text-decoration:none;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+body:has(.phone-bar){padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+body.nav-open .phone-bar{display:none}
+}
+@media(max-width:860px) and (scripting:none){
+.nav{flex-wrap:wrap}
+.nav-toggle{display:none}
+.nav-links{display:flex;flex-wrap:wrap;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
+}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.site-header,.btn,.card,.tile img{transition:none}.btn:hover,.card:hover{transform:none}}
+.tpl-bold .btn{border-radius:999px;padding:13px 22px}
+.tpl-editorial h2,.tpl-editorial h3{font-family:var(--font-head)}
+
+</style>
+</head>
+<body class="tpl-modern">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+<div class="wrap nav">
+<a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S</span><span class="brand-name">SpiderCaster turns words into websites.</span></a>
+<span class="nav-here" aria-live="polite"></span>
+<button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+<nav id="site-nav" class="nav-links"><a href="#how">How it goes</a><a href="#features">What you get</a><a href="#numbers">The cost, in plain numbers</a><a href="#two-clicks-to-install">Two clicks to install</a><a href="#faq">Questions</a></nav>
+</div>
+</header>
+<main id="main">
+<section id="hero" class="hero hero--modern"><div class="wrap hero-stage"><div class="hero-visual"><img style="max-width:100%;height:auto" width="800" height="533" src="assets/hero-reading-room.jpg" alt="A room built to hold what people wrote." sizes="100vw" fetchpriority="high" decoding="async"></div><div class="hero-copy"><h1>SpiderCaster turns words into websites.</h1><p class="lede">You write what the page should say.</p><p class="lede">SpiderCaster builds the page from your words and hands you the files.</p><p class="lede">There is no database.</p><p class="lede">There is nothing to log into.</p><p class="lede">When the words change, you build again.</p><div class="hero-cta"><a class="btn primary" data-cta="primary" href="#start">Build a site like this</a><span class="cta-sep">or</span><a class="hero-more" href="#how">How it goes</a></div><ul class="bullets"><li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Start with a page of plain writing.</span></li><li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Run one command and get a site.</span></li><li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Change the words and build again.</span></li><li><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Keep every file. The site is yours.</span></li></ul></div></div></section>
+<section id="how" class="sec"><div class="wrap"><div class="sec-head"><h2>How it goes</h2><p class="lede">Three moves. Write, build, check.</p></div><ol class="steps"><li class="card reveal"><span class="step-n" aria-hidden="true"></span><h3>Write the words</h3><p>Say what the page is for and what it should say. A plain file is fine.</p></li><li class="card reveal"><span class="step-n" aria-hidden="true"></span><h3>Build the draft</h3><p>One command turns the words into a site, and the offline draft costs nothing.</p></li><li class="card reveal"><span class="step-n" aria-hidden="true"></span><h3>Check the result</h3><p>The checker reads every page and fails the job on the first problem. Nothing goes live with a failure on it.</p></li></ol></div></section>
+<section id="features" class="sec"><div class="wrap"><div class="sec-head"><h2>What you get</h2><p class="lede">Everything on this list ships with the engine.</p></div><div class="grid c3"><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2z"/></svg></span><h3>Offline drafts</h3><p>one command builds a site from your words. The draft costs nothing and needs no keys.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span><h3>Free help from models</h3><p>the free chain can plan the shape of the site. Each try is written down with its token count.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><h3>Small edits</h3><p>change one section at a time instead of rebuilding the whole site.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>A strict checker</h3><p>every page must pass every check with zero failures. One failure stops the job.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>Plain files out</h3><p>the site is ordinary HTML and CSS with the style baked in. No database, no login, no upkeep.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>Room for seven seats</h3><p>architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. None of them publish.</p></div></div></div></section>
+<section id="numbers" class="sec"><div class="wrap"><div class="sec-head"><h2>The cost, in plain numbers</h2></div><div class="stats"><div class="stat"><div class="stat-v">0</div><div class="stat-l">tokens to build the offline draft</div></div><div class="stat"><div class="stat-v">2</div><div class="stat-l">clicks to install</div></div><div class="stat"><div class="stat-v">7</div><div class="stat-l">seats in the crew</div></div><div class="stat"><div class="stat-v">1</div><div class="stat-l">planning call when AI helps</div></div><div class="stat"><div class="stat-v">14</div><div class="stat-l">section frames to start from</div></div><div class="stat"><div class="stat-v">0</div><div class="stat-l">failures allowed past the check gate</div></div></div></div></section>
+<section id="old-machines-same-job" class="sec"><div class="wrap"><div class="sec-head"><h2>Old machines, same job</h2></div><div class="about-body"><p>Words in, pages out. That is the trade, and it is older than computers. A press from 1819. The ENIAC, wired by hand. Two women programming it in 1946. A room built to hold what people wrote.</p><p>The photos are public record. They are here to make one point: the tools change, and the job stays.</p></div></div></section>
+<section id="photos" class="sec"><div class="wrap"><div class="sec-head"><h2>Words in, pages out.</h2></div><div class="gallery"><figure class="tile grad reveal" style="margin:0"><img style="max-width:100%;height:auto" width="800" height="592" src="assets/press-1819.jpg" alt="A press from 1819." loading="lazy"><div class="cap">A press from 1819.</div></figure><figure class="tile grad reveal" style="margin:0"><img style="max-width:100%;height:auto" width="960" height="694" src="assets/build-eniac.jpg" alt="The ENIAC, wired by hand." loading="lazy"><div class="cap">The ENIAC, wired by hand.</div></figure><figure class="tile grad reveal" style="margin:0"><img style="max-width:100%;height:auto" width="960" height="659" src="assets/crew-eniac-programmers.jpg" alt="Two women programming it in 1946." loading="lazy"><div class="cap">Two women programming it in 1946.</div></figure></div></div></section>
+<section id="features-2" class="sec"><div class="wrap"><div class="sec-head"><h2>The rules it runs on</h2><p class="lede">Six rules. They hold unless Keith changes them.</p></div><div class="grid c3"><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>Nothing invented</h3><p>the builder only uses words it was given. A missing fact stays missing.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span><h3>Hidden first</h3><p>pages stay out of search results until a person signs off on the words.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span><h3>Local photos only</h3><p>a photo must sit in the project folder. Web addresses for photos are dropped.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></span><h3>Keys stay out</h3><p>the engine reads key names from the environment. The values never touch the disk.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>Every run counted</h3><p>each attempt lands in a ledger with its token count, pass or fail.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>Plain Python</h3><p>version 3.11 or newer, standard library only, nothing to install.</p></div></div></div></section>
+<section id="the-check-gate" class="sec"><div class="wrap"><div class="sec-head"><h2>The check gate</h2></div><div class="about-body"><p>The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, noindex. One failure stops the job. Zero is the only passing score.</p></div></div></section>
+<section id="seven-seats-no-publish" class="sec"><div class="wrap"><div class="sec-head"><h2>Seven seats, no publish</h2></div><div class="about-body"><p>One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person typing a command, and only Keith types that one.</p></div></div></section>
+<section id="two-clicks-to-install" class="sec"><div class="wrap"><div class="sec-head"><h2>Two clicks to install</h2></div><div class="about-body"><p>You need Python 3.11 or newer. Nothing else.</p><p>The desk has rooms for the plan, the paint, the check, and the preview. Nothing publishes from here. Publish stays a command a person runs.</p><p>To rehearse with no side effects first:</p><div class="points"><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>python spidercaster.py start --dry-run runs doctor only. No</b></div></div><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>python spidercaster.py doctor prints a JSON report. &quot;ok&quot;</b><span>true means the molds, frames, seats, and hands line up.</span></div></div><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>Get the folder from GitHub</b><span>SpiderCaster/COSMOS-SC (click one: download or clone).</span></div></div><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>Double-click Start-SpiderCaster.cmd on Windows, or run ./sta</b></div></div></div></div></div></section>
+<section id="faq" class="sec"><div class="wrap"><div class="sec-head"><h2>Questions</h2></div><div class="faq-list"><details><summary>Does the offline draft really cost nothing?</summary><div class="a">Yes. No model runs. The words are sorted into sections by fixed rules, and the page is assembled from code. The ledger records the run at zero tokens.</div></details><details><summary>What does the AI pass cost?</summary><div class="a">One planning call, with one retry if the answer comes back broken. On the free tier the cost is zero dollars. The ledger writes down the exact count either way.</div></details><details><summary>Can the AI make things up?</summary><div class="a">No. It works only from the words in your files. It can reorder and shorten, but it cannot add facts, prices, or names.</div></details><details><summary>How do I change one thing?</summary><div class="a">Edit the site.json file and rebuild from it with build --from. The rebuild costs nothing. Small fixes beat full rebuilds.</div></details><details><summary>How does a site go live?</summary><div class="a">A person runs the bind command for the site and the mold. There is no publish button. A mold that is already live somewhere else is refused.</div></details><details><summary>What do I need on my machine?</summary><div class="a">Python 3.11 or newer. That is all. The offline path needs no keys and no accounts.</div></details></div></div></section>
+<section id="start" class="sec"><div class="wrap"><div class="cta-panel"><h2>Start with words.</h2><p class="lede">Build a site like this. One page of writing is enough for a first draft. The draft costs nothing, and the files are yours to keep.</p></div></div></section>
+</main>
+<footer class="site-footer">
+<div class="wrap foot-row">
+<div>(c) 2026 SpiderCaster turns words into websites.</div>
+<div class="foot-links"></div>
+</div>
+</footer>
+
+<script>
+(function(){
+var t=document.querySelector('.nav-toggle'),m=document.getElementById('site-nav');
+if(t&&m){t.addEventListener('click',function(){var o=m.classList.toggle('open');t.setAttribute('aria-expanded',o?'true':'false');document.body.classList.toggle('nav-open',o);});
+m.addEventListener('click',function(e){if(e.target&&e.target.tagName==='A'){m.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');}});}
+var head=document.querySelector('.site-header');
+function stuck(){if(head) head.classList.toggle('is-stuck',window.scrollY>8);}
+stuck();
+window.addEventListener('scroll',stuck,{passive:true});
+var here=document.querySelector('.nav-here');
+if(here&&'IntersectionObserver' in window){var secs=document.querySelectorAll('main section');
+var io2=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;var h=en.target.querySelector('h1,h2');var label=h?h.textContent:'';var brand=document.querySelector('.brand-name');if(brand&&label===brand.textContent)label='';here.textContent=label;});},{rootMargin:'-30% 0px -55% 0px',threshold:0});
+secs.forEach(function(el){io2.observe(el);});}
+var f=document.querySelector('form[data-mailto]');
+if(f){f.addEventListener('submit',function(e){e.preventDefault();var d=new FormData(f);
+var s=encodeURIComponent('['+(document.title||'Site')+'] message from '+(d.get('name')||''));
+var b=encodeURIComponent((d.get('message')||'')+'\n\nReply to: '+(d.get('email')||''));
+window.location.href='mailto:'+f.getAttribute('data-mailto')+'?subject='+s+'&body='+b;});}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});}
+})();
+</script>
+</body>
+</html>

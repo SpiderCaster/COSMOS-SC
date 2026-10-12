@@ -137,6 +137,7 @@ class Desk:
         self.root = Path(root) if root is not None else ROOT
         self.project = ""
         self.site = ""
+        self.frame = ""
         self.kind = "header"
         self.width = 390
         self.message = ""
@@ -517,7 +518,7 @@ def render_copy(desk: Desk) -> str:
     try:
         copy = load_project(project_dir(desk.root, desk.project))
     except SystemExit as exc:
-        return layout("Copy Desk", f"<p>{escape(exc)}</p>", desk.message, desk.error)
+        return layout("Copy Desk", f"<p>{escape(str(exc))}</p>", desk.message, desk.error)
     blocks = []
     for block in copy.blocks:
         name = str(block.file)
@@ -719,7 +720,7 @@ def render_parts(desk: Desk) -> str:
         rows = index_rows()
         total = counts(rows)
     except Exception as exc:
-        return layout("Parts Shelf", f"<p>{escape(exc)}</p>", desk.message, desk.error)
+        return layout("Parts Shelf", f"<p>{escape(str(exc))}</p>", desk.message, desk.error)
     kind_links = []
     for kind in KINDS:
         kind_links.append(
@@ -733,7 +734,7 @@ def render_parts(desk: Desk) -> str:
         shelf = _shelf(desk.kind or "header")
     except Exception as exc:
         shelf = []
-        radios.append(f"<p>{escape(exc)}</p>")
+        radios.append(f"<p>{escape(str(exc))}</p>")
     for row in shelf:
         radios.append(
             f'<label class="choice"><input type="radio" name="catalog_id" value="{escape(row["catalog_id"])}" required> '
@@ -1368,7 +1369,7 @@ def serve_studio(port: int = STUDIO_PORT, attempts: int = 20, root: Path | None 
             try:
                 html = render(desk)
             except Exception as exc:
-                html = layout("spidercaster", f"<p>{escape(exc)}</p>", "", "The room failed.")
+                html = layout("spidercaster", f"<p>{escape(str(exc))}</p>", "", "The room failed.")
             body = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")

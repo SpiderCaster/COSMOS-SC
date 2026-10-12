@@ -52,8 +52,9 @@ def report(root: Path | None = None) -> dict:
             errors.append(f"seat file missing: {seat_id}/WRAPPER.md")
     flat = [name for role in ROLES for name in role["hands"]]
     hands_match = flat == list(HANDS)
-    if len(molds) != 3:
-        errors.append(f"mold count is {len(molds)}, not 3")
+    for required in ("clarify-mix", "discover-grid", "warmth-authority"):
+        if required not in molds:
+            errors.append(f"shipped mold missing: {required}")
     if not hands_match:
         errors.append("hands do not match")
     env = (os.environ.get("SPIDERCASTER_VAULT") or "").strip()
