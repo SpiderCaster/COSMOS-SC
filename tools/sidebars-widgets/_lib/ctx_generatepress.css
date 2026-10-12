@@ -1,0 +1,19 @@
+/* Test context. Approximates GeneratePress base rules that touch widgets and layout.
+   Not vendor CSS. Root size is the browser default. */
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;color:#222;background:#fff}
+a{color:#1e73be;text-decoration:none}
+h1,h2,h3,h4{font-weight:inherit;margin:0 0 20px;line-height:1.2}
+p{margin:0 0 1.5em}
+ul,ol{margin:0 0 1.5em 3em;padding:0}
+.grid-container{max-width:1200px;margin:0 auto;padding:0 20px;box-sizing:border-box}
+.site-content{display:block}
+.content-area,.widget-area{width:100%}
+.inside-article{padding:20px 0}
+.widget-area .widget{padding:20px 0;margin-bottom:30px}
+.widget ul{margin:0;list-style:none}
+.widget li{margin-bottom:.5em}
+.widget-title{font-size:20px;margin:0 0 30px;font-weight:inherit}
+input[type=search],input[type=email],input[type=text]{border:1px solid #ccc;padding:10px 15px;font-size:17px;box-sizing:border-box}
+button,input[type=submit]{font-family:inherit;font-size:17px;padding:10px 20px}
+@media(min-width:769px){.site-content{display:flex}.content-area{width:70%}.is-right-sidebar{width:30%;padding-left:20px;box-sizing:border-box}}
+.sc-tall{height:420px;margin:0}

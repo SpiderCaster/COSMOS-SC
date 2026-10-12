@@ -1,0 +1,14 @@
+.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:900px){.sc-lay-r{grid-template-columns:minmax(0,1fr) var(--sc-side,300px);gap:32px}}
+.sc-lay .sc-grp{border-top:1px solid var(--sc-line,#c9d1d9);color:var(--sc-fg,#1d2327);font-size:16px}
+.sc-lay .sc-grp:last-of-type{border-bottom:1px solid var(--sc-line,#c9d1d9)}
+.sc-lay .sc-grp-s{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:8px 0;font-size:18px;font-weight:700;line-height:1.3;cursor:pointer;list-style:none}
+.sc-lay .sc-grp-s::-webkit-details-marker{display:none}
+.sc-lay .sc-grp-s::after{content:"+";flex:none;width:24px;text-align:center;font-size:24px;font-weight:400}
+.sc-lay .sc-grp[open]>.sc-grp-s::after{content:"\2212"}
+.sc-lay .sc-grp-b{padding:0 0 12px}
+.sc-lay .sc-grp-b ul{list-style:none;margin:0;padding:0}
+.sc-lay .sc-grp-b li{margin:0;padding:0;border:0}
+.sc-lay .sc-grp-b a{display:flex;align-items:center;min-height:44px;color:var(--sc-accent,#0b5cad);font-size:18px}
+.sc-lay .sc-grp :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}

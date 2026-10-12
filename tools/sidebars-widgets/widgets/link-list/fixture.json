@@ -1,0 +1,18 @@
+{
+ "data": {
+  "title": "Links",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture link one",
+    "url": "/fixture-one/",
+    "note": "Fixture note"
+   },
+   {
+    "label": "Fixture link two",
+    "url": "/fixture-two/",
+    "note": ""
+   }
+  ]
+ }
+}

@@ -1,0 +1,6 @@
+/* external sheet: comments and @media must not trip the parser */
+html{font-size:18px}
+body{background:#ffffff;color:#111111}
+.dim{color:#aaaaaa}
+@media (min-width:800px){ .small{font-size:14px} }
+.small{font-size:14px}

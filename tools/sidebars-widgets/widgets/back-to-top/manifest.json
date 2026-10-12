@@ -1,0 +1,67 @@
+{
+ "name": "Back to top button",
+ "slug": "back-to-top",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Fixed button that appears after the visitor scrolls 400 px and jumps to the top of the page.",
+ "inputs": [
+  {
+   "name": "label",
+   "type": "string",
+   "required": false,
+   "description": "Button text.",
+   "default": "Top"
+  },
+  {
+   "name": "after",
+   "type": "string",
+   "required": false,
+   "description": "Scroll distance in px that shows the button.",
+   "default": "400"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "back-to-top.html",
+  "back-to-top.css",
+  "back-to-top.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 3500,
+ "tags": [
+  "navigation",
+  "js",
+  "fixed"
+ ],
+ "external_hosts": [],
+ "notes": [
+  "The test sends a synthetic scroll event after scrollTo. Headless dump-dom draws no frames, so native scroll event timing is not covered."
+ ],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 115,
+  "failed": 0,
+  "total": 115
+ },
+ "bytes": 1151,
+ "gzip_bytes": 697
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "spidercaster-structure/1",
+  "frame_id": "welcome-scroll",
+  "mold_id": "discover-grid",
+  "pages": [
+    {
+      "slug": "index",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "part_id": "hero-dark-band-072"
+        },
+        {
+          "id": "about",
+          "type": "about",
+          "part_id": "card-collection-item-with-meta-181"
+        },
+        {
+          "id": "features",
+          "type": "features",
+          "part_id": "card-compact-row-089"
+        },
+        {
+          "id": "faq",
+          "type": "faq",
+          "part_id": "faq-bootstrap-accordion-flush-195"
+        }
+      ]
+    }
+  ]
+}

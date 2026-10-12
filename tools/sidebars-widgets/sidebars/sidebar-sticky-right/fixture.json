@@ -1,0 +1,12 @@
+{
+ "data": {
+  "aside_label": "Sidebar"
+ },
+ "slots": {
+  "aside": [
+   "search",
+   "recent-posts",
+   "categories"
+  ]
+ }
+}

@@ -287,7 +287,35 @@ class OpenWork:
                           "out_tokens": usage.get("completion_tokens", 0)}}
 
 
-PROVIDERS = {"gemini": Gemini, "openrouter": OpenRouter, "openwork": OpenWork}
+class NoKey:
+    """Free, no-key chain (lib/ai_chain/sc_ai_chain.py). Optional: configured only when SC_AI=on."""
+    id = "nokey"
+    label = "SpiderCaster no-key free chain (SC_AI=on)"
+    free = True
+    models = ["chain"]
+
+    @classmethod
+    def configured(cls) -> bool:
+        return os.environ.get("SC_AI", "off").strip().lower() in ("on", "1", "true", "yes")
+
+    @classmethod
+    def call(cls, *, system, user, model, max_output_tokens, temperature, timeout) -> dict:
+        try:
+            import sys
+            for d in (os.environ.get("SC_AI_CHAIN_DIR", ""), str(Path(__file__).resolve().parent / "ai_chain")):
+                if d and d not in sys.path and Path(d).is_dir():
+                    sys.path.append(d)
+            import sc_ai_chain
+        except ImportError as exc:
+            raise ProviderError(f"nokey: module missing ({exc})") from exc
+        r = sc_ai_chain.generate(system, user, "", purpose="engine", max_tokens=min(int(max_output_tokens), 1500),
+                                 temperature=temperature, style_check=False, max_chars=20000)
+        if r.source != "ai":
+            raise ProviderError("nokey: " + r.reason)
+        return {"text": r.text, "usage": {"in_tokens": 0, "out_tokens": 0}}
+
+
+PROVIDERS = {"gemini": Gemini, "openrouter": OpenRouter, "openwork": OpenWork, "nokey": NoKey}
 
 # Rough per-1M-token list prices for known paid fallbacks (approximate).
 PAID_PRICING = {
@@ -298,7 +326,7 @@ PAID_PRICING = {
 
 
 def estimate_cost(provider_id: str, model: str, in_tokens: int, out_tokens: int):
-    if provider_id in ("gemini", "openwork"):
+    if provider_id in ("gemini", "openwork", "nokey"):
         return 0.0
     if provider_id == "openrouter":
         if model.endswith(":free"):
@@ -314,7 +342,7 @@ def estimate_cost(provider_id: str, model: str, in_tokens: int, out_tokens: int)
 def resolve_chain(opts: dict) -> list[dict]:
     """Ordered candidate list: (provider_class, model)."""
     chain: list[dict] = []
-    order = [opts["provider"]] if opts.get("provider") else ["gemini", "openrouter", "openwork"]
+    order = [opts["provider"]] if opts.get("provider") else ["gemini", "openrouter", "openwork", "nokey"]
     for pid in order:
         p = PROVIDERS.get(pid)
         if p is None:

@@ -1,0 +1,102 @@
+{
+ "name": "Local info card",
+ "slug": "local-info-card",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Facts for one town as label and value pairs, with the time they were updated and a source link. The caller supplies every value from a named source. The card never invents a reading.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": true,
+   "description": "Heading, such as the town name."
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "updated",
+   "type": "string",
+   "required": true,
+   "description": "When the values were updated, as shown."
+  },
+  {
+   "name": "iso",
+   "type": "string",
+   "required": true,
+   "description": "Same time as YYYY-MM-DD or a full ISO time."
+  },
+  {
+   "name": "rows",
+   "type": "list",
+   "required": true,
+   "description": "Facts.",
+   "fields": [
+    "label",
+    "value"
+   ],
+   "field_notes": {
+    "label": "for example Forecast, High, Low, Wind, River stage",
+    "value": "text from the source, units included"
+   }
+  },
+  {
+   "name": "source_label",
+   "type": "string",
+   "required": true,
+   "description": "Source name."
+  },
+  {
+   "name": "source_url",
+   "type": "string",
+   "required": true,
+   "description": "Source address."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "local-info-card.html",
+  "local-info-card.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "local",
+  "facts",
+  "arkansas-coverage",
+  "sourced"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 106,
+  "failed": 0,
+  "total": 106
+ },
+ "bytes": 2325,
+ "gzip_bytes": 838
+}

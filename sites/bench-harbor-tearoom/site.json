@@ -15,20 +15,16 @@
   },
   "nav": [
     {
-      "label": "About",
-      "href": "#about"
-    },
-    {
-      "label": "Contact",
-      "href": "#contact"
-    },
-    {
       "label": "Hours",
       "href": "#hours"
     },
     {
       "label": "Menu",
       "href": "#menu"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
     }
   ],
   "pages": [
@@ -44,37 +40,27 @@
             "headline": "Harbor Tea Room",
             "subhead": "A quiet tea room that seats walk-ins by the water.",
             "primary": {
-              "label": "Read on",
-              "href": "#about"
+              "label": "Hours",
+              "href": "#hours"
             },
             "secondary": {
               "label": "Contact",
               "href": "#contact"
             },
-            "bullets": []
+            "bullets": [],
+            "image": "",
+            "image_alt": ""
           }
         },
         {
           "id": "about",
           "type": "about",
           "data": {
-            "title": "About",
+            "title": "",
             "body": [
               "Loose-leaf, brewed to order; decaf after 4pm on request."
             ],
             "points": []
-          }
-        },
-        {
-          "id": "contact",
-          "type": "contact",
-          "data": {
-            "title": "Contact",
-            "body": "(555) 014-2288 Walk-ins only; no reservations needed.",
-            "email": "",
-            "phone": "(555) 014-2288",
-            "address": "14 Harbor Lane",
-            "hours": ""
           }
         },
         {
@@ -97,7 +83,7 @@
             "subhead": "12oz cups, brewed to order.",
             "groups": [
               {
-                "name": "Menu",
+                "name": "",
                 "items": [
                   {
                     "name": "Jasmine Pearl",
@@ -117,6 +103,18 @@
                 ]
               }
             ]
+          }
+        },
+        {
+          "id": "contact",
+          "type": "contact",
+          "data": {
+            "title": "Contact",
+            "body": "Walk-ins only; no reservations needed.",
+            "email": "",
+            "phone": "(555) 014-2288",
+            "address": "14 Harbor Lane",
+            "hours": ""
           }
         }
       ]

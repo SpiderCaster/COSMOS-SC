@@ -1,0 +1,24 @@
+{
+  "frame": "",
+  "pages": [
+    {
+      "file": "index.html",
+      "intent": "Document what the SpiderCaster engine does, the token rules it runs on, and its commands.",
+      "links": [],
+      "sections": [
+        "hero",
+        "about",
+        "features",
+        "about",
+        "about",
+        "features",
+        "faq",
+        "features"
+      ],
+      "slug": "index",
+      "title": "SpiderCaster: websites from real copy, on free tokens"
+    }
+  ],
+  "schema": "spidercaster-sitemap/1",
+  "site": "demo-local"
+}

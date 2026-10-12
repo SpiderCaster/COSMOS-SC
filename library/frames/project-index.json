@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "project-index",
+  "intent": "A portfolio that leads with the work, then a short bio and a project inquiry.",
+  "sections": ["hero", "gallery", "about", "steps", "cta"],
+  "nav": "sidebar",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order for a portfolio page. Not a vendor theme."
+}

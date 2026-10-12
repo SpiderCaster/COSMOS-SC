@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>visibility fail</title>
+<style>
+html{font-size:16px} body{margin:0;padding:0 16px;font-size:18px;color:#111;background:#fff;box-sizing:border-box}
+*{box-sizing:border-box}
+.home{display:inline-flex;min-height:44px;min-width:44px;align-items:center;padding:0 8px}
+.mobile-cta{display:none;min-height:48px}
+@media (max-width:600px){ h1{display:none} .promo{display:none} .mobile-cta{display:block} }
+</style></head><body>
+<main><h1>Hidden heading on phones</h1><p class="promo">Spring menu: twelve new teas on the counter this week.</p><p>Body copy stays visible.</p><a class="mobile-cta" href="tel:5550142288">Call 555 014 2288</a></main>
+</body></html>

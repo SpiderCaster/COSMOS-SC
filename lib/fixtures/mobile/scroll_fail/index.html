@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>scroll fail</title>
+<style>
+html{font-size:16px} body{margin:0;padding:0 16px;font-size:18px;color:#111;background:#fff;box-sizing:border-box}
+*{box-sizing:border-box}
+.home{display:inline-flex;min-height:44px;min-width:44px;align-items:center;padding:0 8px}
+.wide{width:400px}
+.minw{min-width:380px}
+.vw{width:110vw}
+.bleed{margin-right:-40px}
+.nw{white-space:nowrap}
+.mid{width:350px}
+</style></head><body>
+<main><h1>Scroll fail</h1>
+<div class="wide">Fixed 400px box</div>
+<div class="minw">Min width 380px</div>
+<div class="vw">110vw box</div>
+<img src="p.png" width="800" height="600" alt="wide photo">
+<div class="bleed">Bleeds right past the gutter</div>
+<pre>x = compute_mobile_overflow(viewport_width, element_width, gutter_left, gutter_right)  # 80+ chars</pre>
+<p class="nw">This sentence will never wrap because white-space is nowrap and it is long enough to overflow</p>
+<table><tr><th>Columnheading0</th><th>Columnheading1</th><th>Columnheading2</th><th>Columnheading3</th><th>Columnheading4</th><th>Columnheading5</th></tr><tr><td>Valueofcolumn0</td><td>Valueofcolumn1</td><td>Valueofcolumn2</td><td>Valueofcolumn3</td><td>Valueofcolumn4</td><td>Valueofcolumn5</td></tr></table>
+<p>supercalifragilisticexpialidociousantidisestablishmentarianismpneumonox</p>
+<div class="mid">350px plus a 16px gutter only overflows at 360px</div>
+</main>
+</body></html>

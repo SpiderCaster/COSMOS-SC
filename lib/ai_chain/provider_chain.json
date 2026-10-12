@@ -1,0 +1,12 @@
+{
+  "_note": "URLs and ids only. No keys, no tokens. 'bearer' may only be the literal 'unused' (public placeholder some anonymous APIs require). Order = fallback order. 'deterministic' is implicit and always last (the template path).",
+  "default_mode": "off",
+  "budget_seconds": 45,
+  "cache_dir": ".sc_ai_cache",
+  "providers": [
+    {"id": "ollama-local", "kind": "ollama", "enabled": true, "url": "http://127.0.0.1:11434", "model": "", "timeout": 20, "retries": 0, "note": "local only if already installed; model empty = first from /api/tags; skipped fast if not running"},
+    {"id": "llm7", "kind": "openai", "enabled": true, "url": "https://api.llm7.io/v1/chat/completions", "model": "default", "bearer": "unused", "timeout": 25, "retries": 1, "note": "anonymous 1/s 10/min 60/h 500k tokens/day; terms: educational/research, not a production SLA"},
+    {"id": "chat-at", "kind": "get_q", "enabled": true, "url": "https://ch.at/", "param": "q", "timeout": 30, "retries": 0, "max_prompt_chars": 1500, "note": "no accounts, no request logs; GET only so short prompts; slow (about 10s)"},
+    {"id": "pollinations", "kind": "openai", "enabled": true, "url": "https://text.pollinations.ai/openai", "model": "openai-fast", "timeout": 20, "retries": 0, "note": "anonymous 1 request/15s per docs; on the box egress it returned budget/402/500 errors on 2026-10-03, so it ranks last and its error text is filtered"}
+  ]
+}

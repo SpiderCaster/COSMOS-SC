@@ -1,0 +1,81 @@
+{
+ "name": "Sponsor box",
+ "slug": "sponsor-box",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Sponsor name, one sentence and one link, with a plain Sponsored label. Text only, no logo. The link carries rel=sponsored.",
+ "inputs": [
+  {
+   "name": "label",
+   "type": "string",
+   "required": false,
+   "description": "Label above the sponsor.",
+   "default": "Sponsored"
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "required": true,
+   "description": "Sponsor name."
+  },
+  {
+   "name": "text",
+   "type": "string",
+   "required": true,
+   "description": "One sentence from the sponsor."
+  },
+  {
+   "name": "url",
+   "type": "string",
+   "required": true,
+   "description": "Sponsor page address."
+  },
+  {
+   "name": "cta",
+   "type": "string",
+   "required": true,
+   "description": "Link text."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sponsor-box.html",
+  "sponsor-box.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "ads",
+  "sponsor",
+  "no-logo"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 106,
+  "failed": 0,
+  "total": 106
+ },
+ "bytes": 2111,
+ "gzip_bytes": 721
+}

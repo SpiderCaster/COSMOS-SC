@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "proof-letter",
+  "intent": "a long quiet page",
+  "sections": ["hero", "about", "steps", "testimonials", "faq", "contact"],
+  "nav": "one-page",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order. Not a Wix, Shopify, Squarespace, Webflow, OceanWP, or GeneratePress theme."
+}

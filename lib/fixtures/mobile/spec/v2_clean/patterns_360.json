@@ -1,0 +1,26 @@
+{
+ "profile": "m360",
+ "viewport": {
+  "width": 360,
+  "height": 800
+ },
+ "innerWidth": 360,
+ "url": "fixture://v2",
+ "error": null,
+ "overflow": {
+  "scrollWidth": 360,
+  "innerWidth": 360,
+  "overflowX": false,
+  "offenders": []
+ },
+ "menuToggles": [
+  {
+   "el": "button.toggle"
+  }
+ ],
+ "tapTargets": {
+  "visible": 8,
+  "under44": 0
+ },
+ "drawer": null
+}

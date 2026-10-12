@@ -17,7 +17,7 @@ PRICE_RE = re.compile(r"\$\s?\d[\d,]*(?:\.\d{1,2})?")
 HOTLINK_RE = re.compile(
     r"(?:images\.unsplash\.com|plus\.unsplash\.com|img\.freepik\.com|"
     r"cdn\.pixabay\.com|images\.pexels\.com|static\.freepik\.com)",
-    re.I,
+    re.IGNORECASE,
 )
 
 COPY_EXTS = {".md", ".markdown", ".txt", ".json"}
@@ -121,27 +121,92 @@ def strip_md_inline(text: str) -> str:
 
 
 def parse_markdown(text: str, file: str) -> list[Block]:
+    """Join consecutive plain lines into one paragraph.
+
+    A blank line starts a new paragraph. Bullets, numbered lines, headings,
+    and blockquotes are not folded into that paragraph. A question line is
+    still a question; following plain lines join into its answer until a
+    blank line, the next question, or a non-plain line.
+
+    An indented line that is not a new list marker, heading, or blank line
+    continues the previous bullet or numbered item, joined with one space.
+    A blank line ends that item. Continuation lines are not a paragraph.
+    """
     blocks: list[Block] = []
     cur: Block | None = None
-    last_para_was_q = False
+    expect_answer = False
+    pending: list[str] = []
+    pending_answer = False
+    # ("bullet"|"numbered"|"price", index) until a blank line or a new block.
+    open_item: tuple[str, int] | None = None
 
     def ensure(level: int, title: str):
-        nonlocal cur, last_para_was_q
+        nonlocal cur, expect_answer
         cur = Block(file, level, title)
         blocks.append(cur)
-        last_para_was_q = False
+        expect_answer = False
+
+    def close_item() -> None:
+        nonlocal open_item
+        open_item = None
+
+    def join_item(prev: str, extra: str) -> str:
+        if not prev:
+            return extra
+        if not extra:
+            return prev
+        return f"{prev} {extra}"
+
+    def continue_item(extra: str) -> None:
+        if open_item is None or cur is None:
+            return
+        kind, idx = open_item
+        if kind == "bullet":
+            cur.bullets[idx] = join_item(cur.bullets[idx], extra)
+        elif kind == "numbered":
+            cur.numbered[idx] = join_item(cur.numbered[idx], extra)
+        else:
+            cur.prices[idx]["desc"] = join_item(cur.prices[idx]["desc"], extra)
+
+    def flush() -> None:
+        nonlocal pending_answer, expect_answer
+        close_item()
+        if not pending or cur is None:
+            pending.clear()
+            pending_answer = False
+            return
+        joined = " ".join(pending)
+        pending.clear()
+        if pending_answer and cur.qa:
+            cur.qa[-1]["a"] = (cur.qa[-1]["a"] + " " + joined).strip()
+            expect_answer = False
+        else:
+            cur.paragraphs.append(joined)
+        pending_answer = False
 
     for raw_line in text.splitlines():
         line = raw_line.rstrip()
         stripped = line.strip()
         if not stripped:
-            last_para_was_q = False
+            flush()
+            expect_answer = False
             continue
         m = HEADING_RE.match(stripped)
         if m:
+            flush()
             ensure(len(m.group(1)), strip_md_inline(m.group(2)))
             continue
-        if stripped.startswith(("- ", "* ", "+ ")):
+        is_bullet = stripped.startswith(("- ", "* ", "+ "))
+        numbered = re.match(r"^(\d+)[.)]\s+(.*)$", stripped)
+        indented = line[:1] in (" ", "\t")
+        # Soft wrap of the open bullet or numbered item. Not a new paragraph.
+        if indented and open_item is not None and not is_bullet and numbered is None:
+            extra = strip_md_inline(stripped)
+            if extra:
+                continue_item(extra)
+            continue
+        if is_bullet:
+            flush()
             if cur is None:
                 ensure(1, "")
             item = strip_md_inline(stripped[2:].strip())
@@ -149,36 +214,47 @@ def parse_markdown(text: str, file: str) -> list[Block]:
             pm = re.match(r"(.+?)\s*[|:\u2013\u2014-]\s*(\$\s?\d[\d,.]*)\s*$", item)
             if pm and PRICE_RE.search(pm.group(2)):
                 cur.prices.append({"name": pm.group(1).strip(), "desc": "", "price": pm.group(2)})
+                open_item = ("price", len(cur.prices) - 1)
             else:
                 cur.bullets.append(item)
-            last_para_was_q = False
+                open_item = ("bullet", len(cur.bullets) - 1)
+            expect_answer = False
             continue
-        nm = re.match(r"^(\d+)[.)]\s+(.*)$", stripped)
-        if nm:
+        if numbered:
+            flush()
             if cur is None:
                 ensure(1, "")
-            cur.numbered.append(strip_md_inline(nm.group(2)))
-            last_para_was_q = False
+            cur.numbered.append(strip_md_inline(numbered.group(2)))
+            open_item = ("numbered", len(cur.numbered) - 1)
+            expect_answer = False
             continue
         if stripped.startswith(">"):
+            flush()
             if cur is None:
                 ensure(1, "")
             cur.paragraphs.append(strip_md_inline(stripped.lstrip("> ")))
             continue
-        # plain paragraph line
+        close_item()
         if cur is None:
             ensure(1, "")
         para = strip_md_inline(stripped)
-        if last_para_was_q and cur.qa:
-            cur.qa[-1]["a"] = (cur.qa[-1]["a"] + " " + para).strip()
-            last_para_was_q = False
+        if not para:
+            continue
+        # The first plain line after a question is the answer, even if it
+        # itself ends with "?". Later "?" lines start the next question.
+        if expect_answer and cur.qa and not pending_answer:
+            pending.append(para)
+            pending_answer = True
+            expect_answer = False
             continue
         if para.endswith("?") and len(para) < 200:
+            flush()
             cur.qa.append({"q": para, "a": ""})
-            last_para_was_q = True
+            expect_answer = True
             continue
-        cur.paragraphs.append(para)
-        last_para_was_q = False
+        pending.append(para)
+
+    flush()
 
     # post-pass: images, contact patterns
     for b in blocks:
@@ -282,3 +358,74 @@ def load_project(project_dir: Path, max_assets: int = 24) -> Copy:
                         b.images.append({"src": c.assets[key], "alt": m.group(1) or key})
                         b.paragraphs.remove(para)
     return c
+
+
+def _selftest() -> int:
+    wrapped = "\n".join([
+        "# Title",
+        "",
+        "You give it a brief and",
+        "real copy files.",
+        "",
+        "Second paragraph",
+        "continues here.",
+        "",
+        "- bullet one",
+        "kept apart",
+        "from the bullet",
+        "1. numbered item",
+        "> quoted line",
+        "after quote",
+        "",
+        "Is this a question?",
+        "Yes. The answer wraps",
+        "onto the next line.",
+        "",
+        "What about a second?",
+        "It stays separate.",
+    ])
+    block = parse_markdown(wrapped, "overview.md")[0]
+    assert block.paragraphs[0] == "You give it a brief and real copy files."
+    assert block.paragraphs[1] == "Second paragraph continues here."
+    assert block.bullets == ["bullet one"]
+    assert "kept apart from the bullet" in block.paragraphs
+    assert "bullet one kept apart" not in " ".join(block.paragraphs)
+    assert block.numbered == ["numbered item"]
+    assert "quoted line" in block.paragraphs
+    assert "after quote" in block.paragraphs
+    assert "quoted line after quote" not in block.paragraphs
+    assert block.qa[0]["q"] == "Is this a question?"
+    assert block.qa[0]["a"] == "Yes. The answer wraps onto the next line."
+    assert block.qa[1]["q"] == "What about a second?"
+    assert block.qa[1]["a"] == "It stays separate."
+    split = parse_markdown("# One\n\nAlpha\nbeta.\n\n## Two\n\nGamma\ndelta.\n", "t.md")
+    assert split[0].paragraphs == ["Alpha beta."]
+    assert split[1].title == "Two"
+    assert split[1].paragraphs == ["Gamma delta."]
+    quotes = parse_markdown("Before\nthe quote.\n> First quote\n> Second quote\nAfter\nthe quote.\n", "q.md")
+    assert quotes[0].paragraphs == [
+        "Before the quote.",
+        "First quote",
+        "Second quote",
+        "After the quote.",
+    ]
+    soft = parse_markdown(
+        "- One-call AI builds: a single compact planning call produces the whole site\n"
+        "  shape, with at most one JSON-repair retry.\n",
+        "overview.md",
+    )[0]
+    assert len(soft.bullets) == 1
+    assert "whole site" in soft.bullets[0] and "JSON-repair" in soft.bullets[0]
+    assert soft.paragraphs == []
+    numbered_wrap = parse_markdown(
+        "1. Step one goes\n  onto the next line.\n\n  after a blank\n",
+        "commands.md",
+    )[0]
+    assert numbered_wrap.numbered == ["Step one goes onto the next line."]
+    assert numbered_wrap.paragraphs == ["after a blank"]
+    print("ingest selftest ok")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_selftest())

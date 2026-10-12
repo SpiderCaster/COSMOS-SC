@@ -1,0 +1,26 @@
+{
+ "data": {
+  "title": "Upcoming events",
+  "uid": "1",
+  "items": [
+   {
+    "title": "Fixture event one",
+    "url": "/fixture-event-one/",
+    "date": "Oct 10",
+    "iso": "2026-10-10",
+    "time": "6:00 PM",
+    "place": "Fixture hall"
+   },
+   {
+    "title": "Fixture event two with a longer name",
+    "url": "",
+    "date": "Oct 17",
+    "iso": "2026-10-17",
+    "time": "All day",
+    "place": ""
+   }
+  ],
+  "more_url": "/events/",
+  "more_label": "All events"
+ }
+}

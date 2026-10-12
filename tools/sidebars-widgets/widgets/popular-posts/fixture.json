@@ -1,0 +1,23 @@
+{
+ "data": {
+  "title": "Popular posts",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture post one",
+    "url": "/fixture-post-one/",
+    "meta": "Fixture meta"
+   },
+   {
+    "label": "Fixture post two",
+    "url": "/fixture-post-two/",
+    "meta": ""
+   },
+   {
+    "label": "Fixture post three",
+    "url": "/fixture-post-three/",
+    "meta": "Fixture meta"
+   }
+  ]
+ }
+}

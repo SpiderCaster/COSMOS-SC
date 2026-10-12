@@ -1,0 +1,18 @@
+{
+ "data": {
+  "title": "Related posts",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture related post one",
+    "url": "/fixture-related-one/",
+    "kicker": "Fixture category"
+   },
+   {
+    "label": "Fixture related post two",
+    "url": "/fixture-related-two/",
+    "kicker": ""
+   }
+  ]
+ }
+}

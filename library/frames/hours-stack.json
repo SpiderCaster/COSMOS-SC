@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "hours-stack",
+  "intent": "A food page with a short stack and hours, place, and links kept in the footer.",
+  "sections": ["hero", "menu", "features", "faq", "contact"],
+  "nav": "footer-only",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order for a short food page. Not a vendor theme."
+}

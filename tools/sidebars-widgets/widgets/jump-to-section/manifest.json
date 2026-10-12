@@ -1,0 +1,67 @@
+{
+ "name": "Jump to section",
+ "slug": "jump-to-section",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Row of in-page links in a scrolling strip, for long pages with fixed sections. The strip scrolls sideways on phones.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name for the nav.",
+   "default": "Jump to section"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Sections. Each url is an in-page anchor such as #hours.",
+   "fields": [
+    "label",
+    "url"
+   ]
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "jump-to-section.html",
+  "jump-to-section.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "navigation",
+  "chips",
+  "scroll-strip"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 106,
+  "failed": 0,
+  "total": 106
+ },
+ "bytes": 1935,
+ "gzip_bytes": 745
+}

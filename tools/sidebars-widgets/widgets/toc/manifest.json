@@ -1,0 +1,79 @@
+{
+ "name": "Table of contents",
+ "slug": "toc",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Builds a contents list from the h2 and h3 headings in the article. Adds missing heading ids. Stays hidden when the page has fewer headings than the minimum.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "On this page"
+  },
+  {
+   "name": "source",
+   "type": "string",
+   "required": false,
+   "description": "CSS selector of the element that holds the headings.",
+   "default": "article"
+  },
+  {
+   "name": "min",
+   "type": "string",
+   "required": false,
+   "description": "Smallest number of headings that shows the list.",
+   "default": "3"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "toc.html",
+  "toc.css",
+  "toc.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 5000,
+ "tags": [
+  "navigation",
+  "js",
+  "headings"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 67,
+  "failed": 0,
+  "total": 67
+ },
+ "bytes": 3116,
+ "gzip_bytes": 1250
+}

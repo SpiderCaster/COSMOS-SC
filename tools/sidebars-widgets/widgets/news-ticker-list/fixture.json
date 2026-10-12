@@ -1,0 +1,24 @@
+{
+ "data": {
+  "title": "Latest",
+  "uid": "1",
+  "items": [
+   {
+    "label": "Fixture headline one",
+    "url": "/fixture-one/",
+    "time": "9:12 PM",
+    "iso": "2026-10-03T21:12",
+    "tag": "Breaking"
+   },
+   {
+    "label": "Fixture headline two, longer to check wrapping on small screens",
+    "url": "/fixture-two/",
+    "time": "8:40 PM",
+    "iso": "2026-10-03T20:40",
+    "tag": ""
+   }
+  ],
+  "more_url": "/news/",
+  "more_label": "All news"
+ }
+}

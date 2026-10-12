@@ -1,0 +1,18 @@
+{
+ "data": {
+  "title": "Contact",
+  "uid": "1",
+  "name": "Fixture Business",
+  "lines": [
+   {
+    "line": "Fixture street line"
+   },
+   {
+    "line": "Fixture city line"
+   }
+  ],
+  "phone": "555 0100",
+  "phone_href": "+15550100",
+  "email": "fixture@example.com"
+ }
+}

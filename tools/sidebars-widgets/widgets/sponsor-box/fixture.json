@@ -1,0 +1,9 @@
+{
+ "data": {
+  "label": "Sponsored",
+  "name": "Fixture sponsor",
+  "text": "Fixture sponsor sentence.",
+  "url": "/fixture-sponsor/",
+  "cta": "Visit sponsor"
+ }
+}

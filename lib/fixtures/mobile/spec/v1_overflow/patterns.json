@@ -1,0 +1,39 @@
+{
+ "url": "fixture://v1",
+ "profiles": {
+  "m360": {
+   "innerWidth": 360,
+   "scrollWidth": 420,
+   "overflowX": true,
+   "toggles": [
+    {
+     "sel": "button.toggle",
+     "label": "Menu",
+     "expanded": "false",
+     "controls": "menu"
+    }
+   ],
+   "sticky": [],
+   "taps": 10,
+   "tapsUnder44": 0,
+   "drawerOpened": true
+  },
+  "m390": {
+   "innerWidth": 390,
+   "scrollWidth": 390,
+   "overflowX": false,
+   "toggles": [],
+   "taps": 10,
+   "tapsUnder44": 0,
+   "drawerOpened": "fail: TimeoutError"
+  },
+  "d1280": {
+   "innerWidth": 1280,
+   "scrollWidth": 1280,
+   "overflowX": false,
+   "toggles": [],
+   "taps": 12,
+   "tapsUnder44": 0
+  }
+ }
+}

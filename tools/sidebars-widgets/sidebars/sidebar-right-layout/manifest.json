@@ -1,0 +1,71 @@
+{
+ "name": "Right sidebar layout",
+ "slug": "sidebar-right-layout",
+ "kind": "sidebar",
+ "version": "1.0.0",
+ "purpose": "Content column with a 300 px sidebar on the right from 900 px up. Below 900 px the sidebar stacks under the content.",
+ "inputs": [
+  {
+   "name": "main",
+   "type": "html",
+   "required": true,
+   "description": "Page content region. Pass the page body HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside",
+   "type": "html",
+   "required": true,
+   "description": "Sidebar region. Pass widget HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside_label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name of the sidebar.",
+   "default": "Sidebar"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-right-layout.html",
+  "sidebar-right-layout.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 2500,
+ "tags": [
+  "layout",
+  "right",
+  "grid"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 64,
+  "failed": 0,
+  "total": 64
+ },
+ "bytes": 425,
+ "gzip_bytes": 247
+}

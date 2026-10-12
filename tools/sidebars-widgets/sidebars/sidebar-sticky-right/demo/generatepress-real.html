@@ -1,0 +1,110 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Sticky right sidebar demo, generatepress-real context</title><link rel="stylesheet" href="../../../_vendor/generatepress/assets/css/main.min.css"><style>/* Test context. Stands in for GeneratePress 3.6.1 inline "generate-style-inline-css" at default settings.
+   Values come from inc/defaults.php, inc/css-output.php and the global color defaults. Written for tests, not vendor output. */
+:root{--contrast:#222222;--contrast-2:#575760;--contrast-3:#b2b2be;--base:#f0f0f0;--base-2:#f7f8f9;--base-3:#ffffff;--accent:#1e73be}
+body{background-color:var(--base-2);color:var(--contrast)}
+a{color:var(--accent)}
+a:hover,a:focus,a:active{color:var(--contrast)}
+.grid-container{max-width:1200px}
+.sidebar .widget,.page-header,.widget-area .main-navigation,.site-main>*{margin-bottom:20px}
+.separate-containers .widget,.separate-containers .site-main>*,.separate-containers .page-header,.widget-area .main-navigation{margin-bottom:20px}
+.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:40px}
+.separate-containers .inside-article,.separate-containers .widget,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation{background-color:var(--base-3)}
+.widget-area .widget{padding:40px}
+.is-right-sidebar{width:30%}.is-left-sidebar{width:30%}.site-content .content-area{width:70%}
+@media (max-width:768px){.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:30px}}
+.sc-tall{height:420px;margin:0}</style><style>.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:900px){.sc-lay-r{grid-template-columns:minmax(0,1fr) var(--sc-side,300px);gap:32px}
+.sc-lay-s .sc-lay-side{position:sticky;top:var(--sc-sticky-top,16px);align-self:start;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain}
+#outer-wrap:has(.sc-lay-s),#wrap:has(.sc-lay-s),#main:has(.sc-lay-s){overflow:visible}}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-search .sc-search-l{display:block;margin:0 0 6px;font-size:16px;font-weight:700;color:var(--sc-fg,#1d2327)}
+.sc-search .sc-search-r{display:flex;gap:8px}
+.sc-search .sc-input{flex:1 1 auto;min-width:0;min-height:44px;margin:0;padding:8px 12px;border:1px solid #6b7580;border-radius:4px;background:#fff;color:var(--sc-fg,#1d2327);font:inherit;font-size:18px;line-height:1.3}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-recent .sc-recent-t{font-size:18px;line-height:1.35}
+.sc-recent a[aria-current]{font-weight:700;border-left:4px solid var(--sc-accent,#0b5cad);padding-left:12px}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-cats .sc-cat-a{flex-direction:row;align-items:center;justify-content:space-between;gap:12px;font-size:18px}
+.sc-cats .sc-count{flex:none;min-width:32px;padding:2px 8px;border-radius:12px;background:#eef2f6;color:var(--sc-fg,#1d2327);font-size:16px;text-align:center}
+.sc-cats a[aria-current]{font-weight:700}
+.sc-cats .sc-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body class="wp-embed-responsive wp-theme-generatepress separate-containers no-sidebar"><a class="screen-reader-text skip-link" href="#content">Skip to content</a><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main"><article class="page type-page"><div class="inside-article"><div class="entry-content"><div id="sc-under-test"><div class="sc-lay sc-lay-r sc-lay-s">
+<div class="sc-lay-main"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div>
+<aside class="sc-lay-side" aria-label="Sidebar"><form class="sc-w sc-search" role="search" action="/search/" method="get">
+<label class="sc-search-l" for="sc-s-1">Search this site</label>
+<div class="sc-search-r"><input class="sc-input" id="sc-s-1" type="search" name="q" autocomplete="off" enterkeyhint="search"><button class="sc-btn" type="submit">Search</button></div>
+</form>
+
+<section class="sc-w sc-recent" aria-labelledby="sc-recent-t-1">
+<h2 class="sc-w-title" id="sc-recent-t-1">Recent posts</h2>
+<ul class="sc-list"><li><a class="sc-row" href="/fixture-post-one/"><span class="sc-recent-t">Fixture post one</span><span class="sc-meta"><time datetime="2026-10-01">Oct 1, 2026</time></span></a></li><li><a class="sc-row" href="/fixture-post-two/" aria-current="page"><span class="sc-recent-t">Fixture post two, with a longer title that wraps on a narrow screen</span><span class="sc-meta"><time datetime="2026-09-28">Sep 28, 2026</time></span></a></li><li><a class="sc-row" href="/fixture-post-three/"><span class="sc-recent-t">Fixture post three</span><span class="sc-meta"><time datetime="2026-09-20">Sep 20, 2026</time></span></a></li>
+</ul>
+</section>
+
+<nav class="sc-w sc-cats" aria-labelledby="sc-cat-t-1">
+<h2 class="sc-w-title" id="sc-cat-t-1">Categories</h2>
+<ul class="sc-list"><li><a class="sc-row sc-cat-a" href="/category/fixture-a/"><span class="sc-cat-n">Fixture category A</span><span class="sc-count">12<span class="sc-vh"> posts</span></span></a></li><li><a class="sc-row sc-cat-a" href="/category/fixture-b/" aria-current="page"><span class="sc-cat-n">Fixture category B</span><span class="sc-count">4<span class="sc-vh"> posts</span></span></a></li><li><a class="sc-row sc-cat-a" href="/category/fixture-c/"><span class="sc-cat-n">Fixture category C</span></a></li>
+</ul>
+</nav>
+</aside>
+</div>
+</div></div></div></article></main></div></div></div><script>
+
+
+</script></body></html>

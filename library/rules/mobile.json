@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-mobile-rules/1",
+  "width_max": 860,
+  "hero_aspect": "16/9",
+  "tap_min_px": 44,
+  "scroll_margin_px": 72,
+  "reveal_hidden_on_phone": false,
+  "empty_panel": false,
+  "remote_images": false
+}

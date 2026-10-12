@@ -1,0 +1,21 @@
+{
+  "generator": "spidercaster/0.1",
+  "mode": "refine-offline",
+  "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
+  "provider": null,
+  "model": null,
+  "noindex": true,
+  "files": [
+    "index.html",
+    "favicon.svg"
+  ],
+  "warnings": [],
+  "tokens": {
+    "requests": 0,
+    "ok": 0,
+    "in_tokens": 0,
+    "out_tokens": 0,
+    "est_cost_usd": 0
+  },
+  "attempts": []
+}

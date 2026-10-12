@@ -1,0 +1,23 @@
+{
+ "data": {
+  "title": "Schedule",
+  "uid": "1",
+  "caption": "Fixture team, fixture season",
+  "rows": [
+   {
+    "date": "Oct 9",
+    "iso": "2026-10-09",
+    "opponent": "Fixture opponent one",
+    "where": "Home",
+    "result": "7:00 PM"
+   },
+   {
+    "date": "Oct 16",
+    "iso": "2026-10-16",
+    "opponent": "Fixture opponent two",
+    "where": "Away",
+    "result": "W 21-14"
+   }
+  ]
+ }
+}

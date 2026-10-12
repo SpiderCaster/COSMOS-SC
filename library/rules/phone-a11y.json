@@ -1,0 +1,53 @@
+{
+  "schema": "spidercaster-phone-a11y/1",
+  "rules": [
+    {
+      "id": "skip_link",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "a skip link href=\"#main\" and main id=\"main\""
+    },
+    {
+      "id": "target_44",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "buttons, nav toggle, and nav links min-height 44px"
+    },
+    {
+      "id": "summary_44",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "details > summary min-height 44px"
+    },
+    {
+      "id": "focus_visible",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": ":focus-visible outline, not only outline on inputs"
+    },
+    {
+      "id": "safe_area_header",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "header padding-top env(safe-area-inset-top)"
+    },
+    {
+      "id": "safe_area_footer",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "footer padding-bottom env(safe-area-inset-bottom)"
+    },
+    {
+      "id": "reduced_motion",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "prefers-reduced-motion sets .reveal opacity 1 and kills transitions"
+    },
+    {
+      "id": "no_remote_img",
+      "status": "enforced",
+      "applies_below_px": 860,
+      "statement": "img src must not start with http://, https://, or //"
+    }
+  ]
+}

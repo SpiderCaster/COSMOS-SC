@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "generator": "spidercaster/0.1",
+  "brief": "# Brief\n\nRound 1 Spidercaster bench fixture (SYNTHETIC, frozen 2026-09-28). A quiet\ntea room that seats walk-ins by the water. Single page: hours, menu table\n(3 teas with prices), find-us block, contact link. Mobile-first, noindex,\nsingle self-contained page, no external requests. Synthetic business:\nnever index, never deploy, never link from live lanes.",
+  "meta": {
+    "title": "Harbor Tea Room",
+    "description": "A quiet tea room that seats walk-ins by the water.",
+    "lang": "en"
+  },
+  "theme": {
+    "template": "modern",
+    "dark": true,
+    "accent": "#2a6f8f",
+    "accent2": null
+  },
+  "nav": [
+    {
+      "label": "Menu",
+      "href": "#menu"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Harbor Tea Room",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "data": {
+            "eyebrow": "",
+            "headline": "Harbor Tea Room",
+            "subhead": "A quiet tea room that seats walk-ins by the water.",
+            "primary": {
+              "label": "Menu",
+              "href": "#menu"
+            },
+            "secondary": {
+              "label": "Contact",
+              "href": "#contact"
+            },
+            "bullets": [],
+            "image": "",
+            "image_alt": ""
+          }
+        },
+        {
+          "id": "menu",
+          "type": "menu",
+          "data": {
+            "title": "Menu",
+            "subhead": "12oz cups, brewed to order.",
+            "groups": [
+              {
+                "name": "",
+                "items": [
+                  {
+                    "name": "Jasmine Pearl",
+                    "desc": "",
+                    "price": "$4.50"
+                  },
+                  {
+                    "name": "Assam Malt",
+                    "desc": "",
+                    "price": "$3.75"
+                  },
+                  {
+                    "name": "Peppermint Field",
+                    "desc": "",
+                    "price": "$3.25"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "contact",
+          "type": "contact",
+          "data": {
+            "title": "Contact",
+            "body": "Walk-ins only; no reservations needed.",
+            "email": "",
+            "phone": "(555) 014-2288",
+            "address": "14 Harbor Lane",
+            "hours": "Open Tuesday to Sunday, 8am to 6pm. Closed Mondays."
+          }
+        }
+      ]
+    }
+  ],
+  "footer": {
+    "text": "(c) 2026 Harbor Tea Room",
+    "links": [],
+    "credit": true
+  }
+}

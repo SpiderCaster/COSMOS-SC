@@ -1,0 +1,29 @@
+{
+  "schema": "spidercaster-library/2",
+  "assignments": [
+    {
+      "site": "movelixir.com",
+      "mold": "warmth-authority",
+      "vendor_frame": null,
+      "live": true
+    },
+    {
+      "site": "demo-hero.example",
+      "mold": "discover-grid",
+      "vendor_frame": null,
+      "live": false
+    },
+    {
+      "site": "demo-stage.example",
+      "mold": "clarify-mix",
+      "vendor_frame": null,
+      "live": false
+    },
+    {
+      "site": "harbor-test.example",
+      "mold": "discover-grid",
+      "vendor_frame": null,
+      "live": false
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+ "name": "Popular posts list",
+ "slug": "popular-posts",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Numbered list of the most read posts. The caller supplies the order from its own analytics or a fixed list.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Popular posts"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Posts in rank order. Use 3 to 10.",
+   "fields": [
+    "label",
+    "url",
+    "meta"
+   ],
+   "field_notes": {
+    "meta": "short line under the title, such as a view count the caller computed"
+   }
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "popular-posts.html",
+  "popular-posts.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "posts",
+  "list",
+  "ranked"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 62,
+  "failed": 0,
+  "total": 62
+ },
+ "bytes": 2218,
+ "gzip_bytes": 784
+}

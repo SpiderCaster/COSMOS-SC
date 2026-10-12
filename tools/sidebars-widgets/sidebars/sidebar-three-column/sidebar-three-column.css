@@ -1,0 +1,5 @@
+.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:700px){.sc-lay-3{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-lay-3 .sc-lay-main{grid-column:1/-1}}
+@media (min-width:1100px){.sc-lay-3{grid-template-columns:var(--sc-side-a,240px) minmax(0,1fr) var(--sc-side-b,280px);gap:32px}
+.sc-lay-3 .sc-lay-a{grid-column:1;grid-row:1}.sc-lay-3 .sc-lay-main{grid-column:2;grid-row:1}.sc-lay-3 .sc-lay-b{grid-column:3;grid-row:1}}

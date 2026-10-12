@@ -1,0 +1,101 @@
+{
+ "name": "Sidebar drawer for phones",
+ "slug": "sidebar-drawer-mobile",
+ "kind": "sidebar",
+ "version": "1.0.0",
+ "purpose": "Under 900 px the sidebar becomes an off-canvas drawer opened by a button. Escape, the Close button and the dark overlay all close it, focus stays inside while open, and focus returns to the opener. From 900 px the sidebar is a normal column on the chosen side.",
+ "inputs": [
+  {
+   "name": "main",
+   "type": "html",
+   "required": true,
+   "description": "Page content region. Pass the page body HTML.",
+   "slot": true
+  },
+  {
+   "name": "aside",
+   "type": "html",
+   "required": true,
+   "description": "Sidebar region. Pass widget HTML.",
+   "slot": true
+  },
+  {
+   "name": "side",
+   "type": "string",
+   "required": true,
+   "description": "left or right."
+  },
+  {
+   "name": "open_label",
+   "type": "string",
+   "required": false,
+   "description": "Opener button text.",
+   "default": "Open sidebar"
+  },
+  {
+   "name": "close_label",
+   "type": "string",
+   "required": false,
+   "description": "Close button text.",
+   "default": "Close"
+  },
+  {
+   "name": "aside_label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name of the sidebar.",
+   "default": "Sidebar"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-drawer-mobile.html",
+  "sidebar-drawer-mobile.css",
+  "sidebar-drawer-mobile.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 7500,
+ "tags": [
+  "layout",
+  "drawer",
+  "mobile",
+  "js",
+  "a11y"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 82,
+  "failed": 0,
+  "total": 82
+ },
+ "bytes": 3989,
+ "gzip_bytes": 1522
+}

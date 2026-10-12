@@ -1,0 +1,9 @@
+{
+ "data": {
+  "action": "/search/",
+  "param": "q",
+  "label": "Search this site",
+  "button": "Search",
+  "uid": "1"
+ }
+}

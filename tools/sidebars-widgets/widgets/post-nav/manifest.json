@@ -1,0 +1,98 @@
+{
+ "name": "Previous and next post",
+ "slug": "post-nav",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Links to the previous and next post. Each side is optional.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name for the nav.",
+   "default": "Post navigation"
+  },
+  {
+   "name": "prev_url",
+   "type": "string",
+   "required": false,
+   "description": "Previous post path.",
+   "default": ""
+  },
+  {
+   "name": "prev_label",
+   "type": "string",
+   "required": false,
+   "description": "Previous post title.",
+   "default": ""
+  },
+  {
+   "name": "next_url",
+   "type": "string",
+   "required": false,
+   "description": "Next post path.",
+   "default": ""
+  },
+  {
+   "name": "next_label",
+   "type": "string",
+   "required": false,
+   "description": "Next post title.",
+   "default": ""
+  },
+  {
+   "name": "prev_kicker",
+   "type": "string",
+   "required": false,
+   "description": "Text above previous title.",
+   "default": "Previous post"
+  },
+  {
+   "name": "next_kicker",
+   "type": "string",
+   "required": false,
+   "description": "Text above next title.",
+   "default": "Next post"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "post-nav.html",
+  "post-nav.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "navigation",
+  "posts"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 60,
+  "failed": 0,
+  "total": 60
+ },
+ "bytes": 2180,
+ "gzip_bytes": 735
+}

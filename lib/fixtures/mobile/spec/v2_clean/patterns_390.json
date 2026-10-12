@@ -1,0 +1,26 @@
+{
+ "profile": "m390",
+ "viewport": {
+  "width": 390,
+  "height": 800
+ },
+ "innerWidth": 390,
+ "url": "fixture://v2",
+ "error": null,
+ "overflow": {
+  "scrollWidth": 390,
+  "innerWidth": 390,
+  "overflowX": false,
+  "offenders": []
+ },
+ "menuToggles": [
+  {
+   "el": "button.toggle"
+  }
+ ],
+ "tapTargets": {
+  "visible": 8,
+  "under44": 0
+ },
+ "drawer": null
+}

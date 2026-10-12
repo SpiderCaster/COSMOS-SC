@@ -1,0 +1,18 @@
+#!/bin/sh
+# SpiderCaster pre-commit: block commits containing secrets.
+# Install: copy to .git/hooks/pre-commit (scripts/install_hooks.ps1 does this).
+# The scanner prints only file:line + pattern name, never the value.
+root=$(git rev-parse --show-toplevel)
+for py in python python3 py; do
+  if command -v "$py" >/dev/null 2>&1; then
+    "$py" "$root/scripts/secret_scan.py"
+    rc=$?
+    if [ $rc -ne 0 ]; then
+      echo "pre-commit: commit blocked by secret scan (see findings above)." >&2
+      exit 1
+    fi
+    exit 0
+  fi
+done
+echo "pre-commit: python not found - secret scan could not run; commit blocked." >&2
+exit 1

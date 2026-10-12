@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "trust-lane",
+  "intent": "A quote-led service page that shows numbers, the process, and a price cue, then the form.",
+  "sections": ["hero", "stats", "steps", "pricing", "faq", "contact"],
+  "nav": "segmented",
+  "template": "bold",
+  "package": true,
+  "note": "Original section order for a quote-led service page. Not a vendor theme."
+}

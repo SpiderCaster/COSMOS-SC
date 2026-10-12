@@ -1,0 +1,92 @@
+{
+ "name": "Event list",
+ "slug": "event-list",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Upcoming events as date, title, time and place. Each title links to its page when a link is given.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Upcoming events"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Events in date order.",
+   "fields": [
+    "title",
+    "url",
+    "date",
+    "iso",
+    "time",
+    "place"
+   ]
+  },
+  {
+   "name": "more_url",
+   "type": "string",
+   "required": false,
+   "description": "Address of the full calendar.",
+   "default": ""
+  },
+  {
+   "name": "more_label",
+   "type": "string",
+   "required": false,
+   "description": "Link text for the calendar.",
+   "default": "All events"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "event-list.html",
+  "event-list.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "events",
+  "list",
+  "local"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 114,
+  "failed": 0,
+  "total": 114
+ },
+ "bytes": 2637,
+ "gzip_bytes": 880
+}

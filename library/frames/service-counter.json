@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "service-counter",
+  "intent": "local service business with one offer",
+  "sections": ["hero", "features", "steps", "faq", "contact"],
+  "nav": "top-bar",
+  "template": "modern",
+  "package": true,
+  "note": "Original section order. Not a Wix, Shopify, Squarespace, Webflow, OceanWP, or GeneratePress theme."
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "catalog-front",
+  "intent": "A small shop homepage that opens on a banner with one shop action, then a featured set of goods.",
+  "sections": ["hero", "features", "gallery", "cta"],
+  "nav": "top-bar",
+  "template": "bold",
+  "package": true,
+  "note": "Original section order for a small shop homepage. Not a vendor theme."
+}

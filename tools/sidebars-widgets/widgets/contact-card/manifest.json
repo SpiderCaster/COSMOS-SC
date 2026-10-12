@@ -1,0 +1,101 @@
+{
+ "name": "Contact card",
+ "slug": "contact-card",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Business name, address lines, phone and email as tap-ready links. Uses the address element.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Contact"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "name",
+   "type": "string",
+   "required": false,
+   "description": "Business name.",
+   "default": ""
+  },
+  {
+   "name": "lines",
+   "type": "list",
+   "required": false,
+   "description": "Address lines.",
+   "fields": [
+    "line"
+   ]
+  },
+  {
+   "name": "phone",
+   "type": "string",
+   "required": false,
+   "description": "Phone as shown.",
+   "default": ""
+  },
+  {
+   "name": "phone_href",
+   "type": "string",
+   "required": false,
+   "description": "Phone digits for the tel link, such as +15550100.",
+   "default": ""
+  },
+  {
+   "name": "email",
+   "type": "string",
+   "required": false,
+   "description": "Email address.",
+   "default": ""
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "contact-card.html",
+  "contact-card.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "contact",
+  "local",
+  "tel"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 66,
+  "failed": 0,
+  "total": 66
+ },
+ "bytes": 2282,
+ "gzip_bytes": 798
+}

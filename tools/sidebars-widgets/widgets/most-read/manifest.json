@@ -1,0 +1,84 @@
+{
+ "name": "Most read this week",
+ "slug": "most-read",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Ranked list of the most read stories for a stated period. The caller supplies the order and the period label from its own counts.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Most read"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "period",
+   "type": "string",
+   "required": true,
+   "description": "Period shown under the heading, such as Last 7 days."
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Stories in rank order.",
+   "fields": [
+    "label",
+    "url",
+    "reads"
+   ],
+   "field_notes": {
+    "reads": "read count the caller computed, shown as given"
+   }
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "most-read.html",
+  "most-read.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "news",
+  "ranked",
+  "list"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 106,
+  "failed": 0,
+  "total": 106
+ },
+ "bytes": 2282,
+ "gzip_bytes": 809
+}

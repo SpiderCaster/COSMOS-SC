@@ -1,0 +1,15 @@
+{
+ "data": {
+  "tone": "info",
+  "heading": "Fixture heading",
+  "text": "Fixture note text, one sentence."
+ },
+ "variants": {
+  "warning": {
+   "tone": "warning"
+  },
+  "no_heading": {
+   "heading": ""
+  }
+ }
+}

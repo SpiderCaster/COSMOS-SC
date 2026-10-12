@@ -1,0 +1,27 @@
+name: boundary-gatekeeper
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: AST boundary gate (ARCHITECTURE.json lanes)
+        run: python scripts/enforce_boundaries.py
+
+      - name: MCP schema matches live server TOOLS
+        run: python -c "import json,mcp_server as m;s=json.load(open('mcp/schema.json',encoding='utf-8'));a=sorted(m.TOOLS);b=sorted(t['name'] for t in s['tools']);c=sorted(t['name'] for t in m.TOOL_SPECS);assert a==b==c,(a,b,c);assert s['version']==m.SERVER_INFO['version'];print('schema ok:',len(a),'tools')"
+
+      - name: secret scan
+        run: python scripts/secret_scan.py --all
+
+      - name: shipcheck
+        run: python spidercaster.py shipcheck

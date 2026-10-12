@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SpiderCaster: websites from real copy, on free tokens</title>
+<meta name="description" content="SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="SpiderCaster: websites from real copy, on free tokens">
+<meta property="og:description" content="SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.">
+<meta property="og:type" content="website">
+
+<meta name="theme-color" content="#2a6f8f">
+<link rel="canonical" href="index.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "SpiderCaster: websites from real copy, on free tokens", "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site."}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the offline build really cost zero tokens?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The offline planner maps your copy files into sections with deterministic rules, and the renderer assembles the HTML from code. No model is called."}}, {"@type": "Question", "name": "What does an AI build cost?", "acceptedAnswer": {"@type": "Answer", "text": "One planning call, plus at most one repair retry if the reply is not valid JSON. On the Gemini free tier the estimated cost is zero dollars; the ledger in report.json records the exact token counts."}}, {"@type": "Question", "name": "Can the AI invent content?", "acceptedAnswer": {"@type": "Answer", "text": "No. The planning prompt restricts the model to facts and wording present in your source copy. It may reorganize and tighten, but it may not invent facts, prices, names or claims."}}, {"@type": "Question", "name": "How do I change something without tokens?", "acceptedAnswer": {"@type": "Answer", "text": "Edit sites/NAME/site.json by hand and rebuild with forge build --from. The renderer is deterministic, so the rebuild is free."}}, {"@type": "Question", "name": "How does this fit the fleet checks?", "acceptedAnswer": {"@type": "Answer", "text": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."}}]}</script>
+<!-- SpiderCaster: noindex until approved -->
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:18px}
+body{margin:0;font-family:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;background:#0a0e14;color:#e9eef6;line-height:1.6;-webkit-font-smoothing:antialiased}
+:root{--bg:#0a0e14;--surface:#111722;--surface2:#161e2c;--text:#e9eef6;--muted:#b7c2d0;--line:rgba(255, 255, 255, 0.1);--accent:#2a6f8f;--accent-text:#568ea5;--accent2:#2a6f8f;--on-accent:#ffffff;--price:#568ea5;--accent-soft:rgba(42, 111, 143, 0.14);--radius:16px;--maxw:1120px;--font-head:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;--font-body:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif}
+.skip{position:absolute;left:12px;top:-80px;background:#111722;color:#e9eef6;padding:10px 14px;min-height:44px;z-index:5;border-radius:10px;text-decoration:none}
+.phone-bar{display:none}
+.skip:focus{top:12px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+img{max-width:100%;display:block}
+a{color:var(--accent-text)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+section{padding:72px 0;scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+h1,h2,h3{font-family:var(--font-head);line-height:1.15;margin:0 0 12px;letter-spacing:-.015em}
+h1,h2{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+h1{font-size:clamp(1.7rem,5.5vw,3.9rem);overflow-wrap:anywhere}
+h2{font-size:clamp(1.6rem,3vw,2.3rem)}
+h3{font-size:1.12rem}
+p{margin:0 0 14px}
+.lede{color:var(--muted);font-size:1.08rem;max-width:62ch}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);margin-bottom:16px}
+.icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:11px 18px;border-radius:10px;font-weight:600;text-decoration:none;font-size:1rem;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 6px 18px rgba(42, 111, 143, 0.3)}
+.btn.primary:hover{transform:translateY(-1px)}
+.btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface)}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(10, 14, 20, 0.82);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease}
+.site-header.is-stuck{background:var(--bg);box-shadow:0 10px 28px rgba(0,0,0,.35)}
+/* blur lives on a pseudo-element layer: backdrop-filter on .site-header itself would make the header the
+   containing block for the position:fixed mobile drawer and trap it in the 65px bar (DEFECT_4) */
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);pointer-events:none}
+.nav{display:flex;align-items:center;gap:12px;min-height:64px;flex-wrap:wrap}
+.brand{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;font-weight:700;font-size:1.05rem;text-decoration:none;color:var(--text);font-family:var(--font-head)}
+.brand-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.brand-mark{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent);font-family:Georgia,'Times New Roman',serif;font-weight:700;flex:none}
+.nav-here{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:1rem}
+.nav-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto;align-items:center;min-width:0}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;min-width:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.nav-links a:hover,.nav-links a[aria-current="page"]{color:var(--text)}
+.nav-toggle{display:none;margin-left:auto;flex:none;background:none;border:1px solid var(--line);border-radius:12px;color:var(--text);width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
+.hero{padding:28px 0 56px}
+.hero-stage{display:block}
+.hero-visual{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--line);aspect-ratio:16/9;height:auto;margin:0 0 18px;background:
+radial-gradient(120% 90% at 100% 0%,var(--accent-soft),transparent 55%),
+linear-gradient(160deg,var(--surface),var(--bg))}
+.hero-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero-mark{display:flex;align-items:center;justify-content:center;padding:18px}
+.hero-mark span{font-family:Georgia,'Times New Roman',serif;font-size:clamp(3rem,12vw,4.6rem);line-height:1;color:var(--accent-text)}
+.hero .lede{margin-bottom:18px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 18px}
+.hero-cta .btn{min-height:44px}
+.bullets{list-style:none;margin:0;padding:0;display:flex;gap:14px 18px;flex-wrap:wrap}
+.bullets li{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:1rem}
+.bullets .icon{color:var(--accent-text)}
+.hero--modern{text-align:left}
+.hero--editorial h1{max-width:16ch}
+.hero--editorial .eyebrow{border-radius:0;border:none;border-bottom:2px solid var(--accent);background:none;padding:0 0 6px}
+.hero--bold{position:relative}
+.hero--bold h1{font-size:clamp(1.7rem,8vw,4.2rem);font-weight:800;letter-spacing:-.03em}
+@media(min-width:861px){
+.hero{padding:72px 0 80px}
+.hero-stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,.85fr);gap:40px;align-items:center}
+.hero-copy{grid-column:1;grid-row:1}
+.hero-visual{grid-column:2;grid-row:1;aspect-ratio:auto;height:320px;margin:0}
+.hero--modern{text-align:center}
+.hero--modern .hero-stage{grid-template-columns:1fr;justify-items:center}
+.hero--modern .hero-copy{grid-column:1;grid-row:2;max-width:70ch}
+.hero--modern .hero-visual{grid-column:1;grid-row:1;width:min(100%,760px);margin-bottom:8px}
+.hero--modern .lede{margin-left:auto;margin-right:auto}
+.hero--modern .bullets,.hero--modern .hero-cta{justify-content:center}
+.hero--bold .hero-visual{height:380px}
+.hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:140px;aspect-ratio:2/1}
+}
+.sec-head{max-width:70ch;margin-bottom:28px}
+.sec-head .lede{margin-bottom:0}
+.tpl-modern .sec-head{text-align:center;margin-left:auto;margin-right:auto}
+.tpl-modern .sec-head .lede{margin-left:auto;margin-right:auto}
+.grid{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.c3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:var(--accent-soft);color:var(--accent-text);margin-bottom:12px}
+.chip .icon{width:20px;height:20px}
+.card p{color:var(--muted);margin:0}
+.stats{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;text-align:center}
+.stat-v{font-family:var(--font-head);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;color:var(--accent-text)}
+.stat-l{color:var(--muted);font-size:1rem}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));counter-reset:step}
+.steps li{counter-increment:step;position:relative}
+.step-n{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);font-weight:700;margin-bottom:10px}
+.step-n::before{content:counter(step)}
+.gallery{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.tile{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;border:1px solid var(--line)}
+.tile img{width:100%;height:100%;object-fit:cover}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;font-size:1rem;color:#fff;background:rgba(0,0,0,.72)}
+.tile.grad{display:flex;align-items:flex-end}
+.tile.grad .fill{position:absolute;inset:0}
+.pricing{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:stretch}
+.price-card{display:flex;flex-direction:column}
+.price-card .price{font-family:var(--font-head);font-size:2rem;font-weight:700;margin:4px 0}
+.price-card .period{color:var(--muted);font-size:1rem}
+.price-card ul{list-style:none;margin:12px 0 16px;padding:0;display:grid;gap:8px}
+.price-card ul li{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:1rem}
+.price-card ul .icon{color:var(--accent-text);margin-top:.2em}
+.price-card .btn{margin-top:auto;justify-content:center}
+.price-card.featured{border-color:var(--accent);box-shadow:0 14px 34px rgba(42, 111, 143, 0.3)}
+.badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);font-size:1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:999px;white-space:nowrap}
+.price-card{position:relative}
+.quotes{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.quote-card .q-ico{color:var(--accent-text);margin-bottom:8px}
+.quote-card blockquote{margin:0 0 14px;color:var(--text);font-size:1rem}
+.quote-card .who{display:flex;align-items:center;gap:10px}
+.avatar{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:var(--on-accent);background:linear-gradient(135deg,var(--accent),var(--accent2));flex:none}
+.who .nm{font-weight:600;font-size:1rem}
+.who .rl{color:var(--muted);font-size:1rem}
+.faq-list{display:grid;gap:10px;max-width:820px}
+.tpl-modern .faq-list{margin:0 auto}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:16px 18px;min-height:44px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"\2212"}
+details .a{padding:0 18px 16px;color:var(--muted)}
+.cta-panel{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);border-radius:calc(var(--radius) + 6px);padding:48px 32px;text-align:center}
+.cta-panel h2{color:inherit}
+.cta-panel .lede{color:inherit;margin:0 auto 20px}
+.cta-panel .btn.ghost{border-color:currentColor;color:inherit;background:transparent}
+.cta-panel .btn.primary{background:#0a0e14;color:#e9eef6;box-shadow:none}
+.contact-grid{display:grid;gap:28px;grid-template-columns:1.1fr .9fr;align-items:start}
+@media(max-width:860px){.contact-grid{grid-template-columns:1fr}}
+.contact-info{display:grid;gap:12px}
+.contact-info .row{display:flex;gap:10px;align-items:center;color:var(--muted);min-height:44px}
+.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.contact-info .row .icon{color:var(--accent-text)}
+.form{display:grid;gap:12px}
+.form label{font-size:1rem;color:var(--muted);display:grid;gap:6px}
+.form input,.form textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);font:inherit;font-size:max(16px,1rem)}
+.form ::placeholder{color:var(--muted);opacity:1}
+.form input:focus,.form textarea:focus{outline:2px solid var(--accent-text);outline-offset:1px;border-color:transparent}
+.about-body p{color:var(--muted)}
+.points{display:grid;gap:12px;margin-top:16px}
+.points .pt{display:flex;gap:10px}
+.points .pt .icon{color:var(--accent-text);margin-top:.25em}
+.points .pt b{display:block}
+.points .pt span{color:var(--muted);font-size:1rem}
+.team-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.team-card .avatar{width:56px;height:56px;font-size:1.05rem;margin-bottom:12px}
+.team-card .role{color:var(--accent-text);font-size:1rem;font-weight:600}
+.team-card .bio{color:var(--muted);font-size:1rem;margin:8px 0 0}
+.menu-group{margin-bottom:28px}
+.menu-group h3{margin-bottom:14px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:7px 0;min-height:48px}
+.menu-item .mi-name{font-weight:600}
+.menu-item .mi-desc{color:var(--muted);font-size:1rem;width:100%}
+.menu-item .dots{flex:0 1 1.5rem;border-bottom:2px dotted var(--line);min-width:12px}
+.menu-item .mi-price{font-weight:700;color:var(--price);white-space:nowrap;flex:none}
+.menu-item .mi-col{display:flex;flex-direction:column;flex:1;min-width:0}
+.logos{display:flex;gap:14px 28px;flex-wrap:wrap;justify-content:center;align-items:center}
+.logos span{color:var(--muted);font-weight:600;font-family:var(--font-head);font-size:1.05rem;letter-spacing:.02em}
+.site-footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom));color:var(--muted);font-size:1rem;margin-top:24px}
+.foot-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.foot-links{display:flex;gap:16px;flex-wrap:wrap}
+.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.foot-links a:hover{color:var(--text)}
+.credit{margin-top:10px;font-size:1rem}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:860px){
+.nav{flex-wrap:nowrap}
+.brand{flex:1 1 auto;min-width:0}
+.reveal{opacity:1;transform:none}
+.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;flex-wrap:nowrap;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow-y:auto;overscroll-behavior:contain}
+.nav-links.open{display:flex}
+.nav-links a{flex:none;width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
+.hero-cta{flex-direction:column;align-items:stretch}
+.hero-cta .btn{width:100%;justify-content:center}
+.nav-toggle{display:inline-flex}
+.nav-here{display:block;flex:0 1 auto;max-width:4.5rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-here:empty{display:none}
+.wrap{padding:0 16px}
+section{padding:20px 0}
+section.sec{border-top:1px solid var(--line)}
+.sec-head{margin-bottom:12px}
+.tpl-modern .sec-head,.tpl-modern .sec-head .lede{text-align:left;margin-left:0;margin-right:0}
+.card{padding:14px}
+.card:hover{transform:none;box-shadow:none}
+h1,h2{text-wrap:balance;overflow-wrap:break-word}
+.mi-price{font-variant-numeric:tabular-nums}
+.chip{width:32px;height:32px;margin-bottom:8px}
+.points{margin-top:8px}
+.hero{padding:16px 0 28px}
+.hero .lede{margin-bottom:8px}
+.about-body p:last-child{margin-bottom:0}
+.menu-group{margin-bottom:0}
+.grid{gap:8px}
+.card h3{margin-bottom:4px;text-wrap:balance;overflow-wrap:break-word}
+.card p{text-wrap:pretty}
+.card:has(.chip){display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:12px;align-items:start}
+.card:has(.chip) .chip{grid-row:1 / span 2;margin-bottom:0}
+.card:has(.chip) h3,.card:has(.chip) p{grid-column:2}
+.grid.c3{gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.grid.c3 .card{background:transparent;border:0;border-radius:0;box-shadow:none}
+.grid.c3 .card + .card{border-top:1px solid var(--line)}
+.hero-visual.hero-mark{aspect-ratio:2/1;height:auto;max-height:120px}
+.hero-mark span{font-size:clamp(2.8rem,16vw,4rem)}
+.c2,.c3,.quotes,.pricing,.steps,.gallery,.team-grid{grid-template-columns:1fr}
+.about-body:not(:has(.points)){border-left:3px solid var(--accent);padding-left:12px}
+.about-body:has(.points) > p{border-left:3px solid var(--accent);padding-left:12px}
+.points{gap:0;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.points .pt{padding:12px 14px;align-items:flex-start}
+.points .pt + .pt{border-top:1px solid var(--line)}
+.menu-item{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.menu-item:last-child{border-bottom:0}
+.menu-item .mi-col{display:contents}
+.menu-item .mi-name{grid-column:1;grid-row:1}
+.menu-item .mi-price{grid-column:2;grid-row:1}
+.menu-item .mi-desc{grid-column:1 / -1;grid-row:2;width:auto}
+.menu-item .dots{display:none}
+body.nav-open{overflow:hidden}
+.phone-bar{display:flex;position:fixed;z-index:45;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom));min-height:48px;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;background:var(--accent);color:var(--on-accent);text-decoration:none;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+body:has(.phone-bar){padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+body.nav-open .phone-bar{display:none}
+}
+@media(max-width:860px) and (scripting:none){
+.nav{flex-wrap:wrap}
+.nav-toggle{display:none}
+.nav-links{display:flex;flex-wrap:wrap;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
+}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.site-header,.btn{transition:none}.btn:hover{transform:none}}
+.tpl-bold .btn{border-radius:999px;padding:13px 22px}
+.tpl-editorial h2,.tpl-editorial h3{font-family:var(--font-head)}
+
+</style>
+</head>
+<body class="tpl-modern">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+<div class="wrap nav">
+<a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">S</span><span class="brand-name">SpiderCaster: websites from real copy, on free tokens</span></a>
+<span class="nav-here" aria-live="polite"></span>
+<button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+<nav id="site-nav" class="nav-links"><a href="#features">Build</a><a href="#faq">Questions about the engine</a></nav>
+</div>
+</header>
+<main id="main">
+<section id="hero" class="hero hero--modern"><div class="wrap hero-stage"><div class="hero-visual hero-mark" aria-hidden="true"><span>S</span></div><style data-sc-tool="hero-dark-band-072">
+[data-sc-part]{font-family: "Segoe UI", system-ui, sans-serif;}
+.sc-darkband {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  padding: 48px 16px;
+  color: #ffffff;
+  background: #2a6f8f;
+}
+.sc-darkband *,
+.sc-darkband *::before,
+.sc-darkband *::after {
+  box-sizing: border-box;
+}
+.sc-darkband__inner {
+  width: 100%;
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sc-darkband__title {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 18px + 2vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  overflow-wrap: anywhere;
+}
+.sc-darkband__lead {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #ffffff;
+}
+.sc-darkband__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 100%;
+  margin-top: 20px;
+  padding: 10px 18px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+}
+.sc-darkband__action:hover {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: #ffffff;
+}
+.sc-darkband__action:focus {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+</style>
+<div data-sc-part="hero-dark-band-072"><section class="sc-darkband" aria-labelledby="sc-darkband-title">
+  <div class="sc-darkband__inner">
+    <h1 id="sc-darkband-title" class="sc-darkband__title">SpiderCaster: websites from real copy, on free tokens</h1>
+    <p class="sc-darkband__lead">SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.</p>
+    <a class="sc-darkband__action" href="#features">Build</a>
+  </div>
+</section></div></div></section>
+<section id="about" class="sec"><div class="wrap"><style data-sc-tool="card-collection-item-with-meta-181">
+[data-sc-part]{font-family: "Segoe UI", system-ui, sans-serif;}
+.sc-c-collect,.sc-c-collect *,.sc-c-collect *::before,.sc-c-collect *::after{box-sizing:border-box}
+.sc-c-collect{box-sizing:border-box;max-width:100%;margin:0;padding:16px;list-style:none;background:#ffffff;color:#1a1a1a;font-family:system-ui,sans-serif;font-size:18px;line-height:1.5;overflow-wrap:anywhere}
+.sc-c-collect__item{position:relative;min-width:0;margin:0;padding:16px 0;border-bottom:2px solid #2a6f8f;background:#ffffff;color:#1a1a1a}
+.sc-c-collect__item:first-child{padding-top:0}
+.sc-c-collect__item h3{margin:0 0 8px;font-size:20px;line-height:1.3}
+.sc-c-collect__item h3 a{display:flex;align-items:center;width:100%;min-height:44px;min-width:44px;color:#2a6f8f;font-size:18px;line-height:1.4}
+.sc-c-collect__item h3 a::after{content:"";position:absolute;inset:0}
+.sc-c-collect__item:focus-within{outline:3px solid #2a6f8f;outline-offset:2px}
+.sc-c-collect__item p{margin:0 0 8px;color:#1a1a1a;font-size:18px;line-height:1.5}
+.sc-c-collect__meta,.sc-c-collect__tags{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.sc-c-collect__meta{margin-bottom:8px;color:#2a6f8f;font-size:16px;line-height:1.4;font-variant:small-caps;letter-spacing:0.04em}
+.sc-c-collect__tags li{margin:0}
+.sc-c-collect__tags span{display:inline-block;padding:4px 10px;border:2px solid #2a6f8f;border-radius:999px;background:#ffffff;color:#1a1a1a;font-size:16px;line-height:1.4}
+</style>
+<div data-sc-part="card-collection-item-with-meta-181"><ul class="sc-c-collect">
+  <li class="sc-c-collect__item">
+    
+    <p>The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable.</p>
+    
+    
+  </li>
+  
+  
+</ul></div></div></section>
+<section id="features" class="sec"><div class="wrap"><style data-sc-tool="card-compact-row-089">
+[data-sc-part]{font-family: "Segoe UI", system-ui, sans-serif;}
+.sc-c-rows,.sc-c-rows *,.sc-c-rows *::before,.sc-c-rows *::after{box-sizing:border-box}
+.sc-c-rows{box-sizing:border-box;max-width:100%;margin:0;padding:16px;background:#ffffff;color:#1a1a1a;font-family:system-ui,sans-serif;font-size:18px;line-height:1.5;overflow-wrap:anywhere}
+.sc-c-rows h2{margin:0 0 16px;color:#1a1a1a;font-size:24px;line-height:1.3;font-weight:700}
+.sc-c-rows h3{margin:0 0 8px;color:#1a1a1a;font-size:20px;line-height:1.3;font-weight:700}
+.sc-c-rows p{margin:0 0 12px;color:#1a1a1a;font-size:18px;line-height:1.5}
+.sc-c-rows a{color:#2a6f8f;font-size:18px;line-height:1.4;text-decoration:underline}
+.sc-c-rows a:focus-visible{outline:3px solid #2a6f8f;outline-offset:2px}
+.sc-c-rows__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+@media (min-width:40em){.sc-c-rows__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 16px}}
+@media (min-width:64em){.sc-c-rows__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}}
+.sc-c-rows__item{position:relative;min-width:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin:0;padding:4px 0;border-bottom:2px solid #2a6f8f;background:#ffffff;color:#1a1a1a}
+.sc-c-rows__item h3{margin:0;font-size:18px}
+.sc-c-rows__date{margin:0;color:#2a6f8f;font-size:16px;line-height:1.4}
+.sc-c-rows__item a::after{content:"";position:absolute;inset:0}
+.sc-c-rows__item:focus-within{outline:3px solid #2a6f8f;outline-offset:2px}
+.sc-c-rows__item h3 a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+</style>
+<div data-sc-part="card-compact-row-089"><section class="sc-c-rows">
+  <h2>Build</h2>
+  <div class="sc-c-rows__grid">
+    <article class="sc-c-rows__item">
+      <h3><a href="#features">forge init PROJECT</a></h3>
+      <p class="sc-c-rows__date">scaffold a project with brief.md and a copy folder.</p>
+    </article><article class="sc-c-rows__item">
+      <h3><a href="#features">forge build PROJECT --offline</a></h3>
+      <p class="sc-c-rows__date">zero-token build mapped from your copy.</p>
+    </article><article class="sc-c-rows__item">
+      <h3><a href="#features">forge build PROJECT</a></h3>
+      <p class="sc-c-rows__date">AI build on the free chain, with offline fallback.</p>
+    </article><article class="sc-c-rows__item">
+      <h3><a href="#features">forge build --from SITE/site.json</a></h3>
+      <p class="sc-c-rows__date">rebuild after hand edits, zero tokens.</p>
+    </article>
+    
+    
+  </div>
+</section></div></div></section>
+<section id="faq" class="sec"><div class="wrap"><style data-sc-tool="faq-bootstrap-accordion-flush-195">
+[data-sc-part]{font-family: "Segoe UI", system-ui, sans-serif;}
+.sc-faqflush {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 16px 0;
+  color: #1a1a1a;
+  background: #ffffff;
+  font-family: system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  border: 0;
+  border-radius: 0;
+}
+.sc-faqflush *,
+.sc-faqflush *::before,
+.sc-faqflush *::after {
+  box-sizing: border-box;
+}
+.sc-faqflush__lead {
+  margin: 0 0 12px;
+  padding: 0 16px;
+  font-size: 18px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.sc-faqflush__item {
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid #1a1a1a;
+}
+.sc-faqflush__item:last-child {
+  border-bottom: 1px solid #1a1a1a;
+}
+.sc-faqflush__details {
+  border: 0;
+  border-radius: 0;
+}
+.sc-faqflush__summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+.sc-faqflush__summary::-webkit-details-marker {
+  display: none;
+}
+.sc-faqflush__q {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.sc-faqflush__summary::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border-right: 3px solid #1a1a1a;
+  border-bottom: 3px solid #1a1a1a;
+  transform: rotate(-45deg);
+  transition: transform 0.15s linear;
+}
+.sc-faqflush__details[open] > .sc-faqflush__summary::after,
+.sc-faqflush__details.is-open > .sc-faqflush__summary::after {
+  transform: rotate(45deg);
+}
+.sc-faqflush__summary:focus-visible {
+  outline: 3px solid #2a6f8f;
+  outline-offset: -3px;
+}
+.sc-faqflush__panel {
+  padding: 0 16px 16px;
+}
+.sc-faqflush__body {
+  font-size: 18px;
+  line-height: 1.5;
+}
+.sc-faqflush__body p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-faqflush__summary::after {
+    transition: none;
+  }
+}
+</style>
+<div data-sc-part="faq-bootstrap-accordion-flush-195"><div class="sc-faqflush" data-sc-faqflush>
+  <p class="sc-faqflush__lead">Questions about the engine</p>
+  <div class="sc-faqflush__item">
+    <details class="sc-faqflush__details">
+      <summary class="sc-faqflush__summary">
+        <h2 class="sc-faqflush__q">Does the offline build really cost zero tokens?</h2>
+      </summary>
+      <div class="sc-faqflush__panel">
+        <div class="sc-faqflush__body">
+          <p>Yes. The offline planner maps your copy files into sections with deterministic rules, and the renderer assembles the HTML from code. No model is called.</p>
+        </div>
+      </div>
+    </details>
+  </div><div class="sc-faqflush__item">
+    <details class="sc-faqflush__details">
+      <summary class="sc-faqflush__summary">
+        <h2 class="sc-faqflush__q">What does an AI build cost?</h2>
+      </summary>
+      <div class="sc-faqflush__panel">
+        <div class="sc-faqflush__body">
+          <p>One planning call, plus at most one repair retry if the reply is not valid JSON. On the Gemini free tier the estimated cost is zero dollars; the ledger in report.json records the exact token counts.</p>
+        </div>
+      </div>
+    </details>
+  </div><div class="sc-faqflush__item">
+    <details class="sc-faqflush__details">
+      <summary class="sc-faqflush__summary">
+        <h2 class="sc-faqflush__q">Can the AI invent content?</h2>
+      </summary>
+      <div class="sc-faqflush__panel">
+        <div class="sc-faqflush__body">
+          <p>No. The planning prompt restricts the model to facts and wording present in your source copy. It may reorganize and tighten, but it may not invent facts, prices, names or claims.</p>
+        </div>
+      </div>
+    </details>
+  </div><div class="sc-faqflush__item">
+    <details class="sc-faqflush__details">
+      <summary class="sc-faqflush__summary">
+        <h2 class="sc-faqflush__q">How do I change something without tokens?</h2>
+      </summary>
+      <div class="sc-faqflush__panel">
+        <div class="sc-faqflush__body">
+          <p>Edit sites/NAME/site.json by hand and rebuild with forge build --from. The renderer is deterministic, so the rebuild is free.</p>
+        </div>
+      </div>
+    </details>
+  </div><div class="sc-faqflush__item">
+    <details class="sc-faqflush__details">
+      <summary class="sc-faqflush__summary">
+        <h2 class="sc-faqflush__q">How does this fit the fleet checks?</h2>
+      </summary>
+      <div class="sc-faqflush__panel">
+        <div class="sc-faqflush__body">
+          <p>The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+  
+</div></div></div></section>
+</main>
+<footer class="site-footer">
+<div class="wrap foot-row">
+<div>(c) 2026 SpiderCaster: websites from real copy, on free tokens</div>
+<div class="foot-links"></div>
+</div>
+</footer>
+
+<script>
+(function(){
+var t=document.querySelector('.nav-toggle'),m=document.getElementById('site-nav');
+if(t&&m){t.addEventListener('click',function(){var o=m.classList.toggle('open');t.setAttribute('aria-expanded',o?'true':'false');document.body.classList.toggle('nav-open',o);});
+m.addEventListener('click',function(e){if(e.target&&e.target.tagName==='A'){m.classList.remove('open');t.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open');}});}
+var head=document.querySelector('.site-header');
+function stuck(){if(head) head.classList.toggle('is-stuck',window.scrollY>8);}
+stuck();
+window.addEventListener('scroll',stuck,{passive:true});
+var here=document.querySelector('.nav-here');
+if(here&&'IntersectionObserver' in window){var secs=document.querySelectorAll('main section');
+var io2=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;var h=en.target.querySelector('h1,h2');var label=h?h.textContent:'';var brand=document.querySelector('.brand-name');if(brand&&label===brand.textContent)label='';here.textContent=label;});},{rootMargin:'-30% 0px -55% 0px',threshold:0});
+secs.forEach(function(el){io2.observe(el);});}
+var f=document.querySelector('form[data-mailto]');
+if(f){f.addEventListener('submit',function(e){e.preventDefault();var d=new FormData(f);
+var s=encodeURIComponent('['+(document.title||'Site')+'] message from '+(d.get('name')||''));
+var b=encodeURIComponent((d.get('message')||'')+'\n\nReply to: '+(d.get('email')||''));
+window.location.href='mailto:'+f.getAttribute('data-mailto')+'?subject='+s+'&body='+b;});}
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});}
+else{document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});}
+})();
+</script>
+<style data-sc-compose="type-floor">
+[data-sc-part] p,[data-sc-part] li,[data-sc-part] span,[data-sc-part] dd,[data-sc-part] dt,[data-sc-part] blockquote{font-size:18px}
+[data-sc-part] details{background-color:transparent}
+[data-sc-part] a+a{margin-inline-start:12px}
+</style>
+</body>
+</html>

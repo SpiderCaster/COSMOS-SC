@@ -1,0 +1,10 @@
+<form class="sc-w sc-news" data-sc="news" action="{{action}}" method="post" novalidate aria-labelledby="sc-nl-t-{{uid}}" data-error="{{error_message}}" data-stub="{{stub_message}}">
+<h2 class="sc-w-title" id="sc-nl-t-{{uid}}">{{title}}</h2>
+<p class="sc-body">{{intro}}</p>
+<label class="sc-nl-l" for="sc-nl-e-{{uid}}">{{email_label}}</label>
+<input class="sc-input" id="sc-nl-e-{{uid}}" type="email" name="email" autocomplete="email" inputmode="email" required aria-describedby="sc-nl-m-{{uid}}">
+<div class="sc-hp" aria-hidden="true"><input type="text" name="company" tabindex="-1" autocomplete="off" aria-label="Leave empty"></div>
+<!--if consent--><label class="sc-nl-c"><input type="checkbox" name="consent" required><span>{{consent}}</span></label><!--/if-->
+<button class="sc-btn" type="submit">{{button}}</button>
+<div class="sc-nl-m" id="sc-nl-m-{{uid}}" role="status" aria-live="polite"></div>
+</form>

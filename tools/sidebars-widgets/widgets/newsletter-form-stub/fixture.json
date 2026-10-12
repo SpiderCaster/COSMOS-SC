@@ -1,0 +1,21 @@
+{
+ "data": {
+  "title": "Email updates",
+  "uid": "1",
+  "intro": "Fixture intro sentence for the form.",
+  "action": "",
+  "email_label": "Email address",
+  "button": "Subscribe",
+  "consent": "Fixture consent line.",
+  "error_message": "Enter a valid email address.",
+  "stub_message": "This form is not connected yet."
+ },
+ "variants": {
+  "no_consent": {
+   "consent": ""
+  },
+  "with_action": {
+   "action": "/fixture-form/"
+  }
+ }
+}

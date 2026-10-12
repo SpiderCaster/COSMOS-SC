@@ -1,0 +1,94 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Left sidebar layout demo, oceanwp-real context</title><link rel="stylesheet" href="../../../_vendor/oceanwp/style.min.css"><style></style><style>.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:900px){.sc-lay-l{grid-template-columns:var(--sc-side,300px) minmax(0,1fr);gap:32px}.sc-lay-l .sc-lay-side{grid-column:1;grid-row:1}.sc-lay-l .sc-lay-main{grid-column:2;grid-row:1}}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-search .sc-search-l{display:block;margin:0 0 6px;font-size:16px;font-weight:700;color:var(--sc-fg,#1d2327)}
+.sc-search .sc-search-r{display:flex;gap:8px}
+.sc-search .sc-input{flex:1 1 auto;min-width:0;min-height:44px;margin:0;padding:8px 12px;border:1px solid #6b7580;border-radius:4px;background:#fff;color:var(--sc-fg,#1d2327);font:inherit;font-size:18px;line-height:1.3}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-recent .sc-recent-t{font-size:18px;line-height:1.35}
+.sc-recent a[aria-current]{font-weight:700;border-left:4px solid var(--sc-accent,#0b5cad);padding-left:12px}
+
+.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-cats .sc-cat-a{flex-direction:row;align-items:center;justify-content:space-between;gap:12px;font-size:18px}
+.sc-cats .sc-count{flex:none;min-width:32px;padding:2px 8px;border-radius:12px;background:#eef2f6;color:var(--sc-fg,#1d2327);font-size:16px;text-align:center}
+.sc-cats a[aria-current]{font-weight:700}
+.sc-cats .sc-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body class="wp-embed-responsive oceanwp-theme dropdown-mobile default-breakpoint content-full-width"><div id="outer-wrap" class="site clr"><a class="skip-link screen-reader-text" href="#main">Skip to content</a><div id="wrap" class="clr"><main id="main" class="site-main clr" role="main"><div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="single-page-article clr"><div class="entry clr"><div id="sc-under-test"><div class="sc-lay sc-lay-l">
+<div class="sc-lay-main"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div>
+<aside class="sc-lay-side" aria-label="Sidebar"><form class="sc-w sc-search" role="search" action="/search/" method="get">
+<label class="sc-search-l" for="sc-s-1">Search this site</label>
+<div class="sc-search-r"><input class="sc-input" id="sc-s-1" type="search" name="q" autocomplete="off" enterkeyhint="search"><button class="sc-btn" type="submit">Search</button></div>
+</form>
+
+<section class="sc-w sc-recent" aria-labelledby="sc-recent-t-1">
+<h2 class="sc-w-title" id="sc-recent-t-1">Recent posts</h2>
+<ul class="sc-list"><li><a class="sc-row" href="/fixture-post-one/"><span class="sc-recent-t">Fixture post one</span><span class="sc-meta"><time datetime="2026-10-01">Oct 1, 2026</time></span></a></li><li><a class="sc-row" href="/fixture-post-two/" aria-current="page"><span class="sc-recent-t">Fixture post two, with a longer title that wraps on a narrow screen</span><span class="sc-meta"><time datetime="2026-09-28">Sep 28, 2026</time></span></a></li><li><a class="sc-row" href="/fixture-post-three/"><span class="sc-recent-t">Fixture post three</span><span class="sc-meta"><time datetime="2026-09-20">Sep 20, 2026</time></span></a></li>
+</ul>
+</section>
+
+<nav class="sc-w sc-cats" aria-labelledby="sc-cat-t-1">
+<h2 class="sc-w-title" id="sc-cat-t-1">Categories</h2>
+<ul class="sc-list"><li><a class="sc-row sc-cat-a" href="/category/fixture-a/"><span class="sc-cat-n">Fixture category A</span><span class="sc-count">12<span class="sc-vh"> posts</span></span></a></li><li><a class="sc-row sc-cat-a" href="/category/fixture-b/" aria-current="page"><span class="sc-cat-n">Fixture category B</span><span class="sc-count">4<span class="sc-vh"> posts</span></span></a></li><li><a class="sc-row sc-cat-a" href="/category/fixture-c/"><span class="sc-cat-n">Fixture category C</span></a></li>
+</ul>
+</nav>
+</aside>
+</div>
+</div></div></article></div></div></div></main></div></div><script>
+
+
+</script></body></html>

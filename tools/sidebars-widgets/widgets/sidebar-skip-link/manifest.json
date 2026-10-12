@@ -1,0 +1,62 @@
+{
+ "name": "Skip link past the sidebar",
+ "slug": "sidebar-skip-link",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Link that is visible only on keyboard focus. Place it before the sidebar so keyboard users can jump to the content or to a landmark.",
+ "inputs": [
+  {
+   "name": "target",
+   "type": "string",
+   "required": true,
+   "description": "Id of the element to jump to, without #."
+  },
+  {
+   "name": "label",
+   "type": "string",
+   "required": false,
+   "description": "Link text.",
+   "default": "Skip to content"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "sidebar-skip-link.html",
+  "sidebar-skip-link.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 1500,
+ "tags": [
+  "a11y",
+  "navigation"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 58,
+  "failed": 0,
+  "total": 58
+ },
+ "bytes": 376,
+ "gzip_bytes": 272
+}

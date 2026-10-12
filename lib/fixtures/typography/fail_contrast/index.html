@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contrast failures</title>
+<style>
+html{font-size:18px}
+:root{--soft:#a0a0a0}
+body{margin:0;background:#ffffff;color:#111111}
+.faint{color:#999999}
+.big-faint{font-size:26px;color:#bbbbbb}
+.mid{font-size:20px;color:#888888}
+.mid-bold{font-size:20px;font-weight:700;color:#888888}
+.dark{background:#222222;padding:12px}
+.dark .dim{color:#555555}
+.cta{display:inline-block;color:#ffffff;background:linear-gradient(90deg,#ffeb3b,#ffffff)}
+.ghost{color:#000000;opacity:.3}
+.soft{color:var(--soft)}
+</style>
+</head>
+<body>
+<main>
+<p>Fine body copy.</p>
+<p class="faint">Pale grey body copy.</p>
+<p class="big-faint">Large but too pale</p>
+<p class="mid">Twenty pixel regular is still body text.</p>
+<p class="mid-bold">Twenty pixel bold counts as large and passes.</p>
+<div class="dark"><p class="dim">Dark grey on near black.</p></div>
+<a class="cta" href="#">White on a yellow-to-white gradient</a>
+<p class="ghost">Faded black.</p>
+<p class="soft">Variable colour.</p>
+<p><a href="about.html">About</a></p>
+</main>
+</body>
+</html>

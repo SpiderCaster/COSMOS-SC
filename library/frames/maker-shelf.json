@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "maker-shelf",
+  "intent": "A product maker page with a gallery, a strip of marks, a short story, and one shop action.",
+  "sections": ["hero", "gallery", "logocloud", "about", "cta"],
+  "nav": "top-bar",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order for a product maker page. Not a vendor theme."
+}

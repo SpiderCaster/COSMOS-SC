@@ -1,0 +1,86 @@
+{
+ "name": "Opening hours table",
+ "slug": "opening-hours",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Weekly hours table. Marks today's row with aria-current=date using the visitor's clock.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Hours"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "rows",
+   "type": "list",
+   "required": true,
+   "description": "Seven rows, Sunday first.",
+   "fields": [
+    "day",
+    "hours",
+    "n"
+   ],
+   "field_notes": {
+    "n": "weekday number, 0 for Sunday to 6 for Saturday"
+   }
+  },
+  {
+   "name": "note",
+   "type": "string",
+   "required": false,
+   "description": "One line under the table.",
+   "default": ""
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "opening-hours.html",
+  "opening-hours.css",
+  "opening-hours.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 5000,
+ "tags": [
+  "local",
+  "table",
+  "js"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 67,
+  "failed": 0,
+  "total": 67
+ },
+ "bytes": 2737,
+ "gzip_bytes": 1086
+}

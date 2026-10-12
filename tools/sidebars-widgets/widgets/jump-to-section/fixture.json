@@ -1,0 +1,23 @@
+{
+ "data": {
+  "title": "Jump to section",
+  "items": [
+   {
+    "label": "Fixture section one",
+    "url": "#fixture-section-one"
+   },
+   {
+    "label": "Fixture section two",
+    "url": "#fixture-section-two"
+   },
+   {
+    "label": "Fixture section three",
+    "url": "#fixture-section-three"
+   },
+   {
+    "label": "Fixture four",
+    "url": "#fixture-four"
+   }
+  ]
+ }
+}

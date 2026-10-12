@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Contact card demo, generatepress-real context</title><link rel="stylesheet" href="../../../_vendor/generatepress/assets/css/main.min.css"><style>/* Test context. Stands in for GeneratePress 3.6.1 inline "generate-style-inline-css" at default settings.
+   Values come from inc/defaults.php, inc/css-output.php and the global color defaults. Written for tests, not vendor output. */
+:root{--contrast:#222222;--contrast-2:#575760;--contrast-3:#b2b2be;--base:#f0f0f0;--base-2:#f7f8f9;--base-3:#ffffff;--accent:#1e73be}
+body{background-color:var(--base-2);color:var(--contrast)}
+a{color:var(--accent)}
+a:hover,a:focus,a:active{color:var(--contrast)}
+.grid-container{max-width:1200px}
+.sidebar .widget,.page-header,.widget-area .main-navigation,.site-main>*{margin-bottom:20px}
+.separate-containers .widget,.separate-containers .site-main>*,.separate-containers .page-header,.widget-area .main-navigation{margin-bottom:20px}
+.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:40px}
+.separate-containers .inside-article,.separate-containers .widget,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation{background-color:var(--base-3)}
+.widget-area .widget{padding:40px}
+.is-right-sidebar{width:30%}.is-left-sidebar{width:30%}.site-content .content-area{width:70%}
+@media (max-width:768px){.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:30px}}
+</style><style>.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-contact .sc-ct-a{display:block;margin:0;font-style:normal;font-size:18px;line-height:1.5}
+.sc-contact .sc-ct-n,.sc-contact .sc-ct-line{display:block}
+.sc-contact .sc-ct-n{font-weight:700}
+.sc-contact .sc-ct-link{display:flex;align-items:center;min-height:44px;font-size:18px;overflow-wrap:anywhere}
+</style></head><body class="wp-embed-responsive wp-theme-generatepress separate-containers right-sidebar"><a class="screen-reader-text skip-link" href="#content">Skip to content</a><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main"><article class="page type-page"><div class="inside-article"><div class="entry-content"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div></div></article></main></div><div class="widget-area sidebar is-right-sidebar" id="right-sidebar"><div class="inside-right-sidebar"><aside id="custom_html-2" class="widget inner-padding widget_text widget_custom_html"><div class="textwidget custom-html-widget"><div id="sc-under-test"><section class="sc-w sc-contact" aria-labelledby="sc-ct-t-1">
+<h2 class="sc-w-title" id="sc-ct-t-1">Contact</h2>
+<address class="sc-ct-a"><strong class="sc-ct-n">Fixture Business</strong><span class="sc-ct-line">Fixture street line</span><span class="sc-ct-line">Fixture city line</span>
+<a class="sc-ct-link" href="tel:+15550100">555 0100</a><a class="sc-ct-link" href="mailto:fixture@example.com">fixture@example.com</a></address>
+</section>
+</div></div></aside></div></div></div></div><script></script></body></html>

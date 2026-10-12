@@ -1,0 +1,12 @@
+{
+  "created": "2026-10-11T08:58:35+00:00",
+  "files": {
+    "favicon.svg": "755f265dfc3d48553d418fc126dafa34909319894ec46e139f74286c911a9a29",
+    "index.html": "62d99b035f8e2f063e98bb3d5adfc18363f217c1045b622c630e6ce2c281daa6",
+    "report.json": "f2677c8b6d1bdc39292c05b44266bd2a5e286450050314d18d2e561c3a60fe1d",
+    "site.json": "7aeadc8ab434ac716495900ebeaebca0a5011d178f4fd64d28e261b972d85e70"
+  },
+  "id": "a20261011T085835512256Z_0d638fe5",
+  "parent": "a20261011T085812869845Z_df55dd22",
+  "reason": "refine"
+}

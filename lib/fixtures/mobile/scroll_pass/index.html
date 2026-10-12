@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>scroll pass</title>
+<style>
+html{font-size:16px} body{margin:0;padding:0 16px;font-size:18px;color:#111;background:#fff;box-sizing:border-box}
+*{box-sizing:border-box}
+.home{display:inline-flex;min-height:44px;min-width:44px;align-items:center;padding:0 8px}
+img{max-width:100%;height:auto}
+.wide{width:400px;max-width:100%}
+.scroller{overflow-x:auto}
+.inner{width:900px}
+pre{overflow-x:auto}
+.nw{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wrap-words{overflow-wrap:anywhere}
+.row{display:flex}
+.row > div{width:500px}
+.fit{width:328px}
+.pct{width:100%}
+</style></head><body>
+<main><h1>Scroll pass</h1>
+<div class="wide">Capped by max-width:100%</div>
+<div class="scroller"><div class="inner">900px inside an overflow-x:auto scroller</div></div>
+<img src="p.png" width="800" height="600" alt="wide photo">
+<pre>x = compute_mobile_overflow(viewport_width, element_width, gutter_left, gutter_right)  # 80+ chars</pre>
+<p class="nw">This sentence will never wrap but it is clipped with an ellipsis so the page does not scroll</p>
+<div class="scroller"><table><tr><th>Columnheading0</th><th>Columnheading1</th><th>Columnheading2</th><th>Columnheading3</th><th>Columnheading4</th><th>Columnheading5</th></tr><tr><td>Valueofcolumn0</td><td>Valueofcolumn1</td><td>Valueofcolumn2</td><td>Valueofcolumn3</td><td>Valueofcolumn4</td><td>Valueofcolumn5</td></tr></table></div>
+<p class="wrap-words">supercalifragilisticexpialidociousantidisestablishmentarianismpneumonox</p>
+<div class="row"><div>Flex item 500px shrinks</div><div>Second item</div></div>
+<div class="fit">328px plus 16px gutter fits 360px</div>
+<div class="pct">100% wide</div>
+</main>
+</body></html>

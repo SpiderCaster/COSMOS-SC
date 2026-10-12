@@ -1,0 +1,20 @@
+{
+ "data": {
+  "title": "About the author",
+  "uid": "1",
+  "name": "Fixture Author",
+  "bio": "Fixture bio, two short sentences. It checks wrapping.",
+  "avatar": "",
+  "avatar_size": "96",
+  "profile_url": "/author/fixture/",
+  "profile_label": "More from this author"
+ },
+ "variants": {
+  "with_photo": {
+   "avatar": "data:image/gif;base64,R0lGODlhAQABAAAAACw="
+  },
+  "no_link": {
+   "profile_url": ""
+  }
+ }
+}

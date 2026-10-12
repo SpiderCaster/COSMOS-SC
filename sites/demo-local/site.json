@@ -4,7 +4,7 @@
   "brief": "# Brief\n\nLocal test build for SpiderCaster, the copy-driven website engine\n(V:\\a\\ai\\spidercaster\\working). Audience: Keith and the free-model seats. The page documents\nwhat the engine does, the token rules it runs on, and its commands. Tone:\nplain, factual, no marketing fluff. This build stays noindex.",
   "meta": {
     "title": "SpiderCaster: websites from real copy, on free tokens",
-    "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and",
+    "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site.",
     "lang": "en"
   },
   "theme": {
@@ -14,10 +14,6 @@
     "accent2": null
   },
   "nav": [
-    {
-      "label": "About",
-      "href": "#about"
-    },
     {
       "label": "Build",
       "href": "#features"
@@ -31,12 +27,16 @@
       "href": "#gate-and-preview"
     },
     {
-      "label": "House rules the engine",
+      "label": "House rules the engine enforces",
       "href": "#features-2"
     },
     {
       "label": "Questions about the engine",
       "href": "#faq"
+    },
+    {
+      "label": "Why it is cheap",
+      "href": "#features-3"
     }
   ],
   "pages": [
@@ -50,24 +50,25 @@
           "data": {
             "eyebrow": "",
             "headline": "SpiderCaster: websites from real copy, on free tokens",
-            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and",
+            "subhead": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed.",
             "primary": {
-              "label": "Read on",
-              "href": "#about"
+              "label": "Build",
+              "href": "#features"
             },
             "secondary": null,
-            "bullets": []
-          }
+            "bullets": [],
+            "image": "",
+            "image_alt": ""
+          },
+          "_source": "overview.md"
         },
         {
           "id": "about",
           "type": "about",
           "data": {
-            "title": "About",
+            "title": "",
             "body": [
-              "real copy files; it returns a self-contained static site. The structure,",
-              "layout, styling and assembly are deterministic code, so the bulk of every",
-              "build costs zero tokens. AI is optional and rides the free chain: the Gemini"
+              "The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable."
             ],
             "points": []
           }
@@ -100,7 +101,8 @@
                 "body": "rebuild after hand edits, zero tokens."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "iterate",
@@ -118,7 +120,8 @@
                 "body": "theme flips cost nothing."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "gate-and-preview",
@@ -136,19 +139,20 @@
                 "body": "preview on localhost before anything goes anywhere."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "features-2",
           "type": "features",
           "data": {
             "title": "House rules the engine enforces",
-            "subhead": "and the offline planner only uses text it was given.",
+            "subhead": "",
             "items": [
               {
                 "icon": "cpu",
                 "title": "No invented content",
-                "body": "the AI prompt is hard-restricted to your source copy,"
+                "body": "the AI prompt is hard-restricted to your source copy, and the offline planner only uses text it was given."
               },
               {
                 "icon": "cpu",
@@ -163,10 +167,11 @@
               {
                 "icon": "code",
                 "title": "Secrets by env var name only",
-                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY,"
+                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY. Values are never written to disk by the engine."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "faq",
@@ -196,14 +201,15 @@
                 "a": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."
               }
             ]
-          }
+          },
+          "_source": "faq.md"
         },
         {
           "id": "features-3",
           "type": "features",
           "data": {
             "title": "Why it is cheap",
-            "subhead": "shape, with at most one JSON-repair retry.",
+            "subhead": "",
             "items": [
               {
                 "icon": "code",
@@ -218,12 +224,12 @@
               {
                 "icon": "sparkles",
                 "title": "One-call AI builds",
-                "body": "a single compact planning call produces the whole site"
+                "body": "a single compact planning call produces the whole site shape, with at most one JSON-repair retry."
               },
               {
                 "icon": "star",
                 "title": "Refine instead of rebuild",
-                "body": "edits touch one section, so a revision costs a"
+                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
               },
               {
                 "icon": "star",
@@ -231,7 +237,8 @@
                 "body": "edit site.json directly and rebuild for free."
               }
             ]
-          }
+          },
+          "_source": "overview.md"
         }
       ]
     }
@@ -240,5 +247,60 @@
     "text": "(c) 2026 SpiderCaster: websites from real copy, on free tokens",
     "links": [],
     "credit": true
+  },
+  "citations": {
+    "hero": {
+      "file": "overview.md",
+      "texts": [
+        "SpiderCaster: websites from real copy, on free tokens",
+        "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed."
+      ]
+    },
+    "features": {
+      "file": "commands.md",
+      "texts": [
+        "Build"
+      ]
+    },
+    "iterate": {
+      "file": "commands.md",
+      "texts": [
+        "Iterate"
+      ]
+    },
+    "gate-and-preview": {
+      "file": "commands.md",
+      "texts": [
+        "Gate and preview"
+      ]
+    },
+    "features-2": {
+      "file": "commands.md",
+      "texts": [
+        "House rules the engine enforces"
+      ]
+    },
+    "faq": {
+      "file": "faq.md",
+      "texts": [
+        "Questions about the engine"
+      ]
+    },
+    "features-3": {
+      "file": "overview.md",
+      "texts": [
+        "Why it is cheap"
+      ]
+    }
+  },
+  "presentation": {
+    "frame_id": "",
+    "mold_id": "",
+    "slots": [
+      {
+        "section": "hero",
+        "required": true
+      }
+    ]
   }
 }

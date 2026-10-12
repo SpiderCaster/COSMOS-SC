@@ -1,0 +1,18 @@
+{
+ "data": {
+  "title": "Posts",
+  "uid": "1",
+  "tabs": [
+   {
+    "label": "Recent",
+    "key": "recent",
+    "rows": "<li><a class=\"sc-row sc-tp-a\" href=\"/fixture-post-one/\">Fixture post one</a></li><li><a class=\"sc-row sc-tp-a\" href=\"/fixture-post-two/\">Fixture post two</a></li>"
+   },
+   {
+    "label": "Popular",
+    "key": "popular",
+    "rows": "<li><a class=\"sc-row sc-tp-a\" href=\"/fixture-post-three/\">Fixture post three</a></li><li><a class=\"sc-row sc-tp-a\" href=\"/fixture-post-four/\">Fixture post four</a></li>"
+   }
+  ]
+ }
+}

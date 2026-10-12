@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "visit-book",
+  "intent": "A booking practice that lists services, the visit steps, and a price cue before the ask.",
+  "sections": ["hero", "features", "steps", "pricing", "testimonials", "faq", "cta"],
+  "nav": "one-page",
+  "template": "modern",
+  "package": true,
+  "note": "Original section order for a booking practice. Not a vendor theme."
+}

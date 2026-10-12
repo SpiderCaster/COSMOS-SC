@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Reading progress bar demo, generatepress context</title><style>/* Test context. Approximates GeneratePress base rules that touch widgets and layout.
+   Not vendor CSS. Root size is the browser default. */
+body{margin:0;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;color:#222;background:#fff}
+a{color:#1e73be;text-decoration:none}
+h1,h2,h3,h4{font-weight:inherit;margin:0 0 20px;line-height:1.2}
+p{margin:0 0 1.5em}
+ul,ol{margin:0 0 1.5em 3em;padding:0}
+.grid-container{max-width:1200px;margin:0 auto;padding:0 20px;box-sizing:border-box}
+.site-content{display:block}
+.content-area,.widget-area{width:100%}
+.inside-article{padding:20px 0}
+.widget-area .widget{padding:20px 0;margin-bottom:30px}
+.widget ul{margin:0;list-style:none}
+.widget li{margin-bottom:.5em}
+.widget-title{font-size:20px;margin:0 0 30px;font-weight:inherit}
+input[type=search],input[type=email],input[type=text]{border:1px solid #ccc;padding:10px 15px;font-size:17px;box-sizing:border-box}
+button,input[type=submit]{font-family:inherit;font-size:17px;padding:10px 20px}
+@media(min-width:769px){.site-content{display:flex}.content-area{width:70%}.is-right-sidebar{width:30%;padding-left:20px;box-sizing:border-box}}
+.sc-tall{height:420px;margin:0}
+</style><style>.sc-rp{position:fixed;top:0;left:0;right:0;z-index:60;height:6px;background:var(--sc-line,#c9d1d9);color:var(--sc-fg,#1d2327);font-size:16px}
+.sc-rp .sc-rp-bar{display:block;height:100%;background:var(--sc-accent,#0b5cad);transform-origin:0 50%;transform:scaleX(var(--sc-p,0))}
+.sc-rp .sc-rp-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body class="wp-theme-generatepress no-sidebar"><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main"><article class="inside-article"><div class="entry-content"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div></article></main></div><div class="widget-area sidebar is-right-sidebar" id="right-sidebar"><div class="inside-right-sidebar"><aside class="widget inner-padding widget_custom_html"><div id="sc-under-test"><div class="sc-rp" data-sc="progress" data-source="article" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="sc-rp-bar"></span><span class="sc-rp-t">Reading progress</span></div>
+</div></aside></div></div></div></div><script>(function(){"use strict";
+function init(el){
+ var src=document.querySelector(el.getAttribute("data-source")||"article");if(!src)return;
+ var bar=el;
+ function upd(){
+  var r=src.getBoundingClientRect(),h=r.height-window.innerHeight,p=h<=0?1:Math.min(1,Math.max(0,-r.top/h));
+  bar.style.setProperty("--sc-p",p.toFixed(3));bar.setAttribute("aria-valuenow",String(Math.round(p*100)))}
+ window.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);upd()}
+function run(){var n=document.querySelectorAll('[data-sc="progress"]');for(var i=0;i<n.length;i++)init(n[i])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

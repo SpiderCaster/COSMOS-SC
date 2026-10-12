@@ -1,0 +1,76 @@
+{
+ "name": "Category list",
+ "slug": "categories",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Category links with optional post counts. The current category is marked.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Categories"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Categories.",
+   "fields": [
+    "label",
+    "url",
+    "count",
+    "current"
+   ]
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "categories.html",
+  "categories.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "taxonomy",
+  "list",
+  "nav"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 66,
+  "failed": 0,
+  "total": 66
+ },
+ "bytes": 2346,
+ "gzip_bytes": 875
+}

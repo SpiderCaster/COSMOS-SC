@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Share links demo, oceanwp-real context</title><link rel="stylesheet" href="../../../_vendor/oceanwp/style.min.css"><style></style><style>.sc-w{box-sizing:border-box;margin:0 0 24px;color:var(--sc-fg,#1d2327);font-size:16px;line-height:1.5}
+.sc-w *,.sc-w *::before,.sc-w *::after{box-sizing:border-box}
+.sc-w .sc-w-title{margin:0 0 8px;padding:0;border:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:0;text-transform:none;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-list{list-style:none;margin:0;padding:0}
+.sc-w .sc-list>li{margin:0;padding:0;border:0}
+.sc-w .sc-body{margin:0 0 12px;font-size:18px;line-height:1.5;color:var(--sc-fg,#1d2327)}
+.sc-w .sc-meta{display:block;font-size:16px;line-height:1.4;color:var(--sc-muted,#4a5560)}
+.sc-w a{color:var(--sc-accent,#0b5cad);text-decoration:underline;text-underline-offset:2px}
+.sc-w .sc-row{display:flex;flex-direction:column;justify-content:center;min-height:44px;padding:8px 0;color:var(--sc-accent,#0b5cad)}
+.sc-w .sc-list>li+li .sc-row{border-top:1px solid var(--sc-line,#c9d1d9)}
+.sc-w .sc-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 16px;border:0;border-radius:4px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1.3;text-decoration:none;cursor:pointer}
+.sc-w .sc-chip{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:8px 14px;border:1px solid var(--sc-line,#c9d1d9);border-radius:22px;color:var(--sc-accent,#0b5cad);font-size:16px;text-decoration:none}
+.sc-w :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+.sc-share .sc-sh-l{display:flex;flex-wrap:wrap;gap:8px}
+.sc-share .sc-chip{font-size:18px}
+.sc-share .sc-sh-copy{background:#fff;font:inherit;font-size:18px;cursor:pointer}
+.sc-share .sc-sh-m{min-height:24px;margin:8px 0 0;font-size:16px;color:var(--sc-fg,#1d2327)}
+</style></head><body class="wp-embed-responsive oceanwp-theme dropdown-mobile default-breakpoint content-right-sidebar has-sidebar"><div id="outer-wrap" class="site clr"><a class="skip-link screen-reader-text" href="#main">Skip to content</a><div id="wrap" class="clr"><main id="main" class="site-main clr" role="main"><div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="single-page-article clr"><div class="entry clr"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div></article></div></div><aside id="right-sidebar" class="sidebar-container widget-area sidebar-primary" role="complementary" aria-label="Primary Sidebar"><div id="right-sidebar-inner" class="clr"><div id="custom_html-2" class="widget_text sidebar-box widget_custom_html clr"><div class="textwidget custom-html-widget"><div id="sc-under-test"><div class="sc-w sc-share" data-sc="share" data-url="/fixture-post-one/" data-ok="Link copied." data-fail="Copy failed. Copy the address from the address bar." role="group" aria-labelledby="sc-sh-t-1">
+<h2 class="sc-w-title" id="sc-sh-t-1">Share this page</h2>
+<ul class="sc-list sc-sh-l">
+<li><a class="sc-chip" href="https://x.com/intent/post?url=https%3A%2F%2Fsite.example%2Ffixture-post-one%2F&amp;text=Fixture%20post%20one" rel="noopener noreferrer">X</a></li>
+<li><a class="sc-chip" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsite.example%2Ffixture-post-one%2F" rel="noopener noreferrer">Facebook</a></li>
+<li><a class="sc-chip" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fsite.example%2Ffixture-post-one%2F" rel="noopener noreferrer">LinkedIn</a></li>
+<li><a class="sc-chip" href="mailto:?subject=Fixture%20post%20one&amp;body=https%3A%2F%2Fsite.example%2Ffixture-post-one%2F">Email</a></li>
+<li><button class="sc-chip sc-sh-copy" type="button">Copy link</button></li>
+</ul>
+<div class="sc-sh-m" role="status" aria-live="polite"></div>
+</div>
+</div></div></div></div></aside></div></main></div></div><script>(function(){"use strict";
+function init(box){
+ var b=box.querySelector(".sc-sh-copy"),m=box.querySelector(".sc-sh-m");
+ b.addEventListener("click",function(){
+  var u=box.getAttribute("data-url")||location.href;
+  var ok=function(){m.textContent=box.getAttribute("data-ok")},bad=function(){m.textContent=box.getAttribute("data-fail")};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(ok,bad)}else{bad()}
+ })}
+function run(){var n=document.querySelectorAll('[data-sc="share"]');for(var i=0;i<n.length;i++)init(n[i])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

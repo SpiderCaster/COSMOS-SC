@@ -1,0 +1,27 @@
+{
+  "schema": "spidercaster-structure/1",
+  "frame_id": "hours-stack",
+  "mold_id": "discover-grid",
+  "pages": [
+    {
+      "slug": "index",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "part_id": "hero-dark-band-072"
+        },
+        {
+          "id": "menu",
+          "type": "menu",
+          "part_id": "table-basic-152"
+        },
+        {
+          "id": "contact",
+          "type": "contact",
+          "part_id": "cta-button-group-primary-secondary-201"
+        }
+      ]
+    }
+  ]
+}

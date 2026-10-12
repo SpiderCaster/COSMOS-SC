@@ -1,0 +1,10 @@
+{
+  "schema": "spidercaster-frame/1",
+  "id": "house-menu",
+  "intent": "A restaurant or cafe page that puts the menu and a way to visit ahead of the story.",
+  "sections": ["hero", "menu", "gallery", "testimonials", "about", "faq", "contact"],
+  "nav": "segmented",
+  "template": "editorial",
+  "package": true,
+  "note": "Original section order for a restaurant or cafe page. Not a vendor theme."
+}

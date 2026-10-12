@@ -1,0 +1,21 @@
+{
+ "data": {
+  "side": "left",
+  "open_label": "Open sidebar",
+  "close_label": "Close",
+  "aside_label": "Sidebar",
+  "uid": "1"
+ },
+ "slots": {
+  "aside": [
+   "search",
+   "recent-posts",
+   "categories"
+  ]
+ },
+ "variants": {
+  "right": {
+   "side": "right"
+  }
+ }
+}

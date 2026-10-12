@@ -1,0 +1,720 @@
+{
+ "slug": "tabbed-posts",
+ "status": "pass",
+ "passed": 139,
+ "failed": 0,
+ "total": 139,
+ "seconds": 21.0,
+ "extra": {
+  "bytes": 3809,
+  "gzip_bytes": 1399,
+  "root_font": {
+   "oceanwp": "10px",
+   "generatepress": "16px",
+   "oceanwp-real": "10px",
+   "generatepress-real": "16px"
+  },
+  "measured_360": {
+   "text_nodes": 5,
+   "tap_targets": 4,
+   "min_contrast": 6.67
+  }
+ },
+ "checks": [
+  {
+   "id": "manifest.keys",
+   "ok": true,
+   "detail": "missing: []"
+  },
+  {
+   "id": "slug.shape",
+   "ok": true,
+   "detail": "slug 'tabbed-posts' folder 'tabbed-posts'"
+  },
+  {
+   "id": "manifest.kind",
+   "ok": true,
+   "detail": "widget"
+  },
+  {
+   "id": "manifest.test_command",
+   "ok": true,
+   "detail": "python test.py"
+  },
+  {
+   "id": "files.exist",
+   "ok": true,
+   "detail": "absent: []"
+  },
+  {
+   "id": "files.named",
+   "ok": true,
+   "detail": "['manifest.json', 'tabbed-posts.html', 'tabbed-posts.css', 'tabbed-posts.js', 'fixture.json', 'test.behavior.js', 'test.py']"
+  },
+  {
+   "id": "tokens.declared",
+   "ok": true,
+   "detail": "undeclared tokens: []"
+  },
+  {
+   "id": "tokens.loop_fields",
+   "ok": true,
+   "detail": "unknown loop fields: []"
+  },
+  {
+   "id": "tokens.used",
+   "ok": true,
+   "detail": "declared but unused: []"
+  },
+  {
+   "id": "template.no_nested_if",
+   "ok": true,
+   "detail": "nested if blocks"
+  },
+  {
+   "id": "html.lint.full",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "html.lint.required_only",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "css.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.lint",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "js.syntax",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "secrets.none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "size.budget",
+   "ok": true,
+   "detail": "3809 bytes > budget 6500"
+  },
+  {
+   "id": "browser.error.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "browser.root62.oceanwp@360",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "browser.root62.oceanwp@1280",
+   "ok": true,
+   "detail": "root font 10px"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.bar_shown_by_script.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.first_selected.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.roving_tabindex.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.click_selects_second.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.arrow_right_wraps.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.end_key.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.aria_wiring.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.tabs_44.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  }
+ ]
+}

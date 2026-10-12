@@ -1,0 +1,24 @@
+{
+ "data": {
+  "title": "Most read",
+  "uid": "1",
+  "period": "Last 7 days",
+  "items": [
+   {
+    "label": "Fixture story one",
+    "url": "/fixture-one/",
+    "reads": "1,204"
+   },
+   {
+    "label": "Fixture story two",
+    "url": "/fixture-two/",
+    "reads": ""
+   },
+   {
+    "label": "Fixture story three",
+    "url": "/fixture-three/",
+    "reads": "310"
+   }
+  ]
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "name": "Ad slot",
+ "slug": "ad-slot",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Labelled box with fixed height for an ad unit. Reserves the space before the ad loads so the page does not shift. Hides itself while empty. The caller supplies the ad code.",
+ "inputs": [
+  {
+   "name": "label",
+   "type": "string",
+   "required": false,
+   "description": "Label above the slot.",
+   "default": "Advertisement"
+  },
+  {
+   "name": "size",
+   "type": "string",
+   "required": true,
+   "description": "300x250, 300x600 or 320x100."
+  },
+  {
+   "name": "slot_id",
+   "type": "string",
+   "required": true,
+   "description": "Name for this slot in reports."
+  },
+  {
+   "name": "ad_code",
+   "type": "html",
+   "required": false,
+   "description": "Ad network markup. Empty hides the slot.",
+   "default": ""
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "ad-slot.html",
+  "ad-slot.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "ads",
+  "layout-stable"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 73,
+  "failed": 0,
+  "total": 73
+ },
+ "bytes": 2271,
+ "gzip_bytes": 758
+}

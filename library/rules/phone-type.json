@@ -1,0 +1,41 @@
+{
+  "schema": "spidercaster-phone-type/1",
+  "root_px": 18,
+  "rules": [
+    {
+      "id": "root_18",
+      "status": "enforced",
+      "statement": "html in CSS_TEMPLATE sets font-size:18px, so 1rem is 18px."
+    },
+    {
+      "id": "body_line_height",
+      "status": "enforced",
+      "statement": "body sets line-height:1.6, which is at least 1.5. The line box is 1.6 × 18 = 28.8px."
+    },
+    {
+      "id": "h1_phone_floor",
+      "status": "enforced",
+      "statement": "On a phone the h1 clamp minimum should be about 1.7rem so a long title fits. h1 is clamp(1.7rem, 5.5vw, 3.9rem) and .hero--bold h1 is clamp(1.7rem, 8vw, 4.2rem). Both minima are 1.7rem, not above 2rem. 1.7 × 18 = 30.6px."
+    },
+    {
+      "id": "lede_measure",
+      "status": "enforced",
+      "statement": ".lede sets max-width:62ch. Its font-size is 1.08rem, and 1.08 × 18 = 19.44px."
+    },
+    {
+      "id": "button_18",
+      "status": "enforced",
+      "statement": ".btn sets font-size:1rem, which is at least 1rem. 1 × 18 = 18px."
+    },
+    {
+      "id": "footer_floor",
+      "status": "enforced",
+      "statement": ".site-footer and .credit set font-size:1rem (18px, same as body). No text in the template resolves under 18px. Tightened 2026-10-03 from .92rem (16.56px)."
+    },
+    {
+      "id": "input_16",
+      "status": "enforced",
+      "statement": ".form input and .form textarea set font:inherit and font-size:max(16px,1rem). font:inherit counts as enforced because the root is 18px. max(16px, 1rem) is 18px, so a phone does not zoom the page on focus."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+ "data": {
+  "aside_label": "On this page"
+ },
+ "slots": {
+  "aside": [
+   {
+    "widget": "toc",
+    "data": {
+     "source": ".sc-lay-main"
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "data": {
+  "aside_label": "Sidebar",
+  "aside_2_label": "Secondary sidebar"
+ },
+ "slots": {
+  "aside": [
+   "categories",
+   "tag-cloud"
+  ],
+  "aside_2": [
+   "search",
+   "recent-posts"
+  ]
+ }
+}

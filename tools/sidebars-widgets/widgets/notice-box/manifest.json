@@ -1,0 +1,69 @@
+{
+ "name": "Notice box",
+ "slug": "notice-box",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Short note in a bordered box, such as an affiliate disclosure or a date notice. Two tones: info and warning. Both keep 4.5:1 contrast.",
+ "inputs": [
+  {
+   "name": "tone",
+   "type": "string",
+   "required": true,
+   "description": "info or warning."
+  },
+  {
+   "name": "heading",
+   "type": "string",
+   "required": false,
+   "description": "Bold lead-in. Empty hides it.",
+   "default": ""
+  },
+  {
+   "name": "text",
+   "type": "string",
+   "required": true,
+   "description": "One or two sentences."
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "notice-box.html",
+  "notice-box.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "notice",
+  "content",
+  "disclosure"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "checks": {
+  "passed": 60,
+  "failed": 0,
+  "total": 60
+ },
+ "bytes": 2047,
+ "gzip_bytes": 719
+}
