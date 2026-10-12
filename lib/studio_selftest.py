@@ -16,7 +16,7 @@ if str(ROOT) not in sys.path:
 
 from lib.compose import compose_project
 from lib.structure import load_structure, save_structure
-from lib.studio import Desk, act, serve_studio
+from lib.studio import RENDER, Desk, act, serve_studio
 
 PROJECT = ROOT / "projects" / "demo-local"
 
@@ -124,6 +124,24 @@ def _refuse_fleet() -> int:
     return 0
 
 
+def _selected() -> int:
+    for project in ("demo-local", "bench-harbor-tearoom"):
+        desk = Desk(ROOT)
+        act(desk, {"action": "select", "project": project})
+        if desk.project != project:
+            return _fail(f"{project} was not selected")
+        for path, render in RENDER.items():
+            try:
+                html = render(desk)
+            except Exception as exc:
+                return _fail(f"{path} raised after selecting {project}: {exc}")
+            if html.count("<h1>") != 1:
+                return _fail(f"{path} does not have one h1 after selecting {project}")
+            if "noindex" not in html:
+                return _fail(f"{path} is missing noindex after selecting {project}")
+    return 0
+
+
 def main() -> int:
     httpd, port = serve_studio(port=0, root=ROOT)
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
@@ -136,6 +154,9 @@ def main() -> int:
         httpd.shutdown()
         httpd.server_close()
     failed = _refuse_fleet()
+    if failed:
+        return failed
+    failed = _selected()
     if failed:
         return failed
     failed = _drop_paint()

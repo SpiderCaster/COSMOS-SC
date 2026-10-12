@@ -1,0 +1,31 @@
+{
+  "generator": "tools/layout_probe.py",
+  "version": 1,
+  "html_hash": "f2dd98206e25de1a",
+  "hash": "f2dd98206e25de1a",
+  "pages": [
+    "index.html"
+  ],
+  "rows": [
+    {
+      "name": "viewport_meta",
+      "status": "PASS",
+      "detail": "1 page(s) carry a viewport meta"
+    },
+    {
+      "name": "img_dimensions",
+      "status": "PASS",
+      "detail": "1 page(s), img dimensions set"
+    },
+    {
+      "name": "wide_fixed",
+      "status": "PASS",
+      "detail": "1 page(s), no fixed box over 412px"
+    },
+    {
+      "name": "no_remote_assets",
+      "status": "PASS",
+      "detail": "1 page(s), local only"
+    }
+  ]
+}

@@ -16,6 +16,7 @@ a = Analysis(
         (os.path.join(_here, 'library'), 'library'),
         (os.path.join(_here, 'plugin'), 'plugin'),
         (os.path.join(_here, 'projects', 'demo-local'), os.path.join('projects', 'demo-local')),
+        (os.path.join(_here, 'projects', 'bench-harbor-tearoom'), os.path.join('projects', 'bench-harbor-tearoom')),
     ],
     hiddenimports=[],
     hookspath=[],

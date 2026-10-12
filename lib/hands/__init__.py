@@ -367,6 +367,85 @@ def copy_gap(ctx: dict) -> dict:
     return _ret("PASS", _content_detail(copy, files), {"blocks": len(copy.blocks), "files": files})
 
 
+_COPY_CHECK_SYSTEM = (
+    "You are a terse copy editor for static small-business sites. "
+    "Review the project copy below and reply with one line starting CLEAN or ISSUES, "
+    "then one short note per issue. Flag only: filler phrases (in conclusion, furthermore, "
+    "moreover, delve, testament, beacon, nestled, rich tapestry, crucial, vital, in summary), "
+    "exclamation points, and invented facts, prices, or quotes. Do not rewrite the copy."
+)
+
+_COPY_BANNED = (
+    "in conclusion", "furthermore", "moreover", "it is important to remember", "delve",
+    "testament", "beacon", "nestled", "rich tapestry", "crucial", "vital", "in summary",
+)
+
+
+def _mechanical_copy_issues(text: str) -> list[str]:
+    """Banned-phrase scan that runs with or without AI (also the offline fallback note)."""
+    issues = []
+    low = str(text or "").lower()
+    for word in _COPY_BANNED:
+        if re.search(r"\b" + re.escape(word) + r"\b", low):
+            issues.append(f"banned phrase: {word}")
+    if "!" in str(text or ""):
+        issues.append("exclamation point")
+    return issues
+
+
+def _sc_ai_chain_module():
+    """Import the optional AI chain the way lib/providers.py does (sys.path, no package)."""
+    import sys
+
+    for directory in (os.environ.get("SC_AI_CHAIN_DIR", ""),
+                      str(Path(__file__).resolve().parent.parent / "ai_chain")):
+        if directory and directory not in sys.path and Path(directory).is_dir():
+            sys.path.append(directory)
+    import sc_ai_chain  # noqa: E402
+    return sc_ai_chain
+
+
+def copy_check(ctx: dict) -> dict:
+    """Advisory AI copy check (content seat). Always PASS: the static checker stays the gate.
+
+    When SC_AI=on and a route answers, data carries the live verdict with
+    source="ai" (provider/model/ms included). Otherwise data carries the
+    mechanical scan with source="template" and the reason AI did not run.
+    Never raises: any import or chain error becomes a PASS advisory.
+    """
+    raw = str(ctx.get("project") or "").strip()
+    if not raw:
+        return _ret("FAIL", "project is required")
+    copy_text = _project_copy_text(ctx)
+    if not copy_text.strip():
+        return _ret("PASS", "no copy text to AI-check; gap check governs",
+                    {"source": "template", "reason": "empty copy", "issues": [],
+                     "verdict": "", "provider": "", "model": "", "ms": 0, "usage": {}})
+    mechanical = sorted(set(_mechanical_copy_issues(copy_text)))
+    fallback_note = "; ".join(mechanical) if mechanical else "mechanical style check clean"
+    clipped = copy_text[:6000]
+    try:
+        chain_mod = _sc_ai_chain_module()
+        result = chain_mod.generate(
+            system=_COPY_CHECK_SYSTEM,
+            user="Project copy to review:\n\n" + clipped,
+            fallback=fallback_note, purpose="copy-check",
+            max_tokens=400, temperature=0.2, min_chars=5, max_chars=4000)
+        source, provider, model = result.source, result.provider, result.model
+        reason, ms, verdict = result.reason, result.ms, (result.text or "")[:2000]
+        usage = dict(getattr(result, "usage", None) or {})
+    except Exception as exc:                                    # advisory: never break a build
+        source, provider, model = "template", "", ""
+        reason, ms, verdict = f"chain error {type(exc).__name__}", 0, fallback_note
+        usage = {}
+    data = {"source": source, "provider": provider, "model": model, "reason": reason,
+            "ms": ms, "usage": usage, "issues": mechanical, "verdict": verdict}
+    if source == "ai":
+        first = next((line.strip() for line in verdict.splitlines() if line.strip()), "done")
+        return _ret("PASS", f"AI copy check ({provider}/{model}): {first[:160]}", data)
+    return _ret("PASS", f"copy check fallback ({reason}); mechanical: {fallback_note[:160]}", data)
+
+
 def _remote_src(src: str) -> bool:
     text = str(src or "").strip()
     return text.startswith(("http://", "https://", "//", "\\\\"))
@@ -814,6 +893,7 @@ HANDS = {
     "sitemap_read": sitemap_read,
     "copy_read": copy_read,
     "copy_gap": copy_gap,
+    "copy_check": copy_check,
     "plan_offline": plan_offline,
     "render": render,
     "attempt_snapshot": attempt_snapshot,
