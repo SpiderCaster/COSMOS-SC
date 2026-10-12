@@ -1,0 +1,94 @@
+{
+ "name": "Breaking news list",
+ "slug": "news-ticker-list",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Short list of the latest headlines with time stamps. A static list, so it does not scroll or move. Newest first.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Latest"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Headlines, newest first. Use 3 to 8.",
+   "fields": [
+    "label",
+    "url",
+    "time",
+    "iso",
+    "tag"
+   ],
+   "field_notes": {
+    "tag": "short label such as Breaking or Update"
+   }
+  },
+  {
+   "name": "more_url",
+   "type": "string",
+   "required": false,
+   "description": "Address of the full news page.",
+   "default": ""
+  },
+  {
+   "name": "more_label",
+   "type": "string",
+   "required": false,
+   "description": "Link text.",
+   "default": "All news"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "news-ticker-list.html",
+  "news-ticker-list.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "news",
+  "list",
+  "static"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 98,
+  "failed": 0,
+  "total": 98
+ },
+ "bytes": 2212,
+ "gzip_bytes": 806
+}

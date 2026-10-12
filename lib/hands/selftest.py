@@ -36,7 +36,26 @@ def main() -> int:
         (project / "copy" / "overview.md").write_text(
             "# Harbor Tea Room\n\n"
             "The harbor tea room pours afternoon tea from a quiet counter on the dock.\n\n"
-            "Guests sit by the window and watch the small boats while the kettle finishes.\n",
+            "Guests sit by the window and watch the small boats while the kettle finishes.\n\n"
+            "## Visit\n\n"
+            "The counter seats six guests beside the window facing the dock.\n",
+            encoding="utf-8",
+        )
+        # Crew runs require sitemap.json (FINAL D1, scoped): the architect
+        # reads it, SEO checks it. Single-page fixture, hero only.
+        from lib import sitemap as sitemap_mod
+
+        (project / "sitemap.json").write_text(
+            json.dumps(
+                sitemap_mod.emit_sitemap(None, [{
+                    "slug": "index",
+                    "title": "Harbor Tea Room",
+                    "intent": "Say the harbor tea room pours afternoon tea on the dock.",
+                    "sections": ["hero"],
+                    "links": [],
+                }], site="hands-demo.example"),
+                indent=2,
+            ) + "\n",
             encoding="utf-8",
         )
         pkg = root / "pkg"

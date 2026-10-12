@@ -1,6 +1,6 @@
 {
  "slice": "sidebars-widgets",
- "generated": "2026-10-03 21:06 Central Daylight Time",
+ "generated": "2026-10-03 22:25 Central Daylight Time",
  "items": [
   {
    "slug": "sidebar-collapsible-groups",
@@ -132,7 +132,7 @@
     "test.py"
    ],
    "test_command": "python test.py",
-   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   },
   {
    "slug": "sidebar-sticky-right",
@@ -158,7 +158,7 @@
     "test.py"
    ],
    "test_command": "python test.py",
-   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   },
   {
    "slug": "sidebar-three-column",
@@ -284,7 +284,7 @@
     "test.py"
    ],
    "test_command": "python test.py",
-   "last_tested": "2026-10-03 21:06 Central Daylight Time"
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   },
   {
    "slug": "categories",
@@ -361,6 +361,31 @@
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
   },
   {
+   "slug": "event-list",
+   "name": "Event list",
+   "kind": "widget",
+   "path": "widgets/event-list",
+   "purpose": "Upcoming events as date, title, time and place. Each title links to its page when a link is given.",
+   "tags": [
+    "events",
+    "list",
+    "local"
+   ],
+   "status": "pass",
+   "bytes": 2637,
+   "gzip_bytes": 880,
+   "files": [
+    "manifest.json",
+    "event-list.html",
+    "event-list.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
    "slug": "faq-accordion",
    "name": "FAQ accordion",
    "kind": "widget",
@@ -386,6 +411,31 @@
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
   },
   {
+   "slug": "jump-to-section",
+   "name": "Jump to section",
+   "kind": "widget",
+   "path": "widgets/jump-to-section",
+   "purpose": "Row of in-page links in a scrolling strip, for long pages with fixed sections. The strip scrolls sideways on phones.",
+   "tags": [
+    "navigation",
+    "chips",
+    "scroll-strip"
+   ],
+   "status": "pass",
+   "bytes": 1935,
+   "gzip_bytes": 745,
+   "files": [
+    "manifest.json",
+    "jump-to-section.html",
+    "jump-to-section.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
    "slug": "link-list",
    "name": "Link list",
    "kind": "widget",
@@ -409,6 +459,82 @@
    ],
    "test_command": "python test.py",
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "local-info-card",
+   "name": "Local info card",
+   "kind": "widget",
+   "path": "widgets/local-info-card",
+   "purpose": "Facts for one town as label and value pairs, with the time they were updated and a source link. The caller supplies every value from a named source. The card never invents a reading.",
+   "tags": [
+    "local",
+    "facts",
+    "arkansas-coverage",
+    "sourced"
+   ],
+   "status": "pass",
+   "bytes": 2325,
+   "gzip_bytes": 838,
+   "files": [
+    "manifest.json",
+    "local-info-card.html",
+    "local-info-card.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
+   "slug": "most-read",
+   "name": "Most read this week",
+   "kind": "widget",
+   "path": "widgets/most-read",
+   "purpose": "Ranked list of the most read stories for a stated period. The caller supplies the order and the period label from its own counts.",
+   "tags": [
+    "news",
+    "ranked",
+    "list"
+   ],
+   "status": "pass",
+   "bytes": 2282,
+   "gzip_bytes": 809,
+   "files": [
+    "manifest.json",
+    "most-read.html",
+    "most-read.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
+   "slug": "news-ticker-list",
+   "name": "Breaking news list",
+   "kind": "widget",
+   "path": "widgets/news-ticker-list",
+   "purpose": "Short list of the latest headlines with time stamps. A static list, so it does not scroll or move. Newest first.",
+   "tags": [
+    "news",
+    "list",
+    "static"
+   ],
+   "status": "pass",
+   "bytes": 2212,
+   "gzip_bytes": 806,
+   "files": [
+    "manifest.json",
+    "news-ticker-list.html",
+    "news-ticker-list.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   },
   {
    "slug": "newsletter-form-stub",
@@ -536,6 +662,32 @@
    ],
    "test_command": "python test.py",
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "reading-progress",
+   "name": "Reading progress bar",
+   "kind": "widget",
+   "path": "widgets/reading-progress",
+   "purpose": "Thin bar fixed to the top of the page that fills as the visitor scrolls the article. Reports the value to screen readers through progressbar attributes.",
+   "tags": [
+    "progress",
+    "js",
+    "fixed"
+   ],
+   "status": "pass",
+   "bytes": 1318,
+   "gzip_bytes": 747,
+   "files": [
+    "manifest.json",
+    "reading-progress.html",
+    "reading-progress.css",
+    "reading-progress.js",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   },
   {
    "slug": "recent-posts",
@@ -688,6 +840,57 @@
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
   },
   {
+   "slug": "sponsor-box",
+   "name": "Sponsor box",
+   "kind": "widget",
+   "path": "widgets/sponsor-box",
+   "purpose": "Sponsor name, one sentence and one link, with a plain Sponsored label. Text only, no logo. The link carries rel=sponsored.",
+   "tags": [
+    "ads",
+    "sponsor",
+    "no-logo"
+   ],
+   "status": "pass",
+   "bytes": 2111,
+   "gzip_bytes": 721,
+   "files": [
+    "manifest.json",
+    "sponsor-box.html",
+    "sponsor-box.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
+   "slug": "sports-schedule",
+   "name": "Sports schedule table",
+   "kind": "widget",
+   "path": "widgets/sports-schedule",
+   "purpose": "Game schedule and results as plain text. Columns are date, opponent, place and result. No logos or team marks.",
+   "tags": [
+    "sports",
+    "table",
+    "plain-text",
+    "local"
+   ],
+   "status": "pass",
+   "bytes": 2563,
+   "gzip_bytes": 900,
+   "files": [
+    "manifest.json",
+    "sports-schedule.html",
+    "sports-schedule.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
+  },
+  {
    "slug": "tabbed-posts",
    "name": "Tabbed post lists",
    "kind": "widget",
@@ -764,6 +967,32 @@
    ],
    "test_command": "python test.py",
    "last_tested": "2026-10-03 21:06 Central Daylight Time"
+  },
+  {
+   "slug": "who-to-call",
+   "name": "Who to call",
+   "kind": "widget",
+   "path": "widgets/who-to-call",
+   "purpose": "Agency and phone list for residents. Each row is a tap-to-call link. An optional first row marks an emergency number.",
+   "tags": [
+    "local",
+    "contacts",
+    "tel",
+    "arkansas-coverage"
+   ],
+   "status": "pass",
+   "bytes": 2103,
+   "gzip_bytes": 773,
+   "files": [
+    "manifest.json",
+    "who-to-call.html",
+    "who-to-call.css",
+    "fixture.json",
+    "test.behavior.js",
+    "test.py"
+   ],
+   "test_command": "python test.py",
+   "last_tested": "2026-10-03 22:25 Central Daylight Time"
   }
  ]
 }

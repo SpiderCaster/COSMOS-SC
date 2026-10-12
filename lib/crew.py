@@ -22,7 +22,7 @@ ROLES = (
         "id": "architect",
         "n": 1,
         "label": "Architect / lead planner",
-        "hands": ["brief_read", "frame_pick", "mold_pick", "library_bind"],
+        "hands": ["brief_read", "frame_pick", "mold_pick", "library_bind", "sitemap_read"],
         "does_not": "invent pages that copy/ does not support",
     },
     {
@@ -36,7 +36,7 @@ ROLES = (
         "id": "frontend",
         "n": 3,
         "label": "Frontend engineer",
-        "hands": ["plan_offline", "render"],
+        "hands": ["plan_offline", "render", "attempt_snapshot"],
         "does_not": "hotlink a photo or ship a vendor demo as-is",
     },
     {
@@ -57,7 +57,7 @@ ROLES = (
         "id": "seo",
         "n": 6,
         "label": "SEO specialist",
-        "hands": ["uniqueness", "meta_basics"],
+        "hands": ["uniqueness", "meta_basics", "sitemap_check"],
         "does_not": "reuse a mold or vendor frame that is already live",
     },
     {
@@ -124,6 +124,16 @@ def _seat_status(statuses: list[str]) -> str:
     return "PASS"
 
 
+def _call_hand(role_id: str, name: str, ctx: dict) -> dict:
+    """The only door to a hand. A refused gate is FAIL and does not call it."""
+    from lib.seat_gate import seat_gate
+
+    gate = seat_gate(role_id, role_id, name)
+    if not gate.get("allowed"):
+        return {"status": "FAIL", "detail": str(gate.get("error") or ""), "data": {}}
+    return HANDS[name](ctx)
+
+
 def _rerender_once(ctx: dict, rows: list[dict]) -> None:
     """Review index.html after visual. Missing triggers is a no-op. One rerender at most."""
     raw = ctx.get("out")
@@ -142,8 +152,8 @@ def _rerender_once(ctx: dict, rows: list[dict]) -> None:
         return
     if not any(isinstance(hit, dict) and hit.get("fix") == "rerender" for hit in hits):
         return
-    rendered = HANDS["render"](ctx)
-    checked = HANDS["check_site"](ctx)
+    rendered = _call_hand("frontend", "render", ctx)
+    checked = _call_hand("visual", "check_site", ctx)
     rows.append(_hand(
         "frontend",
         str(rendered.get("status") or "FAIL"),
@@ -198,7 +208,7 @@ def run_job(
                         statuses.append("FAIL")
                         stopped = True
                         break
-            result = HANDS[name](ctx)
+            result = _call_hand(role["id"], name, ctx)
             details.append(str(result.get("detail") or ""))
             statuses.append(str(result.get("status") or "FAIL"))
             if result.get("status") == "FAIL":
@@ -211,7 +221,7 @@ def run_job(
     rows.append(_hand("deployer", "FAIL" if prior_fail else "PASS", _TICKET_NOTE))
     ctx["hands"] = rows
     ctx["mold_id"] = ctx.get("mold_id") or mold_id
-    written = HANDS["ticket_write"](ctx)
+    written = _call_hand("deployer", "ticket_write", ctx)
     ticket = (written.get("data") or {}).get("ticket")
     if isinstance(ticket, dict):
         return ticket

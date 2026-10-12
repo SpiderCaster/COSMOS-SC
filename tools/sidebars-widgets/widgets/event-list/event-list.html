@@ -1,0 +1,6 @@
+<section class="sc-w sc-events" aria-labelledby="sc-ev-t-{{uid}}">
+<h2 class="sc-w-title" id="sc-ev-t-{{uid}}">{{title}}</h2>
+<ul class="sc-list"><!--each items--><li class="sc-ev-i"><time class="sc-ev-d" datetime="{{iso}}">{{date}}</time><div class="sc-ev-b"><!--if url--><a class="sc-row sc-ev-a" href="{{url}}">{{title}}</a><!--/if--><!--unless url--><span class="sc-ev-t">{{title}}</span><!--/unless--><span class="sc-meta">{{time}}<!--if place--> at {{place}}<!--/if--></span></div></li><!--/each-->
+</ul>
+<!--if more_url--><a class="sc-row sc-ev-more" href="{{more_url}}">{{more_label}}</a><!--/if-->
+</section>

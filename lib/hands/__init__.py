@@ -1,6 +1,7 @@
 """Seat hands. Each returns status, detail, and data. None of them publish."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -167,6 +168,10 @@ def _build_ir(ctx: dict) -> dict:
     if accent:
         raw["theme"]["accent"] = accent
     site_ir = ir_mod.normalize_site(raw, opts)
+    # Gap gate on the crew path: mandatory miss FAILs the hand (callers
+    # already convert SystemExit to a FAIL ret with no HTML emitted).
+    from lib.copy_schema import raise_first_gap as _raise_gap
+    _raise_gap(site_ir)
     _remember_ir(ctx, site_ir)
     return site_ir
 
@@ -270,6 +275,33 @@ def library_bind(ctx: dict) -> dict:
         return _ret("FAIL", str(exc))
     flag = "live" if row["live"] else "draft"
     return _ret("PASS", f"bound {row['site']} -> {row['mold']} ({flag})", {"bind": row})
+
+
+def sitemap_read(ctx: dict) -> dict:
+    """Architect hand: FAIL on an intent-less page or a non-frame section.
+
+    Crew runs require sitemap.json (FINAL D1, scoped). The offline
+    single-page loop never calls hands, so a missing doc here is
+    FAIL pages.scope, never an emit.
+    """
+    from lib import sitemap as sitemap_mod
+
+    found = sitemap_mod.find_sitemap(ctx.get("out"), ctx.get("project"))
+    if found is None:
+        return _ret("FAIL", "FAIL pages.scope: crew runs require sitemap.json")
+    try:
+        doc = sitemap_mod.load_sitemap(found.parent)
+    except sitemap_mod.SitemapError as exc:
+        return _ret("FAIL", str(exc))
+    ctx["sitemap"] = doc
+    frame = ctx.get("frame") if isinstance(ctx.get("frame"), dict) else None
+    rows = sitemap_mod.read_for_architect(doc, frame)
+    failed = [row for row in rows if row["status"] == "FAIL"]
+    data: dict = {"sitemap": str(found), "rows": rows}
+    if failed:
+        return _ret("FAIL", "; ".join(str(row["detail"]) for row in failed), data)
+    count = len(doc.get("pages") or [])
+    return _ret("PASS", f"sitemap {count} page(s): intent present, frame vocabulary held", data)
 
 
 def _copy_citation(project: Path, copy) -> tuple[list[str], list[str]]:
@@ -487,6 +519,19 @@ def render(ctx: dict) -> dict:
     return _ret("PASS", f"{len(names)} page(s) written", {"pages": names, "site_ir": site_ir})
 
 
+def attempt_snapshot(ctx: dict) -> dict:
+    """Frontend-seat hand: snapshot the built tree before dirty ops (D2)."""
+    from lib import attempts as _attempts
+
+    result = _attempts.attempt_snapshot(ctx if isinstance(ctx, dict) else {})
+    data = result.get("data")
+    return _ret(
+        str(result.get("status") or "FAIL"),
+        str(result.get("detail") or ""),
+        dict(data) if isinstance(data, dict) else {},
+    )
+
+
 def _remote_and_local(project: Path, copy) -> tuple[list[str], list[str]]:
     remote: list[str] = []
     local: list[str] = []
@@ -641,6 +686,90 @@ def meta_basics(ctx: dict) -> dict:
     return _ret("PASS", meta.get("detail") or "meta basics present", {"rows": rows})
 
 
+def sitemap_check(ctx: dict) -> dict:
+    """SEO hand: orphan/intent/vocab/link rows plus rendered-page rows.
+
+    h1 counts and FAQ visibility are read from the rendered HTML the
+    frontend seat wrote. A page with no rendered file yields SKIP rows
+    (NOT RUN evidence, never PASS). A missing sitemap.json in a crew run
+    is FAIL pages.scope.
+    """
+    from lib import sitemap as sitemap_mod
+
+    out = ctx.get("out")
+    if not out:
+        return _ret("FAIL", "out is required")
+    dest = Path(out)
+    found = sitemap_mod.find_sitemap(dest, ctx.get("project"))
+    if found is None:
+        return _ret("FAIL", "FAIL pages.scope: crew runs require sitemap.json")
+    try:
+        doc = sitemap_mod.load_sitemap(found.parent)
+    except sitemap_mod.SitemapError as exc:
+        return _ret("FAIL", str(exc))
+    ctx["sitemap"] = doc
+    frame = ctx.get("frame") if isinstance(ctx.get("frame"), dict) else None
+    faq_sections = {
+        str(page.get("file")): "faq" in (page.get("sections") or [])
+        for page in (doc.get("pages") or [])
+        if isinstance(page, dict)
+    }
+    h1_counts: dict[str, int] = {}
+    faq_visible: dict[str, bool] = {}
+    for file, wants_faq in faq_sections.items():
+        page = dest / file
+        if not page.is_file():
+            continue
+        try:
+            html = page.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        h1_counts[file] = len(re.findall(r"<h1[\s>]", html, re.IGNORECASE))
+        if wants_faq:
+            faq_visible[file] = "<details" in html.lower()
+    rows = sitemap_mod.check(doc, frame, h1_counts=h1_counts, faq_visible=faq_visible)
+    failed = [row for row in rows if row["status"] == "FAIL"]
+    data: dict = {"sitemap": str(found), "rows": rows}
+    if failed:
+        return _ret("FAIL", "; ".join(str(row["detail"]) for row in failed), data)
+    count = len(doc.get("pages") or [])
+    skipped = sum(1 for row in rows if row["status"] == "SKIP")
+    note = f"sitemap {count} page(s): no orphan, intent and links held"
+    if skipped:
+        note += f" ({skipped} row(s) SKIP: page not rendered)"
+    return _ret("PASS", note, data)
+
+
+def _sha_bound(dest: Path) -> dict[str, str]:
+    """sha256 of the release artifact: HTML + assets + site.json.
+
+    The ticket file itself is excluded (it cannot hash itself), as is
+    _attempts/ provenance and *.bak scratch: attempts are history, not
+    product, and hashing them would break stable rebuild identity. A byte
+    change in any bound file invalidates sign-off: re-run the crew.
+    """
+    bound: dict[str, str] = {}
+    if not dest.is_dir():
+        return bound
+    for path in sorted(dest.rglob("*")):
+        if not path.is_file() or path.name in ("crew-ticket.json",):
+            continue
+        if path.suffix == ".bak":
+            continue
+        try:
+            rel = path.relative_to(dest)
+        except ValueError:
+            continue
+        if rel.parts and rel.parts[0] == "_attempts":
+            continue
+        try:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            continue
+        bound[str(path.relative_to(dest)).replace("\\", "/")] = digest
+    return bound
+
+
 def ticket_write(ctx: dict) -> dict:
     out = ctx.get("out")
     if not out:
@@ -660,6 +789,7 @@ def ticket_write(ctx: dict) -> dict:
             "publish": "Keith click. This run does not deploy.",
             "hands": hands,
             "ok": ok,
+            "sha256": _sha_bound(dest),
         }
     else:
         ok = True
@@ -669,6 +799,7 @@ def ticket_write(ctx: dict) -> dict:
             "publish": "Keith click. This run does not deploy.",
             "note": note,
             "ok": True,
+            "sha256": _sha_bound(dest),
         }
     path = dest / "crew-ticket.json"
     path.write_text(json.dumps(ticket, indent=2) + "\n", encoding="utf-8")
@@ -680,14 +811,17 @@ HANDS = {
     "frame_pick": frame_pick,
     "mold_pick": mold_pick,
     "library_bind": library_bind,
+    "sitemap_read": sitemap_read,
     "copy_read": copy_read,
     "copy_gap": copy_gap,
     "plan_offline": plan_offline,
     "render": render,
+    "attempt_snapshot": attempt_snapshot,
     "asset_list": asset_list,
     "vault_photos": vault_photos,
     "check_site": check_site,
     "uniqueness": uniqueness,
     "meta_basics": meta_basics,
+    "sitemap_check": sitemap_check,
     "ticket_write": ticket_write,
 }

@@ -190,6 +190,7 @@ def main() -> int:
     ap.add_argument("--keep", action="store_true", help="keep the temp checkout")
     ap.add_argument("--timeout", type=int, default=180, help="per-step timeout seconds")
     ap.add_argument("--results", default=str(HERE / "results"))
+    ap.add_argument("--out-dir", default=None, help="also write RUN_*.md and REPRO_*.md here (e.g. V:\\streams\\webdev\\OUT\\bench-qa)")
     args = ap.parse_args()
 
     results = Path(args.results)
@@ -253,6 +254,7 @@ def main() -> int:
         steps.append(run("doctor", ["spidercaster.py", "doctor"], co, make_env(), args.timeout))
         steps.append(run("crew selftest", ["spidercaster.py", "crew", "selftest"], co, make_env(), args.timeout,
                          expect_in_stdout="crew selftest ok"))
+        steps.append(run("shipcheck", ["spidercaster.py", "shipcheck"], co, make_env(), max(args.timeout, 600)))
     finally:
         total = round(time.perf_counter() - t_all, 3)
         if not args.keep:
@@ -302,6 +304,39 @@ def main() -> int:
                 md += ["stdout:", "```", s["stdout"].rstrip(), "```"]
     (results / f"latest-{args.source}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
+    if args.out_dir:
+        od = Path(args.out_dir)
+        od.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+        old = {}
+        if prev_data:
+            old = {s["step"]: s["status"] for s in prev_data["steps"]}
+        rl = [f"# RUN {stamp} - cold start ({args.source})", "",
+              f"Engine: git {git_head}, {len(dirty)} uncommitted paths. Python {run_info['python']}, {run_info['platform']}.",
+              "Variables needed: none. Stripped from the environment (names only): " + ", ".join(STRIP_ENV) + ". Set: PYTHONDONTWRITEBYTECODE, PYTHONIOENCODING, PYTHONHASHSEED.",
+              f"Fixture: `{PROJECT}`, offline. Overall: **{run_info['overall']}** in {total}s.", "",
+              "| Step | Command | Exit | Seconds | Result | Exact error |", "|---|---|---|---|---|---|"]
+        for s in steps:
+            err = ((s["stderr"].strip().splitlines() or [""])[-1] if s["status"] == "FAIL" else "")
+            err = (err or (s["note"] if s["status"] == "FAIL" else "")).replace("|", "\\|")[:240]
+            rl.append(f"| {s['step']} | `{s['command']}` | {s['exit_code']} | {s['seconds']} | {s['status']} | {err} |")
+        rl += ["", "## Changes vs previous run", ""]
+        if prev_data:
+            ch = [f"- {s['step']}: {old[s['step']]} -> {s['status']}" for s in steps if s["step"] in old and old[s["step"]] != s["status"]]
+            rl += ch or ["- none"]
+        else:
+            rl += ["- no previous run recorded"]
+        (od / f"RUN_{stamp}_{args.source}.md").write_text("\n".join(rl) + "\n", encoding="utf-8")
+        rp = next((s for s in steps if s["step"] == "repro"), None)
+        if rp:
+            rr = [f"# REPRO {stamp} ({args.source})", "",
+                  "Allowed differences (written before the result): none. No timestamp may differ; the engine must honor SOURCE_DATE_EPOCH or write none.",
+                  f"Method: fixture `{PROJECT}` built twice with `--offline` into the same relative path in two separate processes, PYTHONHASHSEED 1 and 2, 1.2 s apart; SHA-256 of every file compared.",
+                  f"Engine: git {git_head}, {len(dirty)} uncommitted paths.", "",
+                  f"Verdict: **{'IDENTICAL' if rp['status'] == 'PASS' else 'NOT IDENTICAL'}**", "", rp["note"]]
+            if rp["stdout"].strip():
+                rr += ["", "```", rp["stdout"].rstrip(), "```"]
+            (od / f"REPRO_{stamp}_{args.source}.md").write_text("\n".join(rr) + "\n", encoding="utf-8")
     for s in steps:
         print(f"{s['status']:5} {s['step']:14} {s['seconds']:>8}s  {(s['note'] or '')[:110]}")
     print(f"overall {run_info['overall']} in {total}s -> {latest}")

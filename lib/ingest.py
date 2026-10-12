@@ -17,7 +17,7 @@ PRICE_RE = re.compile(r"\$\s?\d[\d,]*(?:\.\d{1,2})?")
 HOTLINK_RE = re.compile(
     r"(?:images\.unsplash\.com|plus\.unsplash\.com|img\.freepik\.com|"
     r"cdn\.pixabay\.com|images\.pexels\.com|static\.freepik\.com)",
-    re.I,
+    re.IGNORECASE,
 )
 
 COPY_EXTS = {".md", ".markdown", ".txt", ".json"}

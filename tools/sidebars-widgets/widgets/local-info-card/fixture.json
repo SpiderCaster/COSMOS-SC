@@ -1,0 +1,20 @@
+{
+ "data": {
+  "title": "Fixture town",
+  "uid": "1",
+  "updated": "Oct 3, 2026, 9:00 PM",
+  "iso": "2026-10-03T21:00",
+  "rows": [
+   {
+    "label": "Fixture label one",
+    "value": "Fixture value one"
+   },
+   {
+    "label": "Fixture label two",
+    "value": "Fixture value two, a longer value"
+   }
+  ],
+  "source_label": "Fixture source",
+  "source_url": "/fixture-source/"
+ }
+}

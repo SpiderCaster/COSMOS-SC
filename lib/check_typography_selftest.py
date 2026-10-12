@@ -88,7 +88,7 @@ def _fixtures() -> None:
     _expect(_keys(bad["type_floor"]) == want, f"fail_type failures were {sorted(_keys(bad['type_floor']))}")
     _expect(not bad["contrast"], "fail_type should not fail contrast")
     by_sel = {r["selector"]: r for r in bad["type_floor"]}
-    _expect(by_sel[".tight"]["viewports"] == [360], ".tight must fail on the phone viewport only")
+    _expect(by_sel[".tight"]["viewports"] == [360, 390, 412], ".tight must fail on the phone viewports (360/390/412) only")
     _expect(by_sel["p.note"]["required"] == "18px" and by_sel[".fineprint"]["required"] == "16px",
             "body floor is 18px, ui floor is 16px")
     _expect(by_sel[".go"]["required"] == "18px", "buttons are body text: 18px")

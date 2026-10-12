@@ -15,7 +15,7 @@ Load this file, then `SKILL.md`. Seat 1 of 7. Model `upstage/solar-pro4`. If tha
 
 ## Allowed hands
 
-`brief_read`, `frame_pick`, `mold_pick`, `library_bind`
+`brief_read`, `frame_pick`, `mold_pick`, `library_bind`, `sitemap_read`
 
 In that order. No other hand.
 
@@ -29,6 +29,7 @@ In that order. No other hand.
    - `clarify-mix` — mix of those two
    Do not rewrite a mold `library list` already shows. A new mold is scratch (no parent), mutate (one parent), or mix (two or more parents).
 4. `library_bind` with live left false. The crew bind is draft only. Publish is Keith's later `python spidercaster.py library bind --site <site> --mold <id> --live`. This wrapper never runs it.
+5. `sitemap_read`. Crew runs require `sitemap.json` (FINAL D1, scoped). FAIL on an intent-less page or a non-frame section; a missing doc is `FAIL pages.scope`. The offline single-page loop never calls hands.
 
 ## Pass
 

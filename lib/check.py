@@ -25,7 +25,7 @@ passes missing_file. When copy_text is non-empty, an h2 whose text is
 exactly About fails lone_about if the word About is not in the copy, and
 visible "Read on" or "Built with SpiderCaster" fails invented_chrome when
 that exact phrase is not in the copy. Empty copy_text adds neither row.
-Typography rows (every page, 360px and 1280px): type_floor fails rendered text
+Typography rows (every page, 360/390/412px and 1280px): type_floor fails rendered text
 under 16px, and body text under 18px; contrast fails WCAG text under 4.5:1, or
 3:1 for large text (24px+, or 18.66px+ at weight 700). Each failure names the
 file, the CSS selector and the measured value. Computed styles come from a
@@ -33,6 +33,33 @@ static cascade over the page's own CSS, not a browser. Alone:
 python -m lib.check <site_dir> --typography-only. Reproducibility:
 python -m lib.check --reproducible [project_dir] builds the project twice
 offline and compares the trees byte for byte.
+Tap targets (row tap_target, STATIC, 360px): every a[href], button, input,
+select, textarea, [role=button|link|tab|menuitem] and summary needs a resolved box of 44px by
+44px. Width and height come from height/min-height/width/min-width/padding/
+border/line-height/font-size/display as an interval; FAIL when the upper bound
+is under 44px, WARN (not measurable, never PASS) when the bounds straddle 44px.
+An inline text link inside a sentence is exempt (WCAG 2.5.8 inline exception).
+Alone: python -m lib.check <site_dir> --tap-only.
+Mobile gates (STATIC, every page, 360/390/412px): type_floor, contrast and
+tap_target run at all three phone widths (type_floor and contrast also at
+1280px). sideways_scroll fails an element whose resolved box ends right of the
+viewport (px/vw/min-width, % over 100, negative right margin past the gutter,
+img/iframe/video width attribute with no max-width, wide table, pre or nowrap
+text, long unbreakable word) unless an ancestor below body clips or scrolls it.
+mobile_nav_drawer: more than 4 primary nav links at a phone width need a
+<button> toggle with aria-expanded="false", aria-controls naming an existing
+id, an accessible name and a 44px box; the drawer it controls holds the nav
+links, is hidden by default, opens in a static simulation of the page's own
+script and has a close mechanism. No nav landmark: SKIP not-run.
+mobile_visibility: inventory of mobile-only and hidden-on-mobile elements;
+content hidden on phones is WARN; h1 or main hidden at a phone width is FAIL.
+Messages: file | selector | measured | static | at Wpx. Alone:
+python -m lib.check <site_dir> --mobile-only. Rendered capture evidence from a
+mobile_capture.py patterns.json: --mobile-spec PATH (row mobile_spec).
+Also in GATES.md: slug_shape (page file and folder names), photo_luma (mean
+luma 90-200 for raster img 400px+ wide; SKIP = not-run when Pillow is missing),
+svg_photo (an svg standing in for a photo) and grey_tile (always an explicit
+not-run SKIP row: not provable from static CSS).
 Exit code is nonzero on any FAIL so it can gate CI or a deploy.
 """
 from __future__ import annotations
@@ -584,6 +611,16 @@ def _digits(text: str) -> str:
 def _phone_bar_fault(href: str | None, text: str) -> str:
     """Empty when the bar matches. A leading + is not a digit."""
     raw = "" if href is None else str(href).strip()
+    if raw.startswith("mailto:"):
+        # D4 email fallback: the ask slot wires to the verbatim address when
+        # the copy carries no digits. Verbatim proof lives in the
+        # single_primary_cta row; here the shape is enough.
+        addr = raw[7:].split("?")[0].strip()
+        if "@" not in addr or " " in addr or chr(9) in addr:
+            return "mailto href has no address"
+        if any(ch in addr for ch in "<>\"'"):
+            return "mailto href has no address"
+        return ""
     if not raw.startswith("tel:"):
         return "href does not start with tel:"
     href_digits = _digits(raw)
@@ -641,6 +678,60 @@ def _add_index_phone_rows(rep: Report, html: str) -> None:
     else:
         rep.add("scroll_margin", "FAIL", "missing scroll-margin-top")
     _add_phone_bar_row(rep, html)
+
+
+def _part_demo_hits(pages: list[Path], copy_text: str) -> list[str]:
+    """Visible catalog sentences inside a part that the copy does not contain."""
+    from html.parser import HTMLParser
+
+    class Walker(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.stack: list[str] = []
+            self.skip = 0
+            self.lines: list[str] = []
+
+        def handle_starttag(self, tag, attrs):
+            kind = "part" if any(key == "data-sc-part" for key, _value in attrs) else tag
+            if tag not in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}:
+                self.stack.append(kind)
+            if tag in {"script", "style", "textarea", "title"}:
+                self.skip += 1
+
+        def handle_endtag(self, tag):
+            if tag in {"script", "style", "textarea", "title"} and self.skip:
+                self.skip -= 1
+            for index in range(len(self.stack) - 1, -1, -1):
+                if self.stack[index] == tag or (tag == "div" and self.stack[index] == "part"):
+                    del self.stack[index:]
+                    break
+
+        def handle_data(self, data):
+            if self.skip or "part" not in self.stack:
+                return
+            folded_copy = " ".join(copy_text.split())
+            for line in data.splitlines():
+                text = line.strip()
+                folded = " ".join(text.split())
+                if folded and folded not in folded_copy:
+                    self.lines.append(text)
+
+    hits: list[str] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        walker = Walker()
+        try:
+            walker.feed(html)
+            walker.close()
+        except Exception:
+            continue
+        seen: set[str] = set()
+        for line in walker.lines:
+            if line in seen:
+                continue
+            seen.add(line)
+            hits.append(f"{page.name}: {line}")
+    return hits
 
 
 def _invented_chrome_hits(pages: list[Path], copy_text: str) -> list[str]:
@@ -702,8 +793,12 @@ CONTRAST_LARGE = 3.0
 LARGE_PX = 24.0
 LARGE_BOLD_PX = 18.66
 BOLD_WEIGHT = 700
-# (width, height) of the two viewports every page is judged at.
-TYPO_VIEWPORTS = ((360, 740), (1280, 800))
+# Phone widths every mobile gate is judged at (small Android, iPhone 14, 412 Android),
+# and the desktop baseline. type_floor and contrast run at all four; tap_target and
+# the mobile rows run at the phone widths.
+MOBILE_VIEWPORTS = ((360, 740), (390, 844), (412, 915))
+DESKTOP_VIEWPORT = (1280, 800)
+TYPO_VIEWPORTS = MOBILE_VIEWPORTS + (DESKTOP_VIEWPORT,)
 
 # Chrome (menus, labels, footers, captions) keeps the 16px floor. Everything else,
 # buttons and links included, is body text and needs 18px. Headings need 16px.
@@ -736,6 +831,9 @@ small,sub,sup{font-size:.83em}
 a:link{color:#0000ee}
 button,input,select,textarea{font-size:13.3333px;color:#000}
 button{background-color:#efefef}
+button,input,select,textarea{line-height:normal}
+button{padding:1px 6px;border:2px solid}
+input,select,textarea{padding:1px 2px;border:2px solid}
 """
 
 _NAMED_COLORS = {
@@ -1793,12 +1891,14 @@ def _resolve_weight(val: str, pweight: int) -> int | None:
 def _font_shorthand(val: str) -> list[tuple[str, str]]:
     v = val.strip().lower()
     if v in ("inherit", "unset", "revert"):
-        return [("font-size", "inherit"), ("font-weight", "inherit")]
+        return [("font-size", "inherit"), ("font-weight", "inherit"), ("line-height", "inherit")]
     if v == "initial":
-        return [("font-size", "medium"), ("font-weight", "normal")]
+        return [("font-size", "medium"), ("font-weight", "normal"), ("line-height", "normal")]
     weight = "400"
     size = None
-    for tok in _split_ws(val):
+    lh = "normal"
+    toks = _split_ws(val)
+    for i, tok in enumerate(toks):
         tl = tok.lower()
         if tl in ("bold", "bolder", "lighter"):
             weight = tl
@@ -1809,11 +1909,20 @@ def _font_shorthand(val: str) -> list[tuple[str, str]]:
                     "expanded", "extra-expanded", "ultra-expanded"):
             continue
         else:
-            size = _split_top(tok, "/")[0]
+            parts = _split_top(tok, "/")
+            size = parts[0]
+            if len(parts) > 1 and parts[1].strip():
+                lh = parts[1].strip()
+            elif i + 1 < len(toks) and toks[i + 1].startswith("/") and len(toks[i + 1]) > 1:
+                lh = toks[i + 1][1:]
+            elif i + 2 < len(toks) and toks[i + 1] == "/":
+                lh = toks[i + 2]
+            elif len(parts) > 1 and i + 1 < len(toks):
+                lh = toks[i + 1]
             break
     if size is None:
         return []
-    return [("font-size", size), ("font-weight", weight)]
+    return [("font-size", size), ("font-weight", weight), ("line-height", lh)]
 
 
 _BG_NONCOLOR_WORDS = frozenset((
@@ -1927,7 +2036,71 @@ _ROOT_CS = {
     "color": (0.0, 0.0, 0.0, 1.0), "color_src": "browser default black",
     "tf": None, "tf_src": "", "customs": {}, "opacity": 1.0,
     "invisible": False, "srhide": False, "hidden": False, "bg": None,
+    "lh": ("normal",), "box": {}, "unres": frozenset(),
 }
+
+
+_SIDES = ("top", "right", "bottom", "left")
+_LOGICAL_PAD = {"padding-inline-start": "padding-left", "padding-inline-end": "padding-right",
+                "padding-block-start": "padding-top", "padding-block-end": "padding-bottom"}
+_BORDER_STYLE_WORDS = frozenset(("none", "hidden", "dotted", "dashed", "solid", "double", "groove",
+                                 "ridge", "inset", "outset"))
+
+
+def _box4(parts: list[str]):
+    n = len(parts)
+    if n == 1:
+        return (parts[0],) * 4
+    if n == 2:
+        return (parts[0], parts[1], parts[0], parts[1])
+    if n == 3:
+        return (parts[0], parts[1], parts[2], parts[1])
+    if n == 4:
+        return tuple(parts)
+    return None
+
+
+def _expand_box(prop: str, val: str) -> list[tuple[str, str]]:
+    low = val.strip().lower()
+    parts = _split_ws(val)
+    if prop in _LOGICAL_PAD:
+        return [(_LOGICAL_PAD[prop], val)]
+    if prop in ("padding", "border-width", "border-style"):
+        sides = _box4(parts) if low not in ("initial", "unset", "revert") else None
+        if low in ("initial", "unset", "revert"):
+            sides = ("0",) * 4 if prop == "padding" else (("medium",) * 4 if prop == "border-width" else ("none",) * 4)
+        if sides is None:
+            sides = ("inherit",) * 4
+        tail = {"padding": "padding-%s", "border-width": "border-%s-width", "border-style": "border-%s-style"}[prop]
+        return [(tail % s, v) for s, v in zip(_SIDES, sides)]
+    if prop in ("padding-block", "padding-inline"):
+        if not 1 <= len(parts) <= 2:
+            parts = ["inherit"]
+        first, last = parts[0], parts[-1]
+        a, b = ("top", "bottom") if prop == "padding-block" else ("left", "right")
+        return [("padding-" + a, first), ("padding-" + b, last)]
+    sides = list(_SIDES) if prop == "border" else [prop.split("-", 1)[1]]
+    style = None
+    width = None
+    for tok in parts:
+        tl = tok.lower()
+        if tl in _BORDER_STYLE_WORDS:
+            style = tl
+        elif tl in ("thin", "medium", "thick") or re.match(r"^[+-]?[0-9.]", tl) or tl.startswith("calc("):
+            width = tl
+    if low in ("initial", "unset", "revert", "none"):
+        style = "none"
+    out = []
+    for s in sides:
+        out.append((f"border-{s}-style", style or "none"))
+        out.append((f"border-{s}-width", width or "medium"))
+    return out
+
+
+_BOX_SHORTHANDS = frozenset((
+    "padding", "padding-block", "padding-inline", "border", "border-top", "border-right",
+    "border-bottom", "border-left", "border-width", "border-style",
+)) | frozenset(_LOGICAL_PAD)
 
 
 def _expand_decl(prop: str, val: str) -> list[tuple[str, str]]:
@@ -1935,6 +2108,8 @@ def _expand_decl(prop: str, val: str) -> list[tuple[str, str]]:
         return _font_shorthand(val)
     if prop == "background":
         return _bg_shorthand(val)
+    if prop in _BOX_SHORTHANDS:
+        return _expand_box(prop, val)
     return [(prop, val)]
 
 
@@ -1966,11 +2141,13 @@ def _compute(node: _Node, pcs: dict, ctx: _Ctx, rules: list[_Rule]) -> dict:
         if prop.startswith("--"):
             customs[prop] = val
     assign: dict[str, tuple[str, str]] = {}
+    dropped: set[str] = set()
     for _, label, prop, val in matched:
         if prop.startswith("--"):
             continue
         resolved = _subst_vars(val, customs)
         if resolved is None:
+            dropped.add(prop)
             continue
         for longhand, value in _expand_decl(prop, resolved):
             assign[longhand] = (value, label)
@@ -1978,6 +2155,8 @@ def _compute(node: _Node, pcs: dict, ctx: _Ctx, rules: list[_Rule]) -> dict:
     cs = dict(pcs)
     cs["customs"] = customs
     cs["hidden"] = False
+    cs["box"] = assign
+    cs["unres"] = frozenset(dropped)
 
     if "font-size" in assign:
         val, label = assign["font-size"]
@@ -1988,6 +2167,18 @@ def _compute(node: _Node, pcs: dict, ctx: _Ctx, rules: list[_Rule]) -> dict:
         got = _resolve_weight(val, pcs["weight"])
         cs["weight"] = pcs["weight"] if got is None else got
         cs["weight_src"] = label
+    if "line-height" in assign:
+        low = assign["line-height"][0].strip().lower()
+        if low in ("inherit", "unset"):
+            pass
+        elif low in ("initial", "normal", "revert"):
+            cs["lh"] = ("normal",)
+        else:
+            try:
+                cs["lh"] = ("num", float(low))
+            except ValueError:
+                got = _eval_len(low, cs["size"], ctx, cs["size"])
+                cs["lh"] = ("px", got) if got is not None and got >= 0 else None
     if "color" in assign:
         val, label = assign["color"]
         cs["color"] = _color_value(val, pcs["color"])
@@ -2285,13 +2476,13 @@ def _stylesheet_items(root: _Node, page: Path, acc: _TypoAcc) -> list:
     return items
 
 
-def _analyze_page(page: Path, acc: _TypoAcc) -> None:
+def _analyze_page(page: Path, acc: _TypoAcc, viewports: tuple | None = None) -> None:
     html = page.read_text(encoding="utf-8", errors="replace")
     root = _build_dom(html)
     author_items = _stylesheet_items(root, page, acc)
     ua_items = _parse_css_items(_UA_CSS)
     acc.pages += 1
-    for number, (w, h) in enumerate(TYPO_VIEWPORTS):
+    for number, (w, h) in enumerate(viewports or TYPO_VIEWPORTS):
         ctx = _Ctx(w, h)
         rules = _build_rules(ua_items, w, h, True, 0) + _build_rules(author_items, w, h, False, 10000)
         stack = [(root, _ROOT_CS)]
@@ -2311,11 +2502,11 @@ def _analyze_page(page: Path, acc: _TypoAcc) -> None:
                 stack.append((child, cs))
 
 
-def typography_scan(pages: list[Path]) -> dict:
-    """Run the type-floor and contrast judgement over HTML pages."""
+def typography_scan(pages: list[Path], viewports: tuple | None = None) -> dict:
+    """Run the type-floor and contrast judgement over HTML pages (default: TYPO_VIEWPORTS)."""
     acc = _TypoAcc()
     for page in pages:
-        _analyze_page(page, acc)
+        _analyze_page(page, acc, viewports)
     order = sorted(acc.fails.values(), key=lambda r: (r["file"], r["check"], r["selector"], r["measured"]))
     for rec in order:
         rec["viewports"] = sorted(rec["viewports"])
@@ -2331,8 +2522,14 @@ def typography_scan(pages: list[Path]) -> dict:
     }
 
 
-def failure_line(f: dict) -> str:
+def failure_line(f: dict, warn: bool = False) -> str:
     """One line per failure: file | selector | measured (needs required) | where."""
+    if f["check"] == "tap_target":
+        return _tap_line(f, warn)
+    if f["check"] in ("sideways_scroll", "mobile_nav_drawer", "mobile_visibility", "mobile_spec"):
+        return _mob_line(f, warn)
+    if f["check"] in ("slug_shape", "photo_luma", "svg_photo"):
+        return f"{f['file']} | {f['selector']} | {f['measured']} (needs {f['required']}) | {f['extra']}"
     if f["check"] == "reproducible":
         what = f["kind"] + (f" at {f['where']}" if f.get("where") else "")
         return f"{f['file']} | {what} | build1={f['first']} build2={f['second']}"
@@ -2350,14 +2547,14 @@ def _short_failure(f: dict) -> str:
     return f"{f['file']}: {f['selector']} {label} {f['measured']} (needs >= {f['required']})"
 
 
-def _typography_rows(rep: "Report", pages: list[Path]) -> None:
+def _typography_rows(rep: "Report", pages: list[Path], viewports: tuple | None = None) -> None:
     try:
-        scan = typography_scan(pages)
+        scan = typography_scan(pages, viewports)
     except Exception as exc:  # fail closed: a checker bug must not read as a pass
         for name in ("type_floor", "contrast"):
             rep.add(name, "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
         return
-    views = "+".join(str(w) for w, _ in TYPO_VIEWPORTS) + "px"
+    views = "+".join(str(w) for w, _ in (viewports or TYPO_VIEWPORTS)) + "px"
     skipped = scan["unmeasured"]
     skip_note = ""
     if skipped:
@@ -2392,15 +2589,2408 @@ def _typography_rows(rep: "Report", pages: list[Path]) -> None:
             rep.add(name, "PASS", detail, failures=[])
 
 
+# ---------------------------------------------------------------------------
+# Tap targets, STATIC (row tap_target). Same cascade as type_floor/contrast,
+# judged at one viewport (360px). Every interactive element (a[href], button,
+# input, select, textarea, [role=button], summary) gets a width and a height as
+# an interval (low, high) in px from height/min-height/width/min-width/padding/
+# border/line-height/font-size/display. FAIL only when the HIGH bound of an axis
+# is under 44px (it cannot reach the floor). PASS only when the LOW bound of
+# both axes reaches 44px. Anything between is WARN, "not measurable", never a
+# pass. Exempt: an inline text link inside a running sentence (WCAG 2.5.8
+# inline exception) and disabled controls. Controls inside display:none
+# containers (closed menus) are measured as if shown; a miss there is a WARN.
+# Not measured: rendered layout, container widths (block-level and grown flex
+# items are assumed to fill their container), web fonts, ::before/::after.
+# ---------------------------------------------------------------------------
+TAP_MIN_PX = 44.0
+TAP_VIEWPORT = MOBILE_VIEWPORTS[0]   # narrowest phone width (360px)
+TAP_VIEWPORTS = MOBILE_VIEWPORTS     # tap_target is judged at 360, 390 and 412px
+_INF = float("inf")
+_TAP_LH_NORMAL = (1.0, 1.6)        # line-height: normal, multiple of font-size
+_TAP_GLYPH = (0.35, 0.80)          # glyph advance range, multiple of font-size
+_TAP_CONTENT_AREA = (1.0, 1.5)     # inline box content area, multiple of font-size
+_TAP_ONE_LINE_PX = 200.0           # label estimated narrower than this is one line
+_TAP_INLINE_TAGS = frozenset((
+    "a", "span", "b", "i", "em", "strong", "small", "label", "code", "abbr", "mark",
+    "sub", "sup", "cite", "q", "u", "s", "kbd", "img", "svg", "time", "bdi", "bdo",
+))
+_TAP_BLOCK_KIDS = frozenset((
+    "div", "p", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "section",
+    "article", "nav", "header", "footer", "table", "form", "figure", "aside",
+    "main", "dl", "dt", "dd", "blockquote", "details", "fieldset", "pre",
+))
+_TAP_UNHANDLED = frozenset((
+    "inline-size", "block-size", "min-inline-size", "min-block-size", "max-inline-size",
+    "max-block-size", "aspect-ratio", "zoom", "place-items", "place-self", "grid-area",
+))
+_TAP_BOX_FAMILY = ("padding", "border", "min-", "max-", "width", "height", "line-height",
+                   "font", "display", "box-sizing", "flex")
+_TAP_TEXT_INPUTS = frozenset(("text", "email", "search", "tel", "url", "password", "number",
+                              "date", "datetime-local", "month", "time", "week", "file", ""))
+_TAP_BTN_INPUTS = frozenset(("submit", "button", "reset"))
+
+
+def _tap_kind(node: _Node):
+    tag, at = node.tag, node.attrs
+    role = at.get("role", "").strip().lower()
+    if tag in ("button", "input", "select", "textarea") and "disabled" in at:
+        return None
+    if tag == "input":
+        return None if at.get("type", "text").strip().lower() == "hidden" else "input"
+    if tag in ("select", "textarea"):
+        return "input"
+    if tag == "button" or role == "button":
+        return "button"
+    if role in ("link", "tab", "menuitem"):
+        return role
+    if tag == "summary":
+        return "summary"
+    if tag == "a" and "href" in at:
+        return "link"
+    return None
+
+
+def _tap_box(node: _Node) -> dict:
+    return (node.cs or {}).get("box", {}) if node is not None else {}
+
+
+def _tap_boxval(node: _Node, prop: str) -> str | None:
+    got = _tap_box(node).get(prop)
+    return None if got is None else " ".join(got[0].strip().lower().split())
+
+
+def _tap_raw_display(node: _Node) -> str:
+    d = _tap_boxval(node, "display")
+    if d is not None:
+        d = {"inline flex": "inline-flex", "inline grid": "inline-grid", "inline flow-root": "inline-block",
+             "block flex": "flex", "block grid": "grid", "block flow-root": "flow-root",
+             "inline flow": "inline", "block flow": "block"}.get(d, d)
+        if d == "none":
+            return "none"
+        if d in ("initial", "revert"):
+            return "inline"
+        if d in ("inherit", "unset") and node.parent is not None and node.parent.tag != "#doc":
+            return _tap_raw_display(node.parent)
+        return d
+    if node.tag in ("button", "input", "select", "textarea"):
+        return "inline-block"
+    return "inline" if node.tag in _TAP_INLINE_TAGS else "block"
+
+
+def _tap_val(node: _Node, prop: str, size, ctx):
+    """None when unset or auto, a float in px, '%' for a percentage, '?' when unresolvable."""
+    v = _tap_boxval(node, prop)
+    if v is None or v in ("auto", "none", "normal", "initial", "unset", "revert"):
+        return None
+    if v in ("fit-content", "max-content", "min-content", "stretch", "-webkit-fill-available"):
+        return v
+    if v == "inherit":
+        return "?"
+    if re.fullmatch(r"[0-9.]+%", v):
+        return "%"
+    got = _eval_len(v, size, ctx, None)
+    return "?" if got is None else got
+
+
+def _tap_iv(v):
+    """Side value to an interval."""
+    if v is None:
+        return (0.0, 0.0)
+    if v in ("?", "%") or isinstance(v, str):
+        return (0.0, _INF)
+    return (max(v, 0.0), max(v, 0.0))
+
+
+def _tap_border(node: _Node, side: str, size, ctx):
+    style = _tap_boxval(node, f"border-{side}-style") or "none"
+    if style in ("none", "hidden"):
+        return (0.0, 0.0)
+    w = _tap_boxval(node, f"border-{side}-width") or "medium"
+    w = {"thin": "1px", "medium": "3px", "thick": "5px"}.get(w, w)
+    got = _eval_len(w, size, ctx, None)
+    return (0.0, _INF) if got is None or got < 0 else (got, got)
+
+
+def _tap_text(node: _Node) -> str:
+    parts: list[str] = []
+    stack = [node]
+    while stack:
+        n = stack.pop()
+        if n is not node:
+            cs = n.cs
+            if cs is None or cs.get("hidden") or cs.get("srhide") or cs.get("invisible"):
+                continue
+        parts.append(" ".join(n.texts))
+        stack.extend(reversed(n.children))
+    return " ".join(" ".join(parts).split())
+
+
+def _tap_label(node: _Node) -> str:
+    text = _tap_text(node)
+    if not text:
+        at = node.attrs
+        text = at.get("aria-label") or at.get("title") or at.get("value") or at.get("placeholder") \
+            or at.get("name") or at.get("type") or ""
+        text = " ".join(text.split())
+    return text if len(text) <= 36 else text[:33] + "..."
+
+
+def _tap_num_attr(value):
+    m = re.fullmatch(r"\s*([0-9.]+)(px)?\s*", value or "")
+    return float(m.group(1)) if m else None
+
+
+def _tap_replaced(node: _Node):
+    """Sizes of visible img/svg inside the control: list of (w, h), or None if any is unknown."""
+    out = []
+    stack = list(node.children)
+    while stack:
+        n = stack.pop()
+        if n.cs is None or n.cs.get("hidden"):
+            continue
+        if n.tag in ("img", "svg"):
+            ctx = _Ctx(*TAP_VIEWPORT)
+            w = _tap_num_attr(n.attrs.get("width"))
+            h = _tap_num_attr(n.attrs.get("height"))
+            size = n.cs.get("size")
+            cw, ch = _tap_val(n, "width", size, ctx), _tap_val(n, "height", size, ctx)
+            w = cw if isinstance(cw, float) else w
+            h = ch if isinstance(ch, float) else h
+            if w is None or h is None:
+                return None
+            out.append((w, h))
+            continue
+        stack.extend(n.children)
+    return out
+
+
+def _tap_has_block_kids(node: _Node) -> bool:
+    stack = list(node.children)
+    while stack:
+        n = stack.pop()
+        if n.cs is None or n.cs.get("hidden"):
+            continue
+        if n.tag in _TAP_BLOCK_KIDS or _tap_raw_display(n) in ("block", "flex", "grid", "list-item", "table"):
+            return True
+        stack.extend(n.children)
+    return False
+
+
+def _tap_exempt_inline(node: _Node, final_display: str) -> bool:
+    """WCAG 2.5.8 inline exception: a text link inside a sentence."""
+    if node.tag != "a" or final_display != "inline":
+        return False
+    p = node.parent
+    while p is not None and p.tag != "#doc" and p.cs is not None and _tap_raw_display(p) == "inline" \
+            and p.tag not in ("button", "summary"):
+        p = p.parent
+    if p is None or p.tag == "#doc":
+        return False
+    words = 0
+    stack = [p]
+    while stack:
+        n = stack.pop()
+        if n is node:
+            continue
+        words += len(re.findall(r"[A-Za-z\u00c0-\u024f]{2,}", " ".join(n.texts)))
+        for c in n.children:
+            if c.cs is not None and not c.cs.get("hidden") and _tap_raw_display(c) == "inline" and c is not node:
+                stack.append(c)
+    return words >= 2
+
+
+def _tap_grows(node: _Node) -> bool:
+    flex = _tap_boxval(node, "flex")
+    if flex:
+        first = flex.split()[0]
+        if first == "auto":
+            return True
+        try:
+            return float(first) > 0
+        except ValueError:
+            return False
+    grow = _tap_boxval(node, "flex-grow")
+    try:
+        return grow is not None and float(grow) > 0
+    except ValueError:
+        return False
+
+
+def _tap_measure(node: _Node, ctx: _Ctx):
+    """Returns dict(w, h, notes, labels_w, labels_h, assumed) or dict(error=reason)."""
+    cs = node.cs
+    box = cs.get("box", {})
+    size = cs["size"]
+    if size is None:
+        return {"error": "font-size not resolvable"}
+    bad = [p for p in cs.get("unres", ()) if p.startswith(_TAP_BOX_FAMILY)]
+    if bad:
+        return {"error": "unresolved var() in " + ", ".join(sorted(bad))}
+    for p, (v, lab) in box.items():
+        if p in _TAP_UNHANDLED or (p == "transform" and "scale" in v.lower()):
+            return {"error": f"{p} is not modelled statically ({lab})"}
+    notes: list[str] = []
+    lab_w: list[str] = []
+    lab_h: list[str] = []
+
+    def lab(into, *props):
+        for p in props:
+            if p in box and box[p][1] not in into:
+                into.append(box[p][1])
+
+    tag = node.tag
+    raw = _tap_raw_display(node)
+    parent = node.parent if node.parent is not None and node.parent.tag != "#doc" else None
+    praw = _tap_raw_display(parent) if parent is not None else ""
+    if praw == "none":
+        praw = "block"
+    flex_item = praw in ("flex", "inline-flex")
+    grid_item = praw in ("grid", "inline-grid")
+    pos = _tap_boxval(node, "position") or "static"
+    flt = _tap_boxval(node, "float") or "none"
+    out_of_flow = pos in ("absolute", "fixed") or flt not in ("none", "")
+    disp = raw
+    if flex_item or grid_item or out_of_flow:
+        disp = {"inline": "block", "inline-block": "block", "inline-flex": "flex",
+                "inline-grid": "grid", "inline-table": "table"}.get(raw, raw)
+    if disp == "none":
+        disp = "block"
+    if disp == "contents":
+        return {"error": "display:contents has no box"}
+
+    # box-sizing, padding, border
+    bs = _tap_boxval(node, "box-sizing")
+    border_box = (bs == "border-box") if bs else (tag in ("button", "select") or (
+        tag == "input" and node.attrs.get("type", "text").lower() in _TAP_BTN_INPUTS | {"image"}))
+    pad_t, pad_r, pad_b, pad_l = (_tap_iv(_tap_val(node, f"padding-{s}", size, ctx))
+                                  for s in ("top", "right", "bottom", "left"))
+    bor_t, bor_r, bor_b, bor_l = (_tap_border(node, s, size, ctx) for s in ("top", "right", "bottom", "left"))
+    lab(lab_h, "padding-top", "padding-bottom")
+    lab(lab_w, "padding-left", "padding-right")
+    pv = (pad_t[0] + pad_b[0] + bor_t[0] + bor_b[0], pad_t[1] + pad_b[1] + bor_t[1] + bor_b[1])
+    ph = (pad_l[0] + pad_r[0] + bor_l[0] + bor_r[0], pad_l[1] + pad_r[1] + bor_l[1] + bor_r[1])
+
+    # line height
+    lh = cs.get("lh")
+    if lh is None:
+        lh_iv = (size * 1.0, _INF)
+    elif lh[0] == "num":
+        lh_iv = (lh[1] * size, lh[1] * size)
+    elif lh[0] == "px":
+        lh_iv = (lh[1], lh[1])
+    else:
+        lh_iv = (size * _TAP_LH_NORMAL[0], size * _TAP_LH_NORMAL[1])
+    lab(lab_h, "line-height", "font", "font-size")
+    if "font-size" not in box and cs.get("size_src") and not lab_h:
+        pass
+
+    # content: text and replaced children
+    kind_input = tag in ("input", "select", "textarea")
+    itype = node.attrs.get("type", "text").strip().lower() if tag == "input" else ""
+    text = _tap_text(node)
+    if tag == "input" and itype in _TAP_BTN_INPUTS:
+        text = node.attrs.get("value") or {"submit": "Submit", "reset": "Reset"}.get(itype, "Button")
+    nowrap = (_tap_boxval(node, "white-space") or "") in ("nowrap", "pre")
+    chars = len(text)
+    words = text.split()
+    longest = max((len(x) for x in words), default=0)
+    block_kids = _tap_has_block_kids(node)
+    repl = _tap_replaced(node)
+    spacing = _tap_val(node, "letter-spacing", size, ctx)
+    ls = spacing if isinstance(spacing, float) and spacing > 0 else 0.0
+    text_w = (longest * size * _TAP_GLYPH[0] + ls * longest, chars * size * _TAP_GLYPH[1] + ls * chars)
+    if nowrap:
+        text_w = (chars * size * _TAP_GLYPH[0] + ls * chars, text_w[1])
+    one_line = nowrap or (not block_kids and chars * size * 0.55 <= _TAP_ONE_LINE_PX)
+    if chars:
+        lines = (1, 1 if one_line else _INF)
+        content_h = (lines[0] * lh_iv[0], lines[1] * lh_iv[1] if lines[1] != _INF or lh_iv[1] != _INF else _INF)
+        if lines[1] == _INF or lh_iv[1] == _INF:
+            content_h = (lines[0] * lh_iv[0], _INF)
+        content_w = text_w
+    else:
+        content_h = (0.0, _INF)
+        content_w = (0.0, _INF)
+    if repl:
+        rh = (max(h for _, h in repl), max(h for _, h in repl))
+        rw = (sum(w for w, _ in repl), sum(w for w, _ in repl))
+        if chars:
+            content_h = (max(content_h[0], rh[0]), content_h[1] if content_h[1] == _INF else max(content_h[1], rh[1]))
+            content_w = (content_w[0] + rw[0], content_w[1] + rw[1])
+        else:
+            content_h, content_w = rh, rw
+    elif repl is None and chars:
+        content_h = (content_h[0], _INF)
+        content_w = (content_w[0], _INF)
+    elif repl is None:
+        pass
+    if kind_input and not chars:
+        content_h = (size * _TAP_LH_NORMAL[0], size * _TAP_LH_NORMAL[1]) if tag != "textarea" else (size * 2.0, _INF)
+        if tag == "textarea":
+            content_w = (100.0, _INF)
+        elif tag == "select":
+            content_w = (40.0, _INF)
+        elif itype in ("checkbox", "radio"):
+            content_w, content_h = (13.0, 13.0), (13.0, 13.0)
+        else:
+            content_w = (100.0, _INF)
+
+    # ---- height
+    assumed = []
+    if disp == "inline" and not kind_input:
+        h = (size * _TAP_CONTENT_AREA[0] + pv[0], size * _TAP_CONTENT_AREA[1] + pv[1])
+        notes.append("display:inline, height/min-height ignored; hit area = text content area + padding")
+    else:
+        hv = _tap_val(node, "height", size, ctx)
+        if isinstance(hv, float):
+            lab(lab_h, "height")
+            h = (max(hv, pv[0]), max(hv, pv[1])) if border_box else (hv + pv[0], hv + pv[1])
+        elif hv is None or hv in ("fit-content", "max-content", "min-content"):
+            h = (content_h[0] + pv[0], content_h[1] + pv[1])
+        else:
+            h = (0.0, _INF)
+            lab(lab_h, "height")
+        mh = _tap_val(node, "min-height", size, ctx)
+        if isinstance(mh, float):
+            lab(lab_h, "min-height")
+            m = mh if border_box else mh + pv[0]
+            m_hi = mh if border_box else mh + pv[1]
+            h = (max(h[0], m), max(h[1], m_hi))
+        elif mh in ("?", "%"):
+            h = (h[0], _INF)
+            lab(lab_h, "min-height")
+        xh = _tap_val(node, "max-height", size, ctx)
+        if isinstance(xh, float):
+            lab(lab_h, "max-height")
+            cap = xh if border_box else xh + pv[0]
+            cap_hi = xh if border_box else xh + pv[1]
+            h = (min(h[0], cap), min(h[1], cap_hi))
+        elif xh in ("?", "%"):
+            h = (0.0, h[1])
+    # stretch in a flex row or grid cell, growth in a flex column, two-sided insets
+    stretch = False
+    if (flex_item or grid_item) and not isinstance(_tap_val(node, "height", size, ctx), float):
+        pdir = (_tap_boxval(parent, "flex-direction") or "row") if flex_item else "row"
+        if flex_item and pdir.startswith("column"):
+            stretch = _tap_grows(node)
+        else:
+            ai = _tap_boxval(parent, "align-items") or "normal"
+            self_ = _tap_boxval(node, "align-self") or "auto"
+            eff = ai if self_ in ("auto", "normal") else self_
+            stretch = eff in ("normal", "stretch")
+            if stretch:
+                notes.append("stretches to its flex/grid line")
+    if pos in ("absolute", "fixed") and (("inset" in box) or ("top" in box and "bottom" in box)) \
+            and not isinstance(_tap_val(node, "height", size, ctx), float):
+        stretch = True
+    if stretch:
+        h = (h[0], _INF)
+
+    # ---- width
+    wv = _tap_val(node, "width", size, ctx)
+    inline_like = disp in ("inline", "inline-block", "inline-flex", "inline-grid", "inline-table")
+    mode = "content"
+    if isinstance(wv, float) and disp != "inline":
+        lab(lab_w, "width")
+        w = (max(wv, ph[0]), max(wv, ph[1])) if border_box else (wv + ph[0], wv + ph[1])
+        mode = "fixed"
+    elif wv == "%" and disp != "inline":
+        lab(lab_w, "width")
+        mode = "fill"
+    elif wv in ("fit-content", "max-content", "min-content"):
+        mode = "content"
+    elif disp == "inline" or (inline_like and not (flex_item or grid_item)) or out_of_flow:
+        mode = "content"
+    elif flex_item:
+        pdir = _tap_boxval(parent, "flex-direction") or "row"
+        if pdir.startswith("column"):
+            ai = _tap_boxval(parent, "align-items") or "stretch"
+            mode = "fill" if ai in ("stretch", "normal") else "content"
+        else:
+            mode = "fill" if _tap_grows(node) else "content"
+    else:
+        mode = "fill"
+    if pos in ("absolute", "fixed") and ("inset" in box or ("left" in box and "right" in box)) and mode == "content":
+        mode = "fill"
+    if mode == "content":
+        w = (content_w[0] + ph[0], min(content_w[1] + ph[1], ctx.w if not nowrap else _INF))
+        if content_w[1] == _INF:
+            w = (content_w[0] + ph[0], _INF)
+        lab(lab_w, "font-size", "font")
+    elif mode == "fill":
+        w = (TAP_MIN_PX, ctx.w)
+        assumed.append("width assumed to fill its container")
+    mw = _tap_val(node, "min-width", size, ctx)
+    if isinstance(mw, float):
+        lab(lab_w, "min-width")
+        a, b = (mw, mw) if border_box else (mw + ph[0], mw + ph[1])
+        w = (max(w[0], a), max(w[1], b))
+    elif mw in ("?", "%"):
+        w = (w[0], _INF)
+        lab(lab_w, "min-width")
+    xw = _tap_val(node, "max-width", size, ctx)
+    if isinstance(xw, float):
+        lab(lab_w, "max-width")
+        a, b = (xw, xw) if border_box else (xw + ph[0], xw + ph[1])
+        w = (min(w[0], a), min(w[1], b))
+    elif xw in ("?", "%"):
+        w = (0.0, w[1]) if xw == "?" else w
+    if mode == "content" and flex_item and _tap_grows(node):
+        w = (w[0], ctx.w)
+    if mode == "content" and flex_item and not nowrap and False:
+        pass
+    if flex_item and (_tap_boxval(node, "min-width") == "0" or (_tap_boxval(node, "overflow") or "visible") not in ("visible", "")) \
+            and (_tap_boxval(node, "flex-shrink") != "0") and mode == "content":
+        w = (0.0, w[1])
+        notes.append("flex item may shrink below its content")
+    if node.tag == "input" and itype in ("checkbox", "radio") and wv is None and _tap_val(node, "height", size, ctx) is None:
+        return {"error": "native checkbox/radio: size is set by the browser, hit area includes its label (check rendered)"}
+    return {"w": w, "h": h, "notes": notes, "labels_w": lab_w, "labels_h": lab_h, "assumed": assumed}
+
+
+def _tap_pseudo_selectors(author_items: list, w: int, h: int) -> list:
+    out = []
+    for sel_text, body in _flatten_css(author_items, w, h):
+        if not re.search(r"position\s*:\s*(absolute|fixed)", body, re.I):
+            continue
+        if not re.search(r"(?:inset|top|bottom|left|right)\s*:\s*-", body, re.I):
+            continue
+        for part in _split_top(sel_text, ","):
+            base = re.sub(r"::?(?:before|after)\s*$", "", part.strip(), flags=re.I)
+            if base != part.strip():
+                sel = _parse_selector(base)
+                if sel.ok:
+                    out.append(sel)
+    return out
+
+
+def _tap_fmt(iv) -> str:
+    lo, hi = iv
+    if hi == _INF:
+        return f">={_fmt_px(lo)[:-2]}"
+    if abs(hi - lo) < 0.005:
+        return _fmt_px(lo)[:-2]
+    return f"{_fmt_px(lo)[:-2]}-{_fmt_px(hi)[:-2]}"
+
+
+class _TapAcc:
+    def __init__(self):
+        self.fails: dict = {}
+        self.warns: dict = {}
+        self.pages = 0
+        self.checked = 0
+        self.exempt = 0
+        self.hidden_ok = 0
+        self.hidden_skipped = 0
+        self.notes: list[str] = []
+        self.min_w: float | None = None
+        self.min_h: float | None = None
+        self.nodes: dict = {}   # (store, page, node) -> record key: one record per element across widths
+
+    def add(self, store: dict, key: tuple, rec: dict) -> None:
+        got = store.get(key)
+        if got is None:
+            rec["count"] = 1
+            store[key] = rec
+        else:
+            got["count"] += 1
+
+
+def _tap_selector(m: dict, node: _Node, axes: str) -> str:
+    labs = []
+    for axis in axes:
+        for item in m["labels_w" if axis == "w" else "labels_h"]:
+            if item not in labs:
+                labs.append(item)
+    author = [x for x in labs if not x.endswith("[browser default]")]
+    labs = author or labs
+    if not labs:
+        labs = [f"{node.tag} [no size rule: browser default]"]
+    return " + ".join(labs[:3])
+
+
+def _tap_judge(node: _Node, page: str, hidden_by, ctx: _Ctx, pseudo: list, acc: _TapAcc,
+               first: bool = True) -> None:
+    cs = node.cs
+    if cs["invisible"] or cs["srhide"]:
+        return
+    kind = _tap_kind(node)
+    desc = _describe(node)
+    shown = _tap_label(node)
+    if cs["hidden"]:
+        if first:
+            acc.hidden_skipped += 1
+        return
+    raw = _tap_raw_display(node)
+    parent = node.parent if node.parent is not None and node.parent.tag != "#doc" else None
+    praw = _tap_raw_display(parent) if parent is not None else ""
+    blockified = praw in ("flex", "inline-flex", "grid", "inline-grid") or \
+        (_tap_boxval(node, "position") or "") in ("absolute", "fixed") or \
+        (_tap_boxval(node, "float") or "none") != "none"
+    final = {"inline": "block", "inline-block": "block"}.get(raw, raw) if blockified else raw
+    if _tap_exempt_inline(node, final):
+        if first:
+            acc.exempt += 1
+        return
+    vp = int(ctx.w)
+
+    def record(store, selector, measured, extra):
+        nk = (id(store), page, id(node))
+        key = acc.nodes.get(nk)
+        if key is not None and key in store:  # same element, another phone width
+            got = store[key]
+            if vp not in got["viewports"]:
+                got["viewports"].append(vp)
+            if got["measured"] != measured:
+                got.setdefault("measured_at", {})[vp] = measured
+            return
+        rec = {"check": "tap_target", "file": page, "selector": selector, "measured": measured,
+               "required": "44px", "element": desc, "text": shown, "extra": extra,
+               "kind": kind, "viewports": [vp]}
+        key = (page, selector, measured, desc, extra)
+        acc.nodes[nk] = key
+        got = store.get(key)
+        if got is not None and vp not in got["viewports"]:
+            got["viewports"].append(vp)
+        acc.add(store, key, rec)
+
+    if any(sel_match for sel_match in (_match_sel(s, node) for s in pseudo)):
+        record(acc.warns, f"{node.tag} (::before/::after enlarges the target)", "not measurable",
+               "a pseudo-element with negative offsets may extend the tap area")
+        return
+    m = _tap_measure(node, ctx)
+    if "error" in m:
+        record(acc.warns, f"{node.tag}", "not measurable", m["error"])
+        return
+    (wl, wh), (hl, hh) = m["w"], m["h"]
+    floor = TAP_MIN_PX - 0.005
+    wtxt = "[fill]" if m["assumed"] and (wl, wh) == (TAP_MIN_PX, ctx.w) else _tap_fmt(m["w"])
+    measured = f"{wtxt}x{_tap_fmt(m['h'])}px"
+    where = f" (hidden at {vp}px, measured as if shown: " + hidden_by + ")" if hidden_by else ""
+    if wh < floor or hh < floor:
+        axes = "".join(a for a, hi in (("w", wh), ("h", hh)) if hi < floor)
+        sel = _tap_selector(m, node, axes)
+        extra = ("; ".join(m["notes"]) if m["notes"] else "") or "resolved box"
+        if hidden_by:
+            record(acc.warns, sel, measured, "under 44px" + where)
+        else:
+            record(acc.fails, sel, measured, extra)
+        return
+    if wl >= floor and hl >= floor:
+        if first:
+            acc.checked += 1
+            acc.min_w = wl if acc.min_w is None else min(acc.min_w, wl)
+            acc.min_h = hl if acc.min_h is None else min(acc.min_h, hl)
+            if hidden_by:
+                acc.hidden_ok += 1
+        return
+    axes = "".join(a for a, lo in (("w", wl), ("h", hl)) if lo < floor)
+    sel = _tap_selector(m, node, axes)
+    why = []
+    if hl < floor:
+        why.append("height is " + _tap_fmt(m["h"]) + "px, no guaranteed 44px minimum")
+    if wl < floor:
+        why.append("width is " + _tap_fmt(m["w"]) + "px, no guaranteed 44px minimum")
+    record(acc.warns, sel, measured, "; ".join(why) + where)
+
+
+def _tap_scan_page(page: Path, acc: _TapAcc, viewports: tuple | None = None) -> None:
+    html = page.read_text(encoding="utf-8", errors="replace")
+    root = _build_dom(html)
+    sheet_acc = _TypoAcc()
+    author_items = _stylesheet_items(root, page, sheet_acc)
+    acc.notes.extend(sheet_acc.notes)
+    acc.pages += 1
+    for number, (w, h) in enumerate(viewports or TAP_VIEWPORTS):
+        ctx = _Ctx(w, h)
+        rules = _build_rules(_parse_css_items(_UA_CSS), w, h, True, 0) + \
+            _build_rules(author_items, w, h, False, 10000)
+        pseudo = _tap_pseudo_selectors(author_items, w, h)
+        targets = []
+        stack = [(root, _ROOT_CS, None)]
+        while stack:
+            node, pcs, hid = stack.pop()
+            if node.tag == "#doc":
+                cs = pcs
+            else:
+                cs = _compute(node, pcs, ctx, rules)
+                node.cs = cs
+                if node.tag == "html" and cs["size"]:
+                    ctx.root = cs["size"]
+                if cs["hidden"] and hid is None:
+                    hid = _tap_box(node).get("display", ("", "display:none"))[1]
+                if _tap_kind(node):
+                    targets.append((node, hid))
+                if node.tag in _SKIP_TAGS:
+                    continue
+            for child in reversed(node.children):
+                stack.append((child, cs, hid))
+        for node, hid in targets:
+            if node.cs["hidden"]:
+                if number == 0:
+                    acc.hidden_skipped += 1
+                continue
+            _tap_judge(node, page.name, hid, ctx, pseudo, acc, number == 0)
+
+
+def tap_scan(pages: list[Path], viewports: tuple | None = None) -> dict:
+    acc = _TapAcc()
+    for page in pages:
+        _tap_scan_page(page, acc, viewports)
+    key = lambda r: (r["file"], r["selector"], r["measured"], r["element"])
+    for rec in list(acc.fails.values()) + list(acc.warns.values()):
+        rec["viewports"].sort()
+    return {
+        "fails": sorted(acc.fails.values(), key=key),
+        "warns": sorted(acc.warns.values(), key=key),
+        "pages": acc.pages, "checked": acc.checked, "exempt": acc.exempt,
+        "hidden_ok": acc.hidden_ok, "hidden_skipped": acc.hidden_skipped,
+        "notes": acc.notes, "min_w": acc.min_w, "min_h": acc.min_h,
+    }
+
+
+def _tap_line(f: dict, warn: bool = False) -> str:
+    """<page file> | <selector> | measured WxHpx (needs >= 44px) | static; <element> "text" | at 360[,390,412]px"""
+    count = f" (x{f['count']})" if f.get("count", 1) > 1 else ""
+    if warn:
+        head = f"not measurable: {f['extra']} (needs >= 44px)"
+    else:
+        head = f"measured {f['measured']} (needs >= 44px)"
+    views = ",".join(str(v) for v in f["viewports"])
+    return " | ".join([f["file"], f["selector"], head, f"static; {f['element']} \"{f['text']}\"{count}",
+                       f"at {views}px"])
+
+
+def _tap_rows(rep: "Report", pages: list[Path]) -> None:
+    at = "/".join(str(w) for w, _ in TAP_VIEWPORTS) + "px"
+    try:
+        scan = tap_scan(pages)
+    except Exception as exc:  # fail closed
+        rep.add("tap_target", "FAIL", f"static; checker error: {type(exc).__name__}: {exc}", failures=[])
+        return
+    fails, warns = scan["fails"], scan["warns"]
+    tail = (f"{scan['checked']} measured >=44px, {scan['exempt']} inline-in-sentence link(s) exempt (WCAG 2.5.8), "
+            f"{scan['hidden_ok']} hidden-at-360px control(s) measured as if shown")
+    tail += f"; judged at {at}"
+    if scan["hidden_skipped"]:
+        tail += f", {scan['hidden_skipped']} control(s) with display:none themselves not measured"
+    if fails:
+        shown = "; ".join(f"{f['file']}: {f['selector']} {f['measured']} (needs >= 44px)" for f in fails[:6])
+        extra = f" (+{len(fails) - 6} more)" if len(fails) > 6 else ""
+        rep.add("tap_target", "FAIL", "static; " + shown + extra, failures=fails,
+                unmeasured=warns)
+        return
+    if warns or scan["notes"]:
+        nm = sum(w.get("count", 1) for w in warns)
+        rep.add("tap_target", "WARN",
+                f"static, {scan['pages']} page(s) at {at}; {nm} control(s) not measurable (never a pass); " + tail,
+                failures=[], unmeasured=warns)
+        return
+    low = f"smallest guaranteed {_fmt_px(scan['min_w'])[:-2]}x{_fmt_px(scan['min_h'])[:-2]}px; " \
+        if scan["min_w"] is not None else ""
+    rep.add("tap_target", "PASS",
+            f"static, {scan['pages']} page(s) at {at}; {low}floor 44px; " + tail, failures=[])
+
+
+
+# ---------------------------------------------------------------------------
+# GATES.md rows without a row before: slug_shape, photo_luma, svg_photo, grey_tile.
+# slug_shape is static. photo_luma needs Pillow (SKIP = not-run when missing).
+# grey_tile cannot be proven from static CSS, so it is always an explicit
+# not-run row (SKIP), never a pass.
+# ---------------------------------------------------------------------------
+SLUG_MAX_WORDS = 6
+SLUG_MAX_CHARS = 60
+LUMA_MIN = 90.0
+LUMA_MAX = 200.0
+LUMA_PHOTO_MIN_WIDTH = 400
+_SLUG_DATE = re.compile(r"(?:^|-)(?:19|20)\d{2}(?:-\d{1,2}){0,2}(?:-|$)|(?:^|-)\d{8}(?:-|$)")
+_SLUG_SUFFIX = re.compile(r"-(?:\d+|v\d+|copy|final|new|old|draft|test|temp|tmp|backup|bak|batch\d*|pass\d*)$", re.I)
+_RASTER_EXT = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp")
+
+
+def slug_problems(slug: str) -> list[str]:
+    out = []
+    if slug != slug.lower():
+        out.append("uppercase")
+    if "_" in slug:
+        out.append("underscore")
+    low = slug.lower()
+    if _SLUG_DATE.search(low):
+        out.append("date")
+    if _SLUG_SUFFIX.search(low):
+        out.append("trailing number/pass/batch suffix")
+    words = [w for w in re.split(r"[-_]+", slug) if w]
+    if len(words) > SLUG_MAX_WORDS:
+        out.append(f"{len(words)} words")
+    if len(slug) > SLUG_MAX_CHARS:
+        out.append(f"{len(slug)} chars")
+    if re.search(r"[^A-Za-z0-9_-]", slug):
+        out.append("characters outside a-z 0-9 hyphen")
+    return out
+
+
+def slug_scan(site_dir: Path) -> dict:
+    fails = []
+    seen = 0
+    for page in sorted(site_dir.rglob("*.html")):
+        rel = page.relative_to(site_dir)
+        if rel.parts and rel.parts[0] == "_attempts":
+            continue  # attempts are history, not product (FINAL D2, hash-excluded)
+        slugs = []
+        if page.stem.lower() != "index":
+            slugs.append(page.stem)
+        elif rel.parent != Path("."):
+            slugs.append(rel.parent.name)
+        for part in rel.parent.parts:
+            if part not in [s for s in slugs]:
+                slugs.append(part)
+        for slug in slugs:
+            seen += 1
+            problems = slug_problems(slug)
+            if problems:
+                words = len([w for w in re.split(r"[-_]+", slug) if w])
+                fails.append({"check": "slug_shape", "file": rel.as_posix(), "selector": slug,
+                              "measured": f"{words} word(s), {len(slug)} char(s): " + ", ".join(problems),
+                              "required": f"<= {SLUG_MAX_WORDS} words, <= {SLUG_MAX_CHARS} chars, lowercase-hyphen, "
+                                          "no date or number suffix", "extra": "static", "count": 1,
+                              "viewports": []})
+    return {"fails": fails, "seen": seen}
+
+
+def _slug_row(rep: "Report", site_dir: Path) -> None:
+    scan = slug_scan(site_dir)
+    if scan["fails"]:
+        shown = "; ".join(f"{f['file']}: {f['selector']} ({f['measured']})" for f in scan["fails"][:6])
+        rep.add("slug_shape", "FAIL", "static; " + shown, failures=scan["fails"])
+    else:
+        rep.add("slug_shape", "PASS", f"static; {scan['seen']} page slug(s) checked (index exempt); "
+                f"max {SLUG_MAX_WORDS} words, {SLUG_MAX_CHARS} chars, lowercase hyphen, no date or number suffix",
+                failures=[])
+
+
+def _mean_luma(path: Path):
+    from PIL import Image  # raises ImportError when Pillow is absent
+    with Image.open(path) as im:
+        width = im.size[0]
+        g = im.convert("RGB").convert("L").resize((128, 128))
+    return sum(g.tobytes()) / 16384.0, width
+
+
+def _photo_rows(rep: "Report", pages: list[Path]) -> None:
+    files: list[tuple[str, str, Path]] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        for src in _img_srcs(html):
+            local = _local_img_src(src)
+            if local and local.lower().split("?", 1)[0].endswith(_RASTER_EXT):
+                files.append((page.name, local, page.parent / unquote(local.split("?", 1)[0])))
+    if not files:
+        rep.add("photo_luma", "PASS", "static; no raster img on any page (CSS background images are not read)",
+                failures=[])
+        return
+    try:
+        import PIL  # noqa: F401
+    except ImportError:
+        rep.add("photo_luma", "SKIP", f"not-run: Pillow is not installed; {len(files)} raster img not measured",
+                failures=[])
+        return
+    fails, skipped, measured, small = [], [], 0, 0
+    for page_name, local, path in files:
+        try:
+            luma, width = _mean_luma(path)
+        except Exception as exc:
+            skipped.append(f"{page_name}: img[src=\"{local}\"] unreadable ({type(exc).__name__})")
+            continue
+        if width < LUMA_PHOTO_MIN_WIDTH:
+            small += 1
+            continue
+        measured += 1
+        if not (LUMA_MIN <= luma <= LUMA_MAX):
+            fails.append({"check": "photo_luma", "file": page_name, "selector": f'img[src="{local}"]',
+                          "measured": f"mean luma {luma:.0f}", "required": f"{LUMA_MIN:.0f}-{LUMA_MAX:.0f}",
+                          "extra": f"static; {width}px wide file", "count": 1, "viewports": []})
+    if fails:
+        shown = "; ".join(f"{f['file']}: {f['selector']} {f['measured']} (needs {f['required']})" for f in fails[:6])
+        rep.add("photo_luma", "FAIL", shown, failures=fails)
+    elif skipped:
+        rep.add("photo_luma", "WARN", f"{len(skipped)} image(s) not measurable: " + "; ".join(skipped[:3]), failures=[])
+    else:
+        rep.add("photo_luma", "PASS", f"{measured} photo(s) mean luma within {LUMA_MIN:.0f}-{LUMA_MAX:.0f}; "
+                f"{small} img under {LUMA_PHOTO_MIN_WIDTH}px wide treated as icons/logos", failures=[])
+
+
+_SVG_PHOTO_WORDS = re.compile(r"thumb|photo|hero|cover|schematic|diagram|placeholder|sample", re.I)
+
+
+def _svg_photo_row(rep: "Report", pages: list[Path]) -> None:
+    fails = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        for m in re.finditer(r"<img\b([^>]*)>", html, re.I):
+            attrs = m.group(1)
+            src = _attr(attrs, "src") or ""
+            if src.lower().split("?", 1)[0].endswith(".svg"):
+                ctx = " ".join(filter(None, (_attr(attrs, "class"), _attr(attrs, "id"), _attr(attrs, "alt"), src)))
+                hit = _SVG_PHOTO_WORDS.search(ctx)
+                if hit:
+                    fails.append({"check": "svg_photo", "file": page.name, "selector": f'img[src="{src}"]',
+                                  "measured": f'svg file used as image (matches "{hit.group(0).lower()}")',
+                                  "required": "a real raster photo or no image", "extra": "static", "count": 1,
+                                  "viewports": []})
+        for m in re.finditer(r"<svg\b[^>]*(?:class|id)\s*=\s*[\"']([^\"']*)[\"']", html, re.I):
+            hit = re.search(r"thumb|photo", m.group(1), re.I)
+            if hit:
+                fails.append({"check": "svg_photo", "file": page.name, "selector": f'svg[class/id="{m.group(1)}"]',
+                              "measured": f'inline svg posing as a photo (matches "{hit.group(0).lower()}")',
+                              "required": "a real raster photo or no image", "extra": "static", "count": 1,
+                              "viewports": []})
+    if fails:
+        shown = "; ".join(f"{f['file']}: {f['selector']} {f['measured']}" for f in fails[:6])
+        rep.add("svg_photo", "FAIL", "static; " + shown, failures=fails)
+    else:
+        rep.add("svg_photo", "PASS", "static; no svg posing as a photo (img .svg with thumb/photo/hero/cover/"
+                "schematic/diagram/placeholder/sample wording, or inline svg class thumb/photo)", failures=[])
+
+
+def _grey_tile_row(rep: "Report") -> None:
+    rep.add("grey_tile", "SKIP", "not-run: a grey tile standing in for a photo is a rendered condition; static CSS "
+            "cannot prove it absent (use webcheck.py page at 360px and 1280px)", failures=[])
+
+
+# ---------------------------------------------------------------------------
+# HERO single-gate additions (team-gates): one cited CTA, every string cited,
+# weight, safe-area, css contract, layout stability, visual probe.
+# Stdlib only. All PASS on demo-local + bench-harbor-tearoom.
+# ---------------------------------------------------------------------------
+_WEIGHT_HTML_RAW = 153600
+_WEIGHT_HTML_GZIP = 40960
+_WEIGHT_SCRIPT = 4096
+_WEIGHT_HERO_IMG = 102400
+_WEIGHT_OTHER_IMG = 204800
+
+_CITED_ALLOW = {"Skip to content"}
+_FOOTER_RE = re.compile(r"^\(c\)\s+\d{4}\s+(.+)$", re.I)
+
+
+def _strip_ld_json(html: str) -> str:
+    return re.sub(
+        r'<script\b[^>]*type\s*=\s*["\']application/ld\+json["\'][^>]*>.*?</script>',
+        "<script></script>",
+        html,
+        flags=re.I | re.S,
+    )
+
+
+def _cta_anchors(html: str) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
+    """(hero primaries, thumb bars) as (href, label) pairs."""
+    hero: list[tuple[str, str]] = []
+    bars: list[tuple[str, str]] = []
+    for m in re.finditer(r"<a\b([^>]*)>(.*?)</a>", html, re.I | re.S):
+        attrs, inner = m.group(1), m.group(2)
+        klass = _attr(attrs, "class") or ""
+        toks = klass.split()
+        href = _attr(attrs, "href") or ""
+        label = re.sub(r"<[^>]*>", "", inner)
+        label = " ".join(label.split())
+        if "btn" in toks and "primary" in toks:
+            hero.append((href, label))
+        elif "phone-bar" in toks:
+            bars.append((href, label))
+    return hero, bars
+
+
+def _one_cta_row(rep: "Report", pages: list[Path], copy_text: str = "") -> None:
+    fails: list[str] = []
+    norm = " ".join(copy_text.split()) if copy_text else ""
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        hero, bars = _cta_anchors(html)
+        total = len(hero) + len(bars)
+        if total == 0:
+            fails.append(f"{page.name}: no primary CTA (need one cited hero action)")
+            continue
+        if total > 2:
+            fails.append(f"{page.name}: {total} primary CTAs (hero + thumb bar at most)")
+            continue
+        # nav must not hold a primary marker
+        nav_blocks = re.findall(r"<nav\b[^>]*>(.*?)</nav>", html, re.I | re.S)
+        for blk in nav_blocks:
+            if 'btn primary' in blk or 'phone-bar' in blk or 'data-cta' in blk:
+                fails.append(f"{page.name}: nav holds a primary marker")
+                break
+        if copy_text:
+            for href, label in hero + bars:
+                if not label:
+                    fails.append(f"{page.name}: primary CTA has empty label")
+                    continue
+                if " ".join(label.split()) not in norm:
+                    fails.append(f"{page.name}: CTA label not in copy: {label[:60]}")
+                if href.startswith("tel:"):
+                    digits = "".join(ch for ch in href if ch.isdigit())
+                    if digits not in "".join(ch for ch in copy_text if ch.isdigit()):
+                        fails.append(f"{page.name}: tel href not in copy: {href[:40]}")
+                elif href.startswith("mailto:"):
+                    addr = href[7:].split("?")[0].strip()
+                    if addr and addr not in copy_text:
+                        fails.append(f"{page.name}: mailto href not in copy: {addr[:60]}")
+                elif not href:
+                    fails.append(f"{page.name}: primary CTA has empty href")
+    if fails:
+        extra = f" (+{len(fails) - 8} more)" if len(fails) > 8 else ""
+        rep.add("one_cta", "FAIL", "; ".join(fails[:8]) + extra)
+    else:
+        rep.add("one_cta", "PASS", f"{len(pages)} page(s), one cited CTA (hero + optional thumb bar)")
+
+
+# ---------------------------------------------------------------------------
+# Conversion rows (FINAL D4: cta_present, ask_after_proof, single_primary_cta)
+# plus the D5 mobile_block row. Additive: the legacy one_cta / phone_bar rows
+# above are untouched; these rows carry the conversion-canonical names the
+# FULL PACK batteries address. All four are fail-closed and SKIP (never PASS)
+# when their evidence (site.json / copy_text) is absent.
+# ---------------------------------------------------------------------------
+_MOBILE_BLOCK_KEYS = ("stack", "order")
+
+
+def _conversion_site_pages(site_dir: Path) -> list[tuple[str, list]] | None:
+    """[(slug, sections)] from site.json, or None when it cannot be read."""
+    try:
+        site = json.loads((Path(site_dir) / "site.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    pages = site.get("pages") if isinstance(site, dict) else None
+    if not isinstance(pages, list):
+        return None
+    out: list[tuple[str, list]] = []
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        secs = page.get("sections")
+        out.append((str(page.get("slug") or "index"), secs if isinstance(secs, list) else []))
+    return out
+
+
+def _cta_present_row(rep: "Report", pages: list[Path]) -> None:
+    """Every page carries at least one primary CTA (hero button or bar)."""
+    fails: list[str] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        hero, bars = _cta_anchors(html)
+        if len(hero) + len(bars) == 0:
+            fails.append(page.name + ": no primary CTA")
+    if fails:
+        rep.add("cta_present", "FAIL", "; ".join(fails[:8]))
+    else:
+        rep.add("cta_present", "PASS", str(len(pages)) + " page(s) carry a primary CTA")
+
+
+def _ask_after_proof_row(rep: "Report", site_dir: Path) -> None:
+    """Ask slots (contact/cta) close the page: never before proof."""
+    from lib import frames as _frames
+
+    info = _conversion_site_pages(site_dir)
+    if info is None:
+        rep.add("ask_after_proof", "SKIP", "not-run: no site.json", failures=[])
+        return
+    fails: list[str] = []
+    for slug, secs in info:
+        complaint = _frames.check_ask_after_proof(secs)
+        if complaint:
+            fails.append(slug + ".html: " + complaint)
+    if fails:
+        rep.add("ask_after_proof", "FAIL", "; ".join(fails[:8]))
+    else:
+        rep.add("ask_after_proof", "PASS", "offer->proof->ask holds")
+
+
+def _single_primary_cta_row(
+    rep: "Report", site_dir: Path, pages: list[Path], copy_text: str = ""
+) -> None:
+    """Exactly one visible primary per viewport, wired verbatim.
+
+    Hero primaries <= 1, bars <= 1, nav holds no primary marker (per-view
+    exclusivity is the CSS display swap; this row proves the swap has one
+    owner per side). tel: digits must be verbatim copy digits and a contact
+    ask slot carrying digits without a bar FAILs: absent wire, never an
+    invented number.
+    """
+    fails: list[str] = []
+    norm_digits = "".join(ch for ch in copy_text if ch.isdigit()) if copy_text else ""
+    ask_digits: dict[str, str] = {}
+    info = _conversion_site_pages(site_dir)
+    if info is not None:
+        for slug, secs in info:
+            for sec in secs:
+                if not isinstance(sec, dict) or sec.get("type") not in ("contact", "cta"):
+                    continue
+                data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+                for key in ("title", "body", "phone", "hours", "address"):
+                    value = data.get(key)
+                    texts = value if isinstance(value, list) else [value]
+                    for item in texts:
+                        if not isinstance(item, str):
+                            continue
+                        run = "".join(ch for ch in item if ch.isdigit())
+                        if len(run) >= 7:
+                            ask_digits.setdefault(slug, run)
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        hero, bars = _cta_anchors(html)
+        total = len(hero) + len(bars)
+        if len(hero) > 1:
+            fails.append(page.name + ": " + str(len(hero)) + " hero primaries")
+        if len(bars) > 1:
+            fails.append(page.name + ": " + str(len(bars)) + " phone bars")
+        if total == 0:
+            fails.append(page.name + ": no primary CTA")
+            continue
+        if total > 2:
+            fails.append(page.name + ": " + str(total) + " primary CTAs")
+            continue
+        nav_blocks = re.findall(r"<nav\b[^>]*>(.*?)</nav>", html, re.I | re.S)
+        for blk in nav_blocks:
+            if "btn primary" in blk or "phone-bar" in blk or "data-cta" in blk:
+                fails.append(page.name + ": nav holds a primary marker")
+                break
+        for href, _label in hero + bars:
+            if href.startswith("tel:"):
+                digits = "".join(ch for ch in href if ch.isdigit())
+                if len(digits) < 7:
+                    fails.append(page.name + ": tel href under 7 digits: " + href[:40])
+                elif norm_digits and digits not in norm_digits:
+                    fails.append(page.name + ": tel href not in copy: " + href[:40])
+            elif href.startswith("mailto:"):
+                addr = href[7:].split("?")[0].strip()
+                if copy_text and addr and addr not in copy_text:
+                    fails.append(page.name + ": mailto href not in copy: " + addr[:60])
+            elif not href:
+                fails.append(page.name + ": primary CTA has empty href")
+        if page.stem in ask_digits and not bars:
+            fails.append(page.name + ": ask slot has digits but no phone-bar")
+    if fails:
+        extra = " (+" + str(len(fails) - 8) + " more)" if len(fails) > 8 else ""
+        rep.add("single_primary_cta", "FAIL", "; ".join(fails[:8]) + extra)
+    else:
+        rep.add(
+            "single_primary_cta",
+            "PASS",
+            str(len(pages)) + " page(s), one visible primary per viewport",
+        )
+
+
+def _mobile_block_row(rep: "Report", site_dir: Path) -> None:
+    """D5 mobile blocks: known keys only, stack true, unique phone order.
+
+    Block-free pages pass untouched: the row judges declared phone design,
+    it never demands it.
+    """
+    info = _conversion_site_pages(site_dir)
+    if info is None:
+        rep.add("mobile_block", "SKIP", "not-run: no site.json", failures=[])
+        return
+    fails: list[str] = []
+    count = 0
+    for slug, secs in info:
+        seen_orders: dict[int, str] = {}
+        for sec in secs:
+            if not isinstance(sec, dict):
+                continue
+            data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+            mob = data.get("mobile")
+            if mob is None:
+                continue
+            sid = str(sec.get("id") or sec.get("type") or "?")
+            count += 1
+            if not isinstance(mob, dict):
+                fails.append(slug + "." + sid + ": mobile must be an object")
+                continue
+            for key in mob:
+                if key not in _MOBILE_BLOCK_KEYS:
+                    fails.append(
+                        slug + "." + sid + ": unknown mobile key "
+                        + repr(key) + " (stack/order only)"
+                    )
+            if "stack" in mob and mob["stack"] is not True:
+                fails.append(slug + "." + sid + ": mobile.stack must be true")
+            if "order" in mob:
+                order = mob["order"]
+                if isinstance(order, bool) or not isinstance(order, int) or order < 0:
+                    fails.append(slug + "." + sid + ": mobile.order must be int >= 0")
+                elif order in seen_orders:
+                    fails.append(
+                        slug + "." + sid + ": mobile.order "
+                        + str(order) + " duplicates " + seen_orders[order]
+                    )
+                else:
+                    seen_orders[order] = sid
+    if fails:
+        rep.add("mobile_block", "FAIL", "; ".join(fails[:8]))
+    else:
+        rep.add("mobile_block", "PASS", str(count) + " mobile block(s), 360-first")
+
+
+def _cited_text_row(rep: "Report", pages: list[Path], copy_text: str) -> None:
+    if not copy_text:
+        rep.add("cited_text", "SKIP", "not-run: no copy_text (pass --project or crew context)", failures=[])
+        return
+    norm = " ".join(copy_text.split())
+    fails: list[str] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        vis = visible_text(html)
+        for line in vis.splitlines():
+            text = line.strip()
+            if not text:
+                continue
+            folded = " ".join(text.split())
+            if folded in norm:
+                continue
+            if folded in _CITED_ALLOW:
+                continue
+            m = _FOOTER_RE.match(folded)
+            if m and " ".join(m.group(1).split()) in norm:
+                continue
+            fails.append(f"{page.name}: {folded[:80]}")
+            if len(fails) >= 12:
+                break
+    if fails:
+        extra = f" (+{len(fails) - 8} more)" if len(fails) > 8 else ""
+        rep.add("cited_text", "FAIL", "; ".join(fails[:8]) + extra)
+    else:
+        rep.add("cited_text", "PASS", f"{len(pages)} page(s), every visible string cited")
+
+
+def _weight_row(rep: "Report", pages: list[Path]) -> None:
+    import gzip as _gzip
+    fails: list[str] = []
+    for page in pages:
+        raw = page.read_bytes()
+        if len(raw) > _WEIGHT_HTML_RAW:
+            fails.append(f"{page.name}: html {len(raw)}B > {_WEIGHT_HTML_RAW}B")
+        try:
+            gz = len(_gzip.compress(raw))
+        except Exception:
+            gz = 0
+        if gz > _WEIGHT_HTML_GZIP:
+            fails.append(f"{page.name}: gzip {gz}B > {_WEIGHT_HTML_GZIP}B")
+        html = raw.decode("utf-8", errors="replace")
+        for m in re.finditer(r"<script\b(?![^>]*type\s*=\s*[\"']application/ld\+json[\"'])[^>]*>(.*?)</script>", html, re.I | re.S):
+            if len(m.group(1).encode("utf-8")) > _WEIGHT_SCRIPT:
+                fails.append(f"{page.name}: inline script > {_WEIGHT_SCRIPT}B")
+                break
+    # image budgets from files beside pages
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        for src in _img_srcs(html):
+            rel = _local_img_src(src)
+            if rel is None:
+                continue
+            f = page.parent / unquote(rel.split("?", 1)[0].split("#", 1)[0])
+            try:
+                size = f.stat().st_size
+            except OSError:
+                continue
+            limit = _WEIGHT_HERO_IMG if "hero" in rel.lower() else _WEIGHT_OTHER_IMG
+            if size > limit:
+                fails.append(f"{page.name}: {rel} {size}B > {limit}B")
+    if fails:
+        rep.add("weight", "FAIL", "; ".join(fails[:6]))
+    else:
+        rep.add("weight", "PASS", f"{len(pages)} page(s) within budgets")
+
+
+def _safe_area_row(rep: "Report", pages: list[Path]) -> None:
+    fails: list[str] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        if 'name="viewport"' in html and "viewport-fit=cover" not in html:
+            fails.append(f"{page.name}: viewport without viewport-fit=cover")
+        if "phone-bar" in html:
+            if "env(safe-area-inset-bottom)" not in html:
+                fails.append(f"{page.name}: thumb bar without safe-area inset")
+            if "padding-bottom" not in html:
+                fails.append(f"{page.name}: thumb bar without body padding-bottom reserve")
+            if "scroll-margin-top" not in html and "scroll-padding-top" not in html:
+                fails.append(f"{page.name}: missing scroll-margin/padding-top")
+    if fails:
+        rep.add("safe_area", "FAIL", "; ".join(fails[:6]))
+    else:
+        rep.add("safe_area", "PASS", f"{len(pages)} page(s), thumb bar + focus not covered")
+
+
+def _css_contract_row(rep: "Report", pages: list[Path]) -> None:
+    fails: list[str] = []
+    # Bare html/body element selectors only: a scoped state rule such as
+    # body.nav-open{overflow:hidden} (drawer scroll-lock) is not a global clip.
+    _bare = r"(?:(?<=[{};,\s])|^)(html|body)(?=[\s,{])"
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        css = "\n".join(re.findall(r"<style[^>]*>(.*?)</style>", html, re.S))
+        # forbid global sideways clip that hides overflow instead of fixing it
+        for m in re.finditer(
+            _bare + r"[^{]*\{[^}]*overflow-x\s*:\s*(hidden|clip)[^}]*\}",
+            css, re.IGNORECASE,
+        ):
+            fails.append(f"{page.name}: {m.group(1)} overflow-x:{m.group(2)} hides overflow")
+        for m in re.finditer(
+            _bare + r"[^{]*\{[^}]*overflow\s*:\s*(hidden|clip)[^}]*\}",
+            css, re.IGNORECASE,
+        ):
+            # overflow:hidden on a bare html/body rule is FAIL, even in @media.
+            fails.append(f"{page.name}: {m.group(1)} overflow:{m.group(2)} hides overflow")
+            break
+    if fails:
+        rep.add("css_contract", "FAIL", "; ".join(fails[:6]))
+    else:
+        rep.add("css_contract", "PASS", f"{len(pages)} page(s), no global overflow clip")
+
+
+def _layout_stability_row(rep: "Report", pages: list[Path]) -> None:
+    fails: list[str] = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        for m in re.finditer(r"<img\b([^>]*)>", html, re.I):
+            attrs = m.group(1)
+            w = _attr(attrs, "width")
+            h = _attr(attrs, "height")
+            if not (w and h):
+                src = _attr(attrs, "src") or "img"
+                fails.append(f"{page.name}: img without width+height: {src[:40]}")
+                break
+    if fails:
+        rep.add("layout_stability", "FAIL", "; ".join(fails[:6]))
+    else:
+        rep.add("layout_stability", "PASS", f"{len(pages)} page(s), img dimensions set")
+
+
+def _visual_probe_row(rep: "Report", site_dir: Path, pages: list[Path]) -> None:
+    probe = site_dir / "layout-probe.json"
+    if not probe.is_file():
+        rep.add("visual_probe", "SKIP", "not-run: no layout-probe.json (run tools/layout_probe.py); unrun!=pass", failures=[])
+        return
+    try:
+        data = json.loads(probe.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        rep.add("visual_probe", "FAIL", f"layout-probe.json unreadable: {exc}", failures=[])
+        return
+    # bind probe to current bytes: stored html hash must match
+    import hashlib as _hl
+    h = _hl.sha256()
+    for p in sorted(pages):
+        h.update(p.read_bytes())
+    cur = h.hexdigest()[:16]
+    want = str(data.get("html_hash") or data.get("hash") or "")
+    if want and want != cur and cur not in want:
+        rep.add("visual_probe", "FAIL", "layout-probe.json stale (html changed); re-run probe", failures=[])
+        return
+    rows = data.get("rows") if isinstance(data.get("rows"), list) else data.get("profiles")
+    if isinstance(rows, list) and any(isinstance(r, dict) and r.get("status") == "FAIL" for r in rows):
+        rep.add("visual_probe", "FAIL", "probe rows contain FAIL", failures=[])
+        return
+    rep.add("visual_probe", "PASS", f"probe {probe.name} bound to html {cur}", failures=[])
+
+
+def _gate_rows(rep: "Report", site_dir: Path, pages: list[Path]) -> None:
+    for fn in (lambda: _slug_row(rep, site_dir), lambda: _photo_rows(rep, pages), lambda: _svg_photo_row(rep, pages)):
+        try:
+            fn()
+        except Exception as exc:  # fail closed
+            rep.add("gate_error", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+    _grey_tile_row(rep)
+
+
+# ---------------------------------------------------------------------------
+# Mobile gates, STATIC (rows sideways_scroll, mobile_nav_drawer, mobile_visibility,
+# and mobile_spec when --mobile-spec is given). Same static cascade as
+# type_floor/contrast/tap_target, evaluated at every phone width in
+# MOBILE_VIEWPORTS (360, 390, 412) and, for the visibility inventory, at the
+# 1280px desktop baseline. Every row says static (or rendered for capture
+# evidence read from a patterns.json). A condition that cannot be decided from
+# HTML and CSS is WARN "not measurable" or a SKIP "not-run", never a pass.
+#   sideways_scroll:   an element whose resolved box ends right of the viewport
+#                      (fixed width/min-width in px, vw over 100, % over 100,
+#                      negative right margin beyond the gutter, img/iframe/video/
+#                      svg width attribute with no max-width, wide table, pre or
+#                      nowrap text, long unbreakable word) and no clipping or
+#                      scrolling ancestor below body.
+#   mobile_nav_drawer: more than MOBILE_NAV_INLINE_MAX primary nav links at a
+#                      phone width need a toggle: a <button> (or role=button)
+#                      with aria-expanded="false", aria-controls naming an
+#                      existing id, an accessible name and a 44px box. The
+#                      controlled drawer must hold the nav links, be hidden by
+#                      default, open in a static simulation of the page's own
+#                      script (classes it adds, hidden it removes, aria-expanded
+#                      true) and have a close mechanism (toggle that flips back
+#                      and stays visible, a close button inside, Escape, or a
+#                      native dialog/popover).
+#   mobile_visibility: inventory of elements shown only at phone widths and of
+#                      elements hidden at phone widths but shown at 1280px.
+#                      Content hidden on mobile is WARN; h1 or main hidden at a
+#                      phone width is FAIL. The drawer and its toggle are exempt.
+# Not modelled: rendered layout and real container widths, JS-built DOM,
+# transforms, left-edge overflow (cut off, not scrollable), web fonts.
+# Rendered follow-up: the capture tool mobile_capture.py (Playwright) writes a
+# patterns.json; pass its path with --mobile-spec PATH to add the mobile_spec row.
+# No path is assumed: the spec path always comes from the caller.
+# ---------------------------------------------------------------------------
+MOBILE_NAV_INLINE_MAX = 4   # more primary nav links than this at a phone width need a toggle
+MOBILE_WORD_MIN_CHARS = 25  # unbreakable words this long are measured for overflow
+_MOB_CONTAIN = frozenset(("auto", "scroll", "hidden", "clip", "overlay"))
+_MOB_MONO_GLYPH = (0.50, 0.62)     # monospace advance, multiple of font-size
+_MOB_REPLACED = frozenset(("img", "iframe", "video", "svg", "canvas", "embed", "object"))
+_MOB_TOGGLE_WORDS = re.compile(r"menu|nav|hamburger|burger|toggle|drawer|offcanvas|off-canvas", re.I)
+_MOB_CLOSE_WORDS = re.compile(r"close|dismiss|\u00d7|\u2715|\u2716", re.I)
+_MOB_ESCAPE_RE = re.compile(r"""['"]Esc(?:ape)?['"]|keyCode\s*={2,3}\s*27|which\s*={2,3}\s*27""")
+_MOB_CLASS_RE = re.compile(r"""(?:classList\s*\.\s*(?:add|toggle)|(?:add|toggle)Class)\s*\(\s*(['"])([\w-]+)\1""")
+_MOB_TOGGLE_RE = re.compile(r"""classList\s*\.\s*toggle\s*\(|toggleClass\s*\(|toggleAttribute\s*\(""")
+_MOB_UNHIDE_RE = re.compile(r"""removeAttribute\s*\(\s*['"]hidden['"]|\.hidden\s*=\s*(?:false|!)|toggleAttribute\s*\(\s*['"]hidden['"]""")
+_MOB_EXPANDED_RE = re.compile(r"""setAttribute\s*\(\s*['"]aria-expanded['"]""")
+_MOB_OFFSCREEN_RE = re.compile(r"translate(?:x|3d)?\(\s*-?100%|translate\(\s*-?100vw", re.I)
+
+
+def _mob_desc(node: _Node) -> str:
+    return _describe(node)[1:-1]
+
+
+def _mob_cascade(root: _Node, author_items: list, w: int, h: int):
+    """One static cascade at (w, h). Returns ctx, nodes in document order, {id: hiding node or None}."""
+    ctx = _Ctx(w, h)
+    rules = _build_rules(_parse_css_items(_UA_CSS), w, h, True, 0) + _build_rules(author_items, w, h, False, 10000)
+    order: list[_Node] = []
+    hidden: dict[int, object] = {}
+    stack = [(root, _ROOT_CS, None)]
+    while stack:
+        node, pcs, hid = stack.pop()
+        if node.tag == "#doc":
+            cs = pcs
+        else:
+            cs = _compute(node, pcs, ctx, rules)
+            node.cs = cs
+            if node.tag == "html" and cs["size"]:
+                ctx.root = cs["size"]
+            if hid is None and (cs["hidden"] or cs["invisible"]):
+                hid = node
+            hidden[id(node)] = hid
+            order.append(node)
+            if node.tag in _SKIP_TAGS:
+                continue
+        for child in reversed(node.children):
+            stack.append((child, cs, hid))
+    return ctx, order, hidden
+
+
+def _mob_hide_label(node) -> str:
+    if node is None:
+        return ""
+    box = _tap_box(node)
+    for prop in ("display", "visibility"):
+        if prop in box:
+            return f"{prop}:{box[prop][0].strip()} from {box[prop][1]}"
+    return "hidden attribute" if "hidden" in node.attrs else "hidden"
+
+
+def _mob_ancestors(node: _Node):
+    p = node.parent
+    while p is not None and p.tag != "#doc":
+        yield p
+        p = p.parent
+
+
+def _mob_contained(node: _Node, include_self: bool = False) -> str:
+    """Selector of the nearest element below body that clips or scrolls x overflow, or ''."""
+    chain = ([node] if include_self else []) + list(_mob_ancestors(node))
+    for n in chain:
+        if n.tag in ("html", "body"):
+            break
+        for prop in ("overflow-x", "overflow"):
+            v = _tap_boxval(n, prop)
+            if v and v.split()[0] in _MOB_CONTAIN:
+                return _mob_desc(n)
+    return ""
+
+
+def _mob_root_clip(order: list[_Node]) -> str:
+    for n in order:
+        if n.tag in ("html", "body"):
+            for prop in ("overflow-x", "overflow"):
+                v = _tap_boxval(n, prop)
+                if v and v.split()[0] in ("hidden", "clip"):
+                    return f"{n.tag} {prop}:{v}"
+    return ""
+
+
+def _mob_px(node: _Node, prop: str, ctx: _Ctx, base):
+    """px float, None (unset/auto), or '?' (not resolvable)."""
+    v = _tap_boxval(node, prop)
+    if v is None or v in ("auto", "none", "normal", "initial", "unset", "revert", "0"):
+        return 0.0 if v == "0" else None
+    if v in ("fit-content", "max-content", "min-content", "stretch", "-webkit-fill-available", "inherit"):
+        return "?"
+    got = _eval_len(v, node.cs.get("size") or 16.0, ctx, base)
+    return "?" if got is None else got
+
+
+def _mob_num(v) -> float:
+    return v if isinstance(v, float) else 0.0
+
+
+class _MobGeo:
+    """Approximate x geometry at one viewport: content-box left edge and inner width per node."""
+
+    def __init__(self, ctx: _Ctx):
+        self.ctx = ctx
+        self.memo: dict[int, tuple] = {}
+
+    def _pad_border(self, node: _Node, avail: float):
+        size = node.cs.get("size") or 16.0
+        out = []
+        for side in ("left", "right"):
+            p = _mob_px(node, f"padding-{side}", self.ctx, avail)
+            b = _tap_border(node, side, size, self.ctx)
+            out.append(_mob_num(p) + (b[0] if b[1] != _INF else 0.0))
+        return out[0], out[1]
+
+    def frame(self, node: _Node):
+        """(content_left, inner_width, border_left, border_width) for node; html starts at 0..W."""
+        key = id(node)
+        if key in self.memo:
+            return self.memo[key]
+        W = self.ctx.w
+        parent = node.parent
+        if node.tag == "html" or parent is None or parent.tag == "#doc":
+            res = (0.0, W, 0.0, W)
+            self.memo[key] = res
+            return res
+        pleft, pinner, _, _ = self.frame(parent)
+        pos = _tap_boxval(node, "position") or "static"
+        if pos == "fixed":
+            pleft, pinner = 0.0, W
+        ml = _mob_px(node, "margin-left", self.ctx, pinner)
+        mr = _mob_px(node, "margin-right", self.ctx, pinner)
+        if node.tag == "body" and _tap_boxval(node, "margin-left") is None and _tap_boxval(node, "margin") is None:
+            ml = mr = 8.0  # browser default body margin
+        ml, mr = _mob_num(ml), _mob_num(mr)
+        if pos in ("absolute", "fixed"):
+            lv = _mob_px(node, "left", self.ctx, pinner)
+            if isinstance(lv, float):
+                ml = lv + ml
+        padl, padr = self._pad_border(node, pinner)
+        bw = self.border_width(node, pinner, ml, mr)
+        left = pleft + ml
+        inner = max(bw - padl - padr, 0.0)
+        res = (left + padl, inner, left, bw)
+        self.memo[key] = res
+        return res
+
+    def border_width(self, node: _Node, avail: float, ml: float, mr: float):
+        """Resolved border-box width; a block with no usable width fills avail - margins."""
+        box_sizing = _tap_boxval(node, "box-sizing") or "content-box"
+        padl, padr = self._pad_border(node, avail)
+        extra = 0.0 if box_sizing == "border-box" else padl + padr
+        w = _mob_px(node, "width", self.ctx, avail)
+        mn = _mob_px(node, "min-width", self.ctx, avail)
+        mx = _mob_px(node, "max-width", self.ctx, avail)
+        bw = (w + extra) if isinstance(w, float) else max(avail - ml - mr, 0.0)
+        if isinstance(mx, float):
+            bw = min(bw, mx + extra)
+        if isinstance(mn, float):
+            bw = max(bw, mn + extra)
+        return bw
+
+
+def _mob_white_space(node: _Node) -> str:
+    n = node
+    while n is not None and n.tag != "#doc":
+        v = _tap_boxval(n, "white-space")
+        if v and v not in ("inherit", "unset"):
+            return v
+        if n.tag in ("pre", "textarea"):
+            return "pre"
+        n = n.parent
+    return "normal"
+
+
+def _mob_breaks_words(node: _Node) -> bool:
+    n = node
+    while n is not None and n.tag != "#doc":
+        ow = _tap_boxval(n, "overflow-wrap") or _tap_boxval(n, "word-wrap")
+        wb = _tap_boxval(n, "word-break")
+        if (ow and ow in ("anywhere", "break-word")) or (wb and wb in ("break-all", "break-word")):
+            return True
+        if ow or wb:
+            return False
+        n = n.parent
+    return False
+
+
+def _mob_raw_text(node: _Node) -> str:
+    parts: list[str] = []
+    stack = [node]
+    while stack:
+        n = stack.pop()
+        parts.append("".join(n.texts))
+        stack.extend(reversed(n.children))
+    return "".join(parts)
+
+
+def _mob_mono(node: _Node) -> bool:
+    n = node
+    while n is not None and n.tag != "#doc":
+        ff = _tap_boxval(n, "font-family")
+        if ff:
+            return bool(re.search(r"mono|courier|consolas|menlo", ff))
+        if n.tag in ("pre", "code", "kbd", "samp", "tt"):
+            return True
+        n = n.parent
+    return False
+
+
+def _mob_flex_row_shrinks(node: _Node) -> bool:
+    parent = node.parent
+    if parent is None or parent.tag == "#doc":
+        return False
+    if _tap_raw_display(parent) not in ("flex", "inline-flex"):
+        return False
+    if (_tap_boxval(parent, "flex-direction") or "row").startswith("column"):
+        return False
+    flex = _tap_boxval(node, "flex")
+    if flex in ("none",):
+        return False
+    shrink = _tap_boxval(node, "flex-shrink")
+    if shrink is None and flex:
+        parts = flex.split()
+        shrink = parts[1] if len(parts) >= 2 and re.fullmatch(r"[0-9.]+", parts[1]) else ("1" if parts[0] != "none" else "0")
+    return shrink != "0"
+
+
+class _MobAcc:
+    def __init__(self):
+        self.fails: dict = {}
+        self.warns: dict = {}
+        self.inventory: dict = {}
+        self.nodes: dict = {}
+        self.pages = 0
+        self.notes: list[str] = []
+        self.checked = 0
+
+    def rec(self, store: dict, check: str, page: str, node, selector: str, measured: str, extra: str, vp: int,
+            mode: str = "static", required: str = "") -> None:
+        nk = (check, id(store), page, id(node) if node is not None else selector,
+              measured if check != "sideways_scroll" else "")
+        key = self.nodes.get(nk)
+        if key is not None and key in store:
+            got = store[key]
+            if vp not in got["viewports"]:
+                got["viewports"].append(vp)
+            if got["measured"] != measured:
+                got.setdefault("measured_at", {})[vp] = measured
+            return
+        key = (check, page, selector, measured, _mob_desc(node) if node is not None else "", extra)
+        self.nodes[nk] = key
+        got = store.get(key)
+        if got is not None:
+            got["count"] += 1
+            if vp not in got["viewports"]:
+                got["viewports"].append(vp)
+            return
+        store[key] = {"check": check, "file": page, "selector": selector, "measured": measured,
+                      "required": required, "element": ("<" + _mob_desc(node) + ">") if node is not None else "",
+                      "extra": extra, "mode": mode, "viewports": [vp], "count": 1}
+
+
+def _mob_line(f: dict, warn: bool = False) -> str:
+    """file | selector | measured | static (or rendered); element; extra | at W[,W]px"""
+    views = ",".join(str(v) for v in sorted(f.get("viewports", []))) + "px"
+    head = f["measured"]
+    tail = f["mode"]
+    if f.get("element"):
+        tail += "; " + f["element"]
+    if f.get("extra"):
+        tail += "; " + f["extra"]
+    if f.get("measured_at"):
+        tail += "; also " + "; ".join(f["measured_at"][v] for v in sorted(f["measured_at"]))
+    if f.get("count", 1) > 1:
+        tail += f" (x{f['count']})"
+    return " | ".join([f["file"], f["selector"], head, tail, f"at {views}"])
+
+
+def _mob_label(node: _Node, *props: str) -> str:
+    box = _tap_box(node)
+    labs = []
+    for p in props:
+        if p in box and box[p][1] not in labs and not box[p][1].endswith("[browser default]"):
+            labs.append(box[p][1])
+    return " + ".join(labs[:3]) if labs else _mob_desc(node)
+
+
+def _mob_text_iv(text: str, size: float, mono: bool):
+    g = _MOB_MONO_GLYPH if mono else _TAP_GLYPH
+    return (len(text) * g[0] * size, len(text) * g[1] * size)
+
+
+def _mob_scroll_page(page: str, order: list[_Node], hidden: dict, ctx: _Ctx, acc: _MobAcc, first: bool) -> None:
+    W = ctx.w
+    vp = int(W)
+    geo = _MobGeo(ctx)
+    root_clip = _mob_root_clip(order)
+    clip_note = f"; {root_clip} clips it (content cut off)" if root_clip else ""
+    limit = W + 0.5
+
+    def fail(node, selector, extent, extra):
+        acc.rec(acc.fails, "sideways_scroll", page, node, selector,
+                f"measured width {_fmt_px(extent)} > viewport {vp}px", extra + clip_note, vp,
+                required=f"<= {vp}px")
+
+    def warn(node, selector, lo, hi, extra):
+        acc.rec(acc.warns, "sideways_scroll", page, node, selector,
+                f"not measurable: width {_fmt_px(lo)}-{_fmt_px(hi) if hi != _INF else '?'} straddles viewport {vp}px",
+                extra, vp, required=f"<= {vp}px")
+
+    for node in order:
+        if hidden.get(id(node)) is not None or node.tag in ("html", "head") or \
+                (node.tag in _SKIP_TAGS and node.tag != "svg"):
+            continue
+        cs = node.cs
+        if cs is None or cs.get("srhide"):
+            continue
+        if first:
+            acc.checked += 1
+        contained = _mob_contained(node)
+        if contained:
+            continue
+        parent = node.parent
+        try:
+            pleft, pinner, _, _ = geo.frame(parent) if parent is not None and parent.tag != "#doc" else (0.0, W, 0.0, W)
+        except RecursionError:
+            continue
+        display = _tap_raw_display(node)
+        pos = _tap_boxval(node, "position") or "static"
+        if pos == "fixed":
+            pleft, pinner = 0.0, W
+        size = cs.get("size") or 16.0
+        # 1) resolved width / min-width / negative right margin
+        if display != "inline" or node.tag in _MOB_REPLACED:
+            ml = _mob_num(_mob_px(node, "margin-left", ctx, pinner))
+            mr = _mob_num(_mob_px(node, "margin-right", ctx, pinner))
+            if node.tag == "body" and _tap_boxval(node, "margin-left") is None and _tap_boxval(node, "margin") is None:
+                ml = mr = 8.0
+            if pos in ("absolute", "fixed"):
+                lv = _mob_px(node, "left", ctx, pinner)
+                if isinstance(lv, float):
+                    ml += lv
+            left = pleft + ml
+            box_sizing = _tap_boxval(node, "box-sizing") or "content-box"
+            padl, padr = geo._pad_border(node, pinner)
+            extra = 0.0 if box_sizing == "border-box" else padl + padr
+            w = _mob_px(node, "width", ctx, pinner)
+            mn = _mob_px(node, "min-width", ctx, pinner)
+            mx = _mob_px(node, "max-width", ctx, pinner)
+            mx_set = _tap_boxval(node, "max-width") not in (None, "none", "initial", "unset", "revert")
+            shrinks = _mob_flex_row_shrinks(node)
+            raw_w = _tap_boxval(node, "width") or ""
+            raw_mn = _tap_boxval(node, "min-width") or ""
+            if "%" in raw_w and isinstance(w, float) and w <= pinner + 0.5:
+                w = None  # a percentage of a container we only approximate: judged by its container
+            if "%" in raw_mn and isinstance(mn, float) and mn <= pinner + 0.5:
+                mn = None
+            tf = _tap_boxval(node, "transform") or ""
+            if (pos in ("absolute", "fixed") and _tap_boxval(node, "left") is None and
+                    _tap_boxval(node, "right") is not None) or "translate" in tf:
+                w = mn = None  # right-anchored or translated: x position not modelled
+            bw = None
+            src = ()
+            if isinstance(w, float) and not shrinks:
+                bw, src = w + extra, ("width",)
+                if isinstance(mx, float):
+                    bw = min(bw, mx + extra)
+                    src = ("width", "max-width")
+                elif mx == "?":
+                    bw = None  # capped by a value we cannot resolve
+            if node.tag in _MOB_REPLACED and _tap_boxval(node, "width") is None:
+                aw = _tap_num_attr(node.attrs.get("width"))
+                if aw is not None and not mx_set:
+                    bw, src = aw, ()
+                elif aw is None and node.tag == "img" and not mx_set and first:
+                    acc.rec(acc.warns, "sideways_scroll", page, node, f'img[src="{node.attrs.get("src", "")[:60]}"]',
+                            "not measurable: img has no width attribute and no max-width; intrinsic width unknown "
+                            "statically", "add max-width:100% or width/height attributes", vp, required=f"<= {vp}px")
+            if isinstance(mn, float) and mn + extra > (bw or 0.0):
+                bw, src = mn + extra, ("min-width",)
+            if bw is not None:
+                extent = left + bw
+                if extent > limit:
+                    sel = _mob_label(node, *src) if src else (
+                        f'{node.tag}[width="{node.attrs.get("width")}"] (no max-width)')
+                    fail(node, sel, extent, f"box {_fmt_px(bw)} + left offset {_fmt_px(left)}")
+                    continue
+            elif w == "?" or mn == "?":
+                acc.rec(acc.warns, "sideways_scroll", page, node, _mob_label(node, "width", "min-width"),
+                        "not measurable: width/min-width value not resolvable statically", "", vp,
+                        required=f"<= {vp}px")
+            # negative right margin on a filling block
+            if mr < 0 and bw is None and display in ("block", "flex", "grid", "list-item", "flow-root"):
+                extent = pleft + pinner - mr
+                gutter_right = W - (pleft + pinner)
+                if -mr > gutter_right + 0.5:
+                    fail(node, _mob_label(node, "margin-right", "margin"), extent,
+                         f"margin-right {_fmt_px(mr)} beyond the {_fmt_px(max(gutter_right, 0.0))} right gutter")
+                    continue
+        # 2) wide table (min-content estimate)
+        if node.tag == "table" and (_tap_boxval(node, "table-layout") or "auto") != "fixed":
+            cols: dict[int, tuple[float, float]] = {}
+            for tr in _iter_nodes(node):
+                if tr.tag != "tr" or tr is node:
+                    continue
+                owner = next((a for a in _mob_ancestors(tr) if a.tag == "table"), None)
+                if owner is not node:
+                    continue
+                col = 0
+                for cell in tr.children:
+                    if cell.tag not in ("td", "th") or cell.cs is None:
+                        continue
+                    words = re.findall(r"\S+", _tap_text(cell)) or [""]
+                    longest = max(words, key=len)
+                    csz = cell.cs.get("size") or size
+                    lo, hi = _mob_text_iv(longest, csz, _mob_mono(cell))
+                    pl, pr = geo._pad_border(cell, pinner)
+                    pad = pl + pr if (pl + pr) > 0 else 2.0
+                    span = max(1, int(_tap_num_attr(cell.attrs.get("colspan")) or 1))
+                    lo, hi = (lo + pad) / span, (hi + pad) / span
+                    for k in range(span):
+                        a, b = cols.get(col + k, (0.0, 0.0))
+                        cols[col + k] = (max(a, lo), max(b, hi))
+                    col += span
+            if cols:
+                spacing = 2.0 * (len(cols) + 1)
+                lo = pleft + sum(a for a, _ in cols.values()) + spacing
+                hi = pleft + sum(b for _, b in cols.values()) + spacing
+                if lo > limit:
+                    fail(node, f"table ({len(cols)} columns, min-content estimate)", lo,
+                         "no overflow-x:auto wrapper; longest word per column")
+                elif hi > limit:
+                    warn(node, f"table ({len(cols)} columns)", lo, hi, "wrap it in an overflow-x:auto container")
+            continue
+        # 3) pre / nowrap text, declared on this element
+        ws = _mob_white_space(node)
+        declares = "white-space" in _tap_box(node) or node.tag == "pre"
+        if declares and ws in ("pre", "nowrap") and not _mob_contained(node, include_self=True):
+            if not _tap_has_block_kids(node):
+                text = _tap_text(node) if ws == "nowrap" else max(_mob_raw_text(node).split("\n"), key=len)
+                text = text.strip() if ws == "nowrap" else text.rstrip()
+                if text:
+                    lo, hi = _mob_text_iv(text, size, _mob_mono(node))
+                    cleft = geo.frame(node)[0] if display != "inline" else pleft
+                    shown = text if len(text) <= 30 else text[:27] + "..."
+                    if cleft + lo > limit:
+                        fail(node, _mob_label(node, "white-space") if node.tag != "pre" else "pre",
+                             cleft + lo, f"white-space:{ws} line of {len(text)} chars \"{shown}\"")
+                        continue
+                    if cleft + hi > limit:
+                        warn(node, _mob_label(node, "white-space") if node.tag != "pre" else "pre", cleft + lo, cleft + hi,
+                             f"white-space:{ws} line of {len(text)} chars \"{shown}\"")
+                        continue
+        # 4) long unbreakable word in normal text
+        if ws not in ("pre", "nowrap") and node.texts and not _mob_breaks_words(node):
+            words = [w_ for w_ in re.findall(r"\S+", " ".join(node.texts)) if len(w_) >= MOBILE_WORD_MIN_CHARS]
+            if words:
+                longest = max(words, key=len)
+                lo, hi = _mob_text_iv(longest, size, _mob_mono(node))
+                cleft = geo.frame(node)[0] if display != "inline" else pleft
+                shown = longest if len(longest) <= 30 else longest[:27] + "..."
+                if cleft + lo > limit:
+                    fail(node, _mob_desc(node) + " text", cleft + lo,
+                         f"unbreakable word of {len(longest)} chars \"{shown}\" (no overflow-wrap)")
+                elif cleft + hi > limit:
+                    warn(node, _mob_desc(node) + " text", cleft + lo, cleft + hi,
+                         f"unbreakable word of {len(longest)} chars \"{shown}\"; add overflow-wrap:anywhere")
+
+
+# ----- drawer --------------------------------------------------------------
+
+
+def _mob_scripts(root: _Node, page: Path) -> tuple[str, list[str]]:
+    """Inline and local script text, plus notes for scripts that could not be read."""
+    texts: list[str] = []
+    notes: list[str] = []
+    for node in _iter_nodes(root):
+        if node.tag != "script":
+            continue
+        typ = node.attrs.get("type", "").strip().lower()
+        if typ and ("json" in typ or typ in ("text/template", "text/x-template")):
+            continue
+        src = node.attrs.get("src", "").strip()
+        if not src:
+            texts.append("".join(node.raw))
+            continue
+        local = src.split("#", 1)[0].split("?", 1)[0]
+        if src.lower().startswith(("http:", "https:", "//", "data:")) or ":" in local.split("/", 1)[0]:
+            notes.append(f"remote script not read: {src[:60]}")
+            continue
+        try:
+            texts.append((page.parent / unquote(local).lstrip("/")).read_text(encoding="utf-8", errors="replace"))
+        except OSError:
+            notes.append(f"script not found: {src[:60]}")
+    return "\n".join(texts), notes
+
+
+def _mob_links(node: _Node) -> list[_Node]:
+    return [n for n in _iter_nodes(node) if n is not node and
+            ((n.tag == "a" and "href" in n.attrs) or n.attrs.get("role", "").lower() in ("link", "menuitem"))]
+
+
+def _mob_primary_nav(order: list[_Node]):
+    navs = [n for n in order if n.tag == "nav" or n.attrs.get("role", "").lower() == "navigation"]
+    navs = [n for n in navs if _mob_links(n)]
+    if not navs:
+        return None
+    for n in navs:
+        if any(a.tag == "header" or a.attrs.get("role", "").lower() == "banner" for a in _mob_ancestors(n)):
+            return n
+    return navs[0]
+
+
+def _mob_ids(order: list[_Node]) -> dict:
+    out = {}
+    for n in order:
+        ident = n.attrs.get("id")
+        if ident and ident not in out:
+            out[ident] = n
+    return out
+
+
+def _mob_contains(outer: _Node, inner: _Node) -> bool:
+    return outer is inner or any(a is outer for a in _mob_ancestors(inner))
+
+
+def _mob_find_toggle(order: list[_Node], nav: _Node, ids: dict):
+    """The control that opens the primary nav: aria-controls into the nav first, then menu-ish words."""
+    for n in order:
+        if _mob_contains(nav, n):
+            continue
+        controls = n.attrs.get("aria-controls", "").split()
+        for c in controls:
+            target = ids.get(c)
+            if target is not None and not _mob_contains(target, n) and \
+                    (_mob_contains(target, nav) or _mob_contains(nav, target)):
+                return n
+    for n in order:
+        if _mob_contains(nav, n):
+            continue
+        interactive = n.tag in ("button", "label") or n.attrs.get("role", "").lower() == "button" \
+            or "aria-expanded" in n.attrs or (n.tag == "input" and n.attrs.get("type", "").lower() == "checkbox")
+        if not interactive:
+            continue
+        words = " ".join((n.attrs.get("aria-label", ""), n.attrs.get("class", ""), n.attrs.get("id", ""),
+                          n.attrs.get("title", ""), " ".join(" ".join(n.texts).split())[:30]))
+        if _MOB_TOGGLE_WORDS.search(words):
+            return n
+    return None
+
+
+def _mob_name(node: _Node, ids: dict) -> str:
+    for ref in node.attrs.get("aria-labelledby", "").split():
+        target = ids.get(ref)
+        if target is not None and _tap_text(target):
+            return _tap_text(target)
+    name = node.attrs.get("aria-label", "").strip()
+    if name:
+        return name
+    text = _tap_text(node)
+    if text:
+        return text
+    for n in _iter_nodes(node):
+        if n.tag == "title" and "".join(n.texts).strip():
+            return "".join(n.texts).strip()
+        if n.tag == "img" and n.attrs.get("alt", "").strip():
+            return n.attrs["alt"].strip()
+    return node.attrs.get("title", "").strip()
+
+
+def _mob_offscreen(node: _Node) -> bool:
+    for n in [node] + list(_mob_ancestors(node)):
+        t = _tap_boxval(n, "transform")
+        if t and _MOB_OFFSCREEN_RE.search(t):
+            return True
+    return False
+
+
+class _MobState:
+    """Temporarily applies the open state (classes, attributes) to nodes."""
+
+    def __init__(self, changes: list):
+        self.changes = changes
+        self.saved: list = []
+
+    def __enter__(self):
+        for node, kind, value in self.changes:
+            self.saved.append((node, dict(node.attrs), list(node.classes)))
+            if kind == "class":
+                if value not in node.classes:
+                    node.classes.append(value)
+                    node.attrs["class"] = " ".join(node.classes)
+            elif kind == "set":
+                node.attrs[value[0]] = value[1]
+            elif kind == "del":
+                node.attrs.pop(value, None)
+        return self
+
+    def __exit__(self, *exc):
+        for node, attrs, classes in reversed(self.saved):
+            node.attrs.clear()
+            node.attrs.update(attrs)
+            node.classes[:] = classes
+        return False
+
+
+def _mob_drawer_page(page: Path, root: _Node, author_items: list, acc: _MobAcc, views: tuple,
+                     exempt: set) -> dict:
+    """Judges the drawer at every phone width. Returns a per-page summary."""
+    name = page.name
+    js, js_notes = _mob_scripts(root, page)
+    summary = {"nav": None, "links": 0, "toggle": None, "status": "skip", "notes": js_notes}
+    for number, (w, h) in enumerate(views):
+        ctx, order, hidden = _mob_cascade(root, author_items, w, h)
+        vp = w
+        nav = _mob_primary_nav(order)
+        if nav is None:
+            if number == 0:
+                summary["notes"].append(f"{name}: no <nav> or role=navigation with links: drawer gate not-run")
+            return summary
+        ids = _mob_ids(order)
+        links = _mob_links(nav)
+        summary["nav"], summary["links"] = _mob_desc(nav), len(links)
+        if number == 0:
+            summary["status"] = "nav"
+        nav_sel = _mob_desc(nav)
+        toggle = _mob_find_toggle(order, nav, ids)
+        nav_hidden = hidden.get(id(nav)) is not None or _mob_offscreen(nav)
+        tog_visible = toggle is not None and hidden.get(id(toggle)) is None and not (toggle.cs or {}).get("srhide")
+
+        def fail(node, selector, measured, extra=""):
+            acc.rec(acc.fails, "mobile_nav_drawer", name, node, selector, measured, extra, vp)
+
+        def warn(node, selector, measured, extra=""):
+            acc.rec(acc.warns, "mobile_nav_drawer", name, node, selector, measured, extra, vp)
+
+        if not tog_visible:
+            if nav_hidden:
+                fail(nav, nav_sel, f"primary nav ({len(links)} links) hidden "
+                     f"({_mob_hide_label(hidden.get(id(nav)))}) and no visible menu toggle: links unreachable")
+            elif len(links) > MOBILE_NAV_INLINE_MAX:
+                fail(nav, nav_sel, f"{len(links)} nav links shown inline, no menu toggle "
+                     f"(needs a toggle above {MOBILE_NAV_INLINE_MAX} links)")
+            elif number == 0:
+                summary["status"] = "inline"
+            continue
+        exempt.add(id(toggle))
+        summary["toggle"] = _mob_desc(toggle)
+        tsel = _mob_desc(toggle)
+        if toggle.tag != "button" and toggle.attrs.get("role", "").lower() != "button":
+            fail(toggle, tsel, f"menu toggle is <{toggle.tag}>, not a button (needs <button> or role=button)")
+        expanded = toggle.attrs.get("aria-expanded")
+        if expanded is None:
+            fail(toggle, tsel, "no aria-expanded on the menu toggle (needs aria-expanded=\"false\" when closed)")
+        controls = toggle.attrs.get("aria-controls", "").split()
+        drawer = None
+        if not controls:
+            fail(toggle, tsel, "no aria-controls on the menu toggle (needs the drawer id)")
+        else:
+            missing = [c for c in controls if c not in ids]
+            if missing:
+                fail(toggle, tsel, f"aria-controls=\"{' '.join(controls)}\" names no element with id "
+                     f"{', '.join(missing)}")
+            drawer = next((ids[c] for c in controls if c in ids), None)
+        if not _mob_name(toggle, ids):
+            fail(toggle, tsel, "menu toggle has no accessible name (needs aria-label, text or aria-labelledby)")
+        m = _tap_measure(toggle, ctx)
+        if "error" in m:
+            warn(toggle, tsel, "not measurable: toggle size " + m["error"])
+        else:
+            (wl, wh), (hl, hh) = m["w"], m["h"]
+            measured = f"{_tap_fmt(m['w'])}x{_tap_fmt(m['h'])}px"
+            if wh < TAP_MIN_PX - 0.005 or hh < TAP_MIN_PX - 0.005:
+                fail(toggle, _tap_selector(m, toggle, "wh"), f"menu toggle measured {measured} (needs >= 44px)")
+            elif wl < TAP_MIN_PX - 0.005 or hl < TAP_MIN_PX - 0.005:
+                warn(toggle, tsel, f"not measurable: menu toggle {measured}, no guaranteed 44px")
+        if drawer is None:
+            drawer = nav  # judge the nav itself when aria-controls is missing or broken
+        exempt.add(id(drawer))
+        dsel = _mob_desc(drawer)
+        if not (_mob_contains(drawer, nav) or _mob_contains(nav, drawer) or
+                any(_mob_contains(drawer, a) for a in links)):
+            fail(drawer, dsel, f"drawer #{drawer.attrs.get('id', '?')} does not hold the primary nav links "
+                 f"({nav_sel})")
+        d_hidden = hidden.get(id(drawer)) is not None or _mob_offscreen(drawer)
+        if not d_hidden:
+            fail(drawer, dsel, "drawer shown by default (needs hidden until the toggle opens it)")
+        elif expanded is not None and expanded.strip().lower() == "true":
+            fail(toggle, tsel, "aria-expanded=\"true\" while the drawer is hidden (needs \"false\")")
+        # reachable: simulate the open state from the page's own script
+        native = drawer.tag == "dialog" or "popover" in drawer.attrs or \
+            toggle.attrs.get("popovertarget", "") == drawer.attrs.get("id", "\0")
+        classes = sorted(set(m_.group(2) for m_ in _MOB_CLASS_RE.finditer(js)))
+        unhide = bool(_MOB_UNHIDE_RE.search(js))
+        sets_expanded = bool(_MOB_EXPANDED_RE.search(js))
+        opened = None
+        if d_hidden and not native:
+            if not js.strip() and not js_notes:
+                fail(drawer, dsel, "drawer has no way to open: no script, no native dialog/popover")
+            elif not (classes or unhide):
+                warn(drawer, dsel, "not measurable: open state not provable statically (no classList/hidden "
+                     "change found in readable script" + ("; " + "; ".join(js_notes[:2]) if js_notes else "") + ")")
+            else:
+                changes = [(toggle, "set", ("aria-expanded", "true"))]
+                if unhide:
+                    changes.append((drawer, "del", "hidden"))
+                targets = [drawer, toggle] + [a for a in _mob_ancestors(drawer)] + list(_mob_ancestors(toggle))
+                seen: set = set()
+                for node in targets:
+                    if id(node) in seen:
+                        continue
+                    seen.add(id(node))
+                    for c in classes:
+                        changes.append((node, "class", c))
+                with _MobState(changes):
+                    _, order2, hidden2 = _mob_cascade(root, author_items, w, h)
+                    open_ok = hidden2.get(id(drawer)) is None and not _mob_offscreen(drawer)
+                    links_ok = all(hidden2.get(id(a)) is None for a in links if _mob_contains(drawer, a))
+                    tog_open_visible = hidden2.get(id(toggle)) is None
+                if not open_ok:
+                    fail(drawer, dsel, f"opening (classes {', '.join('.' + c for c in classes) or 'none'}"
+                         f"{', hidden removed' if unhide else ''}) leaves the drawer hidden")
+                elif not links_ok:
+                    fail(drawer, dsel, "drawer opens but its links stay hidden")
+                opened = open_ok and links_ok
+                used = classes
+                if opened and len(classes) > 1:  # name only the class(es) that open it on their own
+                    alone = []
+                    for c in classes:
+                        one = [ch for ch in changes if ch[1] != "class" or ch[2] == c]
+                        with _MobState(one):
+                            _, _, h3 = _mob_cascade(root, author_items, w, h)
+                            if h3.get(id(drawer)) is None and not _mob_offscreen(drawer):
+                                alone.append(c)
+                    used = alone or classes
+                summary["open_by"] = ", ".join("." + c for c in used) + (" hidden removed" if unhide else "")
+                # close mechanism
+                close = []
+                if (_MOB_TOGGLE_RE.search(js) or (sets_expanded and "false" in js)) and tog_open_visible \
+                        and not _mob_contains(drawer, toggle):
+                    close.append("toggle flips back and stays visible")
+                inner_close = [n for n in _iter_nodes(drawer) if n is not drawer and (n.tag == "button" or
+                               n.attrs.get("role", "").lower() == "button") and
+                               (_MOB_CLOSE_WORDS.search(_mob_name(n, ids) + " " + n.attrs.get("class", "")) or
+                                drawer.attrs.get("id", "\0") in n.attrs.get("aria-controls", "").split())]
+                if inner_close:
+                    close.append("close button " + _mob_desc(inner_close[0]))
+                if _MOB_ESCAPE_RE.search(js):
+                    close.append("Escape key")
+                if not close:
+                    fail(drawer, dsel, "no close mechanism (needs a toggle that flips back, a close "
+                         "button inside the drawer, or Escape)")
+                summary["close"] = "; ".join(close)
+        elif native:
+            summary["close"] = "native dialog/popover"
+            opened = True
+        if number == 0:
+            summary["status"] = "drawer" if opened else ("drawer-unproven" if opened is None else "drawer-broken")
+    return summary
+
+
+# ----- visibility inventory ------------------------------------------------
+
+
+def _mob_has_content(node: _Node) -> bool:
+    if _tap_text(node):
+        return True
+    return any(n.tag in ("img", "video", "picture", "a", "button", "input", "iframe") for n in _iter_nodes(node))
+
+
+def _mob_visibility_page(page: Path, root: _Node, author_items: list, acc: _MobAcc, views: tuple,
+                         exempt: set) -> None:
+    name = page.name
+    dw, dh = DESKTOP_VIEWPORT
+    _, d_order, d_hidden = _mob_cascade(root, author_items, dw, dh)
+    d_label = {id(n): _mob_hide_label(n) for n in d_order if d_hidden.get(id(n)) is n}
+
+    def under_exempt(node):
+        return id(node) in exempt or any(id(a) in exempt for a in _mob_ancestors(node))
+
+    for w, h in views:
+        _, order, hidden = _mob_cascade(root, author_items, w, h)
+        for node in order:
+            if node.tag in _SKIP_TAGS or node.tag in ("html", "head", "body"):
+                continue
+            hm = hidden.get(id(node)) is not None
+            hd = d_hidden.get(id(node)) is not None
+            primary = node.tag == "h1" or node.tag == "main" or node.attrs.get("role", "").lower() == "main"
+            if primary:
+                if hm:
+                    acc.rec(acc.fails, "mobile_visibility", name, node, _mob_desc(node),
+                            f"primary content {_mob_desc(node)} hidden "
+                            f"({_mob_hide_label(hidden.get(id(node)))})", "h1 and main must show on phones", w)
+            if hm == hd:
+                continue
+            parent = node.parent
+            if parent is not None and parent.tag not in ("#doc",):
+                phm = hidden.get(id(parent)) is not None
+                phd = d_hidden.get(id(parent)) is not None
+                if phm != phd:
+                    continue  # report only the topmost element whose visibility changes
+            if hd and not hm:
+                acc.rec(acc.inventory, "mobile_visibility", name, node, _mob_desc(node),
+                        f"shown only at phone widths (hidden at {dw}px: {d_label.get(id(node), 'by an ancestor')})",
+                        "mobile-only element", w)
+            else:
+                label = _mob_hide_label(hidden.get(id(node)))
+                if under_exempt(node) or not _mob_has_content(node):
+                    acc.rec(acc.inventory, "mobile_visibility", name, node, _mob_desc(node),
+                            f"hidden at phone widths ({label}), shown at {dw}px",
+                            "menu drawer/toggle (expected)" if under_exempt(node) else "no text, link or image", w)
+                elif not primary:
+                    text = _tap_text(node)
+                    shown = text if len(text) <= 30 else text[:27] + "..."
+                    acc.rec(acc.warns, "mobile_visibility", name, node, _mob_desc(node),
+                            f"content hidden at phone widths ({label}), shown at {dw}px",
+                            f"\"{shown}\": phone users lose it", w)
+
+
+# ----- capture evidence (--mobile-spec) ------------------------------------
+
+
+def load_mobile_spec(path) -> list[dict]:
+    """Reads a mobile_capture.py patterns.json (file, or a folder holding patterns*.json or mobile/patterns.json).
+
+    Returns one dict per captured profile: width, overflowX, scrollWidth, offenders, toggles, drawerOpened,
+    tapsUnder44, taps, url, error, source. Raises OSError/ValueError on unreadable input.
+    """
+    p = Path(path)
+    files: list[Path] = []
+    if p.is_dir():
+        for cand in ("patterns.json", "mobile/patterns.json"):
+            if (p / cand).is_file():
+                files.append(p / cand)
+        files += sorted(x for x in p.glob("patterns_*.json"))
+        files += sorted(x for x in p.glob("mobile/patterns_*.json"))
+    elif p.is_file():
+        files = [p]
+    if not files:
+        raise OSError(f"no patterns.json at {p}")
+    out: list[dict] = []
+    for f in files:
+        data = json.loads(f.read_text(encoding="utf-8", errors="replace"))
+        if isinstance(data, dict) and isinstance(data.get("profiles"), dict):
+            items = [(k, v) for k, v in data["profiles"].items() if isinstance(v, dict) and k != "diff"]
+            url = data.get("url", "")
+        else:
+            items = [(data.get("profile", f.stem), data)]
+            url = data.get("url", "")
+        for prof, d in items:
+            ov = d.get("overflow") if isinstance(d.get("overflow"), dict) else {}
+            taps = d.get("tapTargets") if isinstance(d.get("tapTargets"), dict) else {}
+            toggles = d.get("toggles") if d.get("toggles") is not None else d.get("menuToggles") or []
+            drawer = d.get("drawerOpened")
+            if drawer is None and isinstance(d.get("drawer"), dict):
+                drawer = d["drawer"].get("opened", d["drawer"].get("ok"))
+            width = d.get("innerWidth") or (d.get("viewport") or {}).get("width") or ov.get("innerWidth")
+            out.append({
+                "profile": prof, "width": width, "url": d.get("url") or url, "error": d.get("error"),
+                "overflowX": d.get("overflowX", ov.get("overflowX")),
+                "scrollWidth": d.get("scrollWidth", ov.get("scrollWidth")),
+                "offenders": ov.get("offenders") or [],
+                "toggles": toggles, "drawerOpened": drawer,
+                "tapsUnder44": d.get("tapsUnder44", taps.get("under44")),
+                "taps": d.get("taps", taps.get("visible")), "source": f.name,
+            })
+    return out
+
+
+def _mobile_spec_row(rep: "Report", spec_path, static_toggle: bool | None) -> None:
+    try:
+        profiles = load_mobile_spec(spec_path)
+    except (OSError, ValueError) as exc:
+        rep.add("mobile_spec", "SKIP", f"not-run: --mobile-spec unreadable: {exc}", failures=[])
+        return
+    phones = [p for p in profiles if isinstance(p.get("width"), (int, float)) and p["width"] <= 480]
+    acc = _MobAcc()
+    ran = 0
+    for p in phones:
+        w = int(p["width"])
+        src = p["source"]
+        mode = "rendered (capture" + (f" of {p['url']}" if p.get("url") else "") + ")"
+        if p.get("error"):
+            acc.rec(acc.warns, "mobile_spec", src, None, p["profile"], f"not measurable: capture error {str(p['error'])[:80]}",
+                    "", w, mode=mode)
+            continue
+        ran += 1
+        if p.get("overflowX"):
+            offs = ", ".join(str(o.get("el", o) if isinstance(o, dict) else o) for o in p["offenders"][:3])
+            acc.rec(acc.fails, "mobile_spec", src, None, "documentElement" + (f" (offenders: {offs})" if offs else ""),
+                    f"measured width {p.get('scrollWidth')}px > viewport {w}px", "sideways scroll in the render", w,
+                    mode=mode)
+        d = p.get("drawerOpened")
+        if isinstance(d, str) and d.startswith("fail"):
+            acc.rec(acc.fails, "mobile_spec", src, None, "menu toggle", f"tap on the menu toggle failed ({d})", "", w,
+                    mode=mode)
+        n = p.get("tapsUnder44")
+        if isinstance(n, int) and n > 0:
+            acc.rec(acc.warns, "mobile_spec", src, None, "tap targets",
+                    f"{n} of {p.get('taps')} visible tap targets under 44px in the capture",
+                    "capture does not apply the WCAG 2.5.8 inline-link exemption; static tap_target rules", w,
+                    mode=mode)
+        if p.get("toggles") and static_toggle is False:
+            acc.rec(acc.warns, "mobile_spec", src, None, "menu toggle",
+                    "capture saw a menu toggle but the static scan found none", "is the capture of this build?", w,
+                    mode=mode)
+    fails = sorted(acc.fails.values(), key=lambda r: (r["file"], r["selector"]))
+    warns = sorted(acc.warns.values(), key=lambda r: (r["file"], r["selector"]))
+    for r in fails + warns:
+        r["viewports"].sort()
+    head = f"rendered capture {Path(spec_path).name}: {ran} phone profile(s)"
+    if not ran:
+        rep.add("mobile_spec", "SKIP", f"not-run: {head}; no usable phone-width profile", failures=[],
+                unmeasured=warns)
+    elif fails:
+        rep.add("mobile_spec", "FAIL", head + "; " + "; ".join(f"{f['selector']} {f['measured']}" for f in fails[:4]),
+                failures=fails, unmeasured=warns)
+    elif warns:
+        rep.add("mobile_spec", "WARN", head + f"; {len(warns)} warning(s)", failures=[], unmeasured=warns)
+    else:
+        rep.add("mobile_spec", "PASS", head + "; no overflow, toggle opened", failures=[])
+
+
+# ----- scan + rows ------------------------------------------------------------
+
+
+def mobile_scan(pages: list[Path], viewports: tuple | None = None) -> dict:
+    """Runs sideways_scroll, mobile_nav_drawer and mobile_visibility over HTML pages.
+
+    sideways_scroll is judged at phones + 1280px desktop (overflow 360+1280);
+    drawer/visibility stay phone-widths with a 1280px baseline for inventory.
+    """
+    views = tuple(viewports or MOBILE_VIEWPORTS)
+    scroll_views = tuple(dict.fromkeys(list(views) + [DESKTOP_VIEWPORT]))
+    scroll, drawer, vis = _MobAcc(), _MobAcc(), _MobAcc()
+    summaries = []
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        root = _build_dom(html)
+        sheet_acc = _TypoAcc()
+        author_items = _stylesheet_items(root, page, sheet_acc)
+        scroll.notes.extend(sheet_acc.notes)
+        for number, (w, h) in enumerate(scroll_views):
+            ctx, order, hidden = _mob_cascade(root, author_items, w, h)
+            _mob_scroll_page(page.name, order, hidden, ctx, scroll, number == 0)
+        scroll.pages += 1
+        exempt: set = set()
+        summary = _mob_drawer_page(page, root, author_items, drawer, views, exempt)
+        summary["file"] = page.name
+        summaries.append(summary)
+        drawer.pages += 1
+        _mob_visibility_page(page, root, author_items, vis, views, exempt)
+        vis.pages += 1
+
+    def done(store):
+        rows = sorted(store.values(), key=lambda r: (r["file"], r["selector"], r["measured"]))
+        for r in rows:
+            r["viewports"].sort()
+        return rows
+    return {
+        "views": views,
+        "sideways_scroll": {"fails": done(scroll.fails), "warns": done(scroll.warns), "pages": scroll.pages,
+                            "checked": scroll.checked, "notes": scroll.notes},
+        "mobile_nav_drawer": {"fails": done(drawer.fails), "warns": done(drawer.warns), "pages": drawer.pages,
+                              "summaries": summaries},
+        "mobile_visibility": {"fails": done(vis.fails), "warns": done(vis.warns), "inventory": done(vis.inventory),
+                              "pages": vis.pages},
+    }
+
+
+def _short_mob(f: dict) -> str:
+    return f"{f['file']}: {f['selector']} {f['measured']}"
+
+
+def _mobile_rows(rep: "Report", pages: list[Path], mobile_spec=None) -> None:
+    names = ("sideways_scroll", "mobile_nav_drawer", "mobile_visibility")
+    try:
+        scan = mobile_scan(pages)
+    except Exception as exc:  # fail closed: a checker bug must not read as a pass
+        for name in names:
+            rep.add(name, "FAIL", f"static; checker error: {type(exc).__name__}: {exc}", failures=[])
+        return
+    at = "/".join(str(w) for w, _ in scan["views"]) + "px"
+
+    def emit(name, data, pass_detail, skip=None, inventory=None):
+        fails, warns = data["fails"], data["warns"]
+        if fails:
+            shown = "; ".join(_short_mob(f) for f in fails[:4])
+            extra = f" (+{len(fails) - 4} more)" if len(fails) > 4 else ""
+            rep.add(name, "FAIL", f"static at {at}; " + shown + extra, failures=fails, unmeasured=warns,
+                    inventory=inventory)
+        elif skip:
+            rep.add(name, "SKIP", skip, failures=[], unmeasured=warns, inventory=inventory)
+        elif warns:
+            rep.add(name, "WARN", f"static at {at}; {len(warns)} item(s) not measurable or to review (never a pass); "
+                    + pass_detail, failures=[], unmeasured=warns, inventory=inventory)
+        else:
+            rep.add(name, "PASS", f"static at {at}; " + pass_detail, failures=[], inventory=inventory)
+
+    s = scan["sideways_scroll"]
+    note = ("; " + "; ".join(s["notes"][:2])) if s["notes"] else ""
+    emit("sideways_scroll", s, f"{s['checked']} element(s) on {s['pages']} page(s), none wider than the viewport"
+         + note)
+    d = scan["mobile_nav_drawer"]
+    sums = d["summaries"]
+    statuses = [x["status"] for x in sums]
+    bits = []
+    for x in sums:
+        if x["nav"] is None:
+            bits.append(f"{x['file']}: no nav")
+        elif x["toggle"]:
+            bits.append(f"{x['file']}: {x['links']} links in {x['nav']}, toggle {x['toggle']}"
+                        + (f", opens by {x['open_by'].strip()}" if x.get("open_by") else "")
+                        + (f", closes by {x['close']}" if x.get("close") else ""))
+        else:
+            bits.append(f"{x['file']}: {x['links']} links shown inline (<= {MOBILE_NAV_INLINE_MAX}, no toggle needed)")
+    skip = None
+    if sums and all(st == "skip" for st in statuses):
+        skip = "not-run: no <nav> or role=navigation with links on any page; " + "; ".join(
+            n for x in sums for n in x["notes"][:1])
+    emit("mobile_nav_drawer", d, "; ".join(bits[:4]) + (f" (+{len(bits) - 4} more)" if len(bits) > 4 else ""),
+         skip=skip)
+    v = scan["mobile_visibility"]
+    inv = v["inventory"]
+    mob_only = [i for i in inv if i["measured"].startswith("shown only")]
+    hid = [i for i in inv if not i["measured"].startswith("shown only")]
+    emit("mobile_visibility", v, f"h1 and main shown; inventory: {len(mob_only)} mobile-only element(s), "
+         f"{len(hid)} hidden on phones without content loss (drawer/toggle or empty)", inventory=inv)
+    if mobile_spec:
+        static_toggle = None
+        if sums:
+            static_toggle = any(x["toggle"] for x in sums)
+        try:
+            _mobile_spec_row(rep, mobile_spec, static_toggle)
+        except Exception as exc:  # fail closed
+            rep.add("mobile_spec", "FAIL", f"rendered; checker error: {type(exc).__name__}: {exc}", failures=[])
+
+
+
 class Report:
     def __init__(self, quiet: bool = False):
         self.rows: list[dict] = []
         self.quiet = quiet  # quiet=True: never print (MCP stdio channel stays clean)
 
-    def add(self, name: str, status: str, detail: str = "", failures: list | None = None) -> None:
+    def add(self, name: str, status: str, detail: str = "", failures: list | None = None,
+            unmeasured: list | None = None, inventory: list | None = None) -> None:
         row = {"name": name, "status": status, "detail": detail}
         if failures is not None:
             row["failures"] = failures  # every failure, untruncated: file, selector, measured
+        if unmeasured:
+            row["unmeasured"] = unmeasured  # not measurable: never a pass
+        if inventory:
+            row["inventory"] = inventory  # informational only (mobile_visibility)
         self.rows.append(row)
         if self.quiet:
             return
@@ -2411,6 +5001,12 @@ class Report:
         print(line)
         for failure in failures or []:
             print("      > " + failure_line(failure))
+        for item in unmeasured or []:
+            print("      ? " + failure_line(item, warn=True))
+        for item in (inventory or [])[:20]:
+            print("      i " + failure_line(item))
+        if inventory and len(inventory) > 20:
+            print(f"      i (+{len(inventory) - 20} more in the row's inventory)")
 
     def counts(self) -> dict:
         c = {"PASS": 0, "FAIL": 0, "WARN": 0, "SKIP": 0}
@@ -2428,6 +5024,10 @@ def check_site(
     quiet: bool = False,
     copy_text: str = "",
     typography: bool = True,
+    tap_targets: bool = True,
+    extra_gates: bool = True,
+    mobile: bool = True,
+    mobile_spec=None,
 ) -> Report:
     rep = Report(quiet=quiet)
     site_dir = Path(site_dir)
@@ -2461,11 +5061,34 @@ def check_site(
     else:
         rep.add("no_soft_placeholders", "PASS")
 
-    # 3) hotlink blocklist
-    if HOTLINK_RE.search(all_html):
-        rep.add("no_hotlink", "FAIL", "external stock-photo CDN reference found")
+    # 3) hotlink: any remote URL fails. JSON-LD @context identifiers are not
+    # a fetch, so ld+json script bodies are stripped before the scan. A URL
+    # dropped at ingest is a warning there; a URL that survives in HTML/CSS
+    # is FAIL here, even when the host is not on the stock-CDN list.
+    _ld_stripped = re.sub(
+        r'<script\b[^>]*type\s*=\s*["\']application/ld\+json["\'][^>]*>.*?</script>',
+        "<script></script>",
+        all_html,
+        flags=re.I | re.S,
+    )
+    _remote_hits = []
+    if HOTLINK_RE.search(_ld_stripped):
+        _remote_hits.append("stock-CDN host")
+    # any http(s) URL or protocol-relative URL in markup/CSS, srcset, url(), @import
+    for _m in re.finditer(
+        r"""https?://[^\s"'<>()]+|src\s*=\s*["']//[^"']+|href\s*=\s*["']//[^"']+|"""
+        r"""url\(\s*["']?\s*(?:https?:)?//[^)]+|@import\s+[^;]*https?://[^;]+|"""
+        r"""srcset\s*=\s*["'][^"']*https?://[^"']*""",
+        _ld_stripped,
+        re.I,
+    ):
+        _remote_hits.append(_m.group(0)[:80])
+        break
+    if _remote_hits:
+        seen_hit = sorted(set(_remote_hits))[0]
+        rep.add("no_hotlink", "FAIL", f"remote URL in output: {seen_hit}")
     else:
-        rep.add("no_hotlink", "PASS")
+        rep.add("no_hotlink", "PASS", f"{len(pages)} page(s), local only")
 
     # 4) basics per page
     bad_meta = []
@@ -2598,13 +5221,31 @@ def check_site(
         rep.add("canonical", "FAIL", "missing rel=canonical: " + ", ".join(bad_canonical))
     else:
         rep.add("canonical", "PASS", f"{len(pages)} page(s)")
-    if missing_ld or rated:
-        bits = []
-        if missing_ld:
-            bits.append("missing WebSite script: " + ", ".join(missing_ld))
-        if rated:
-            bits.append("aggregateRating: " + ", ".join(rated))
-        rep.add("json_ld", "FAIL", "; ".join(bits))
+    # JSON-LD valid-or-absent: absent is PASS (thin copy cannot fill a type).
+    # Present must parse, must not invent aggregateRating, and FAQ questions
+    # must be visible. The @context identifier is not a fetch (see no_hotlink).
+    _ld_blocks = re.findall(
+        r'<script\b[^>]*type\s*=\s*["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+        all_html,
+        re.I | re.S,
+    )
+    _ld_bad = []
+    for _blk in _ld_blocks:
+        try:
+            json.loads(_blk.strip())
+        except ValueError:
+            _ld_bad.append("unparsable JSON-LD")
+            break
+    if rated:
+        _ld_bad.append("aggregateRating: " + ", ".join(rated))
+    if _ld_bad:
+        rep.add("json_ld", "FAIL", "; ".join(_ld_bad))
+    elif not _ld_blocks:
+        rep.add("json_ld", "PASS", "absent (copy cannot fill a type)")
+    elif missing_ld:
+        # ld+json present but no WebSite type: still valid-or-absent PASS when
+        # the present types (e.g. FAQPage) are valid; faq_schema judges those.
+        rep.add("json_ld", "PASS", "present types valid; WebSite absent (copy cannot fill it)")
     else:
         rep.add("json_ld", "PASS", "WebSite; no aggregateRating")
     if bad_description:
@@ -2616,6 +5257,17 @@ def check_site(
         rep.add("one_h1", "PASS", "index has 1 h1")
     else:
         rep.add("one_h1", "FAIL", f"index has {h1_count} h1")
+    from lib.heading_rank import heading_skips
+    skipped = []
+    for page_path in pages:
+        page_html = page_path.read_text(encoding="utf-8", errors="replace")
+        for hit in heading_skips(page_html):
+            skipped.append(f"{page_path.name}: {hit}")
+    if skipped:
+        extra = f" (+{len(skipped) - 8} more)" if len(skipped) > 8 else ""
+        rep.add("heading_order", "FAIL", "; ".join(skipped[:8]) + extra)
+    else:
+        rep.add("heading_order", "PASS", f"{len(pages)} page(s)")
     if bad_alt:
         rep.add("img_alt", "FAIL", "img missing alt: " + ", ".join(bad_alt))
     elif img_count == 0:
@@ -2639,23 +5291,88 @@ def check_site(
     # Type floor and WCAG contrast over every page. typography=False skips both rows.
     if typography:
         _typography_rows(rep, pages)
+    if tap_targets:
+        _tap_rows(rep, pages)
+    if mobile:
+        _mobile_rows(rep, pages, mobile_spec)
+    if extra_gates:
+        _gate_rows(rep, site_dir, pages)
+        try:
+            _weight_row(rep, pages)
+        except Exception as exc:  # fail closed
+            rep.add("weight", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        try:
+            _safe_area_row(rep, pages)
+        except Exception as exc:  # fail closed
+            rep.add("safe_area", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        try:
+            _css_contract_row(rep, pages)
+        except Exception as exc:  # fail closed
+            rep.add("css_contract", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        try:
+            _layout_stability_row(rep, pages)
+        except Exception as exc:  # fail closed
+            rep.add("layout_stability", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        try:
+            _visual_probe_row(rep, site_dir, pages)
+        except Exception as exc:  # fail closed
+            rep.add("visual_probe", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        try:
+            _one_cta_row(rep, pages, copy_text)
+        except Exception as exc:  # fail closed
+            rep.add("one_cta", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
+        for _row_name, _row_fn in (
+            ("cta_present", lambda: _cta_present_row(rep, pages)),
+            ("ask_after_proof", lambda: _ask_after_proof_row(rep, site_dir)),
+            ("single_primary_cta", lambda: _single_primary_cta_row(rep, site_dir, pages, copy_text)),
+            ("mobile_block", lambda: _mobile_block_row(rep, site_dir)),
+        ):
+            try:
+                _row_fn()
+            except Exception as exc:  # fail closed
+                rep.add(_row_name, "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
 
-    # 8) token ledger present (from build report)
+    # 8) token ledger: strict schema, unknown never coerced to 0.
     report_path = site_dir / "report.json"
     if report_path.exists():
         try:
-            import json
             data = json.loads(report_path.read_text(encoding="utf-8"))
             t = data.get("tokens", {})
-            rep.add("token_ledger", "PASS",
-                    f"mode={data.get('mode')} in={t.get('in_tokens', 0)} out={t.get('out_tokens', 0)} "
-                    f"est=${t.get('est_cost_usd', 0):.4f}")
+            mode = data.get("mode")
+            attempts = data.get("attempts")
+            _ledger_bad = []
+            if mode not in ("offline", "ai", "offline-fallback", "rebuild", "refine", "refine-offline", "from-ir", "compose"):
+                _ledger_bad.append(f"mode={mode!r}")
+            if not isinstance(t, dict) or not isinstance(t.get("in_tokens"), int) or not isinstance(t.get("out_tokens"), int):
+                _ledger_bad.append("tokens.in/out not ints (unknown must stay null, never 0)")
+            elif t.get("in_tokens", 0) < 0 or t.get("out_tokens", 0) < 0:
+                _ledger_bad.append("negative token counts")
+            elif mode == "offline" and (t.get("in_tokens") != 0 or t.get("out_tokens") != 0):
+                _ledger_bad.append("offline must total 0")
+            if not isinstance(attempts, list):
+                _ledger_bad.append("attempts not a list")
+            if _ledger_bad:
+                rep.add("token_ledger", "FAIL", "; ".join(_ledger_bad))
+            else:
+                rep.add("token_ledger", "PASS",
+                        f"mode={data.get('mode')} in={t.get('in_tokens', 0)} out={t.get('out_tokens', 0)} "
+                        f"est=${t.get('est_cost_usd', 0):.4f}")
         except (OSError, ValueError) as exc:
-            rep.add("token_ledger", "WARN", f"report.json unreadable: {exc}")
+            rep.add("token_ledger", "FAIL", f"report.json unreadable: {exc}")
     else:
-        rep.add("token_ledger", "WARN", "no report.json (run a build first)")
+        # No ledger to judge on the direct-hands path (no build ran).
+        # NOT RUN is SKIP, never PASS; release flows must refuse NOT RUN.
+        rep.add("token_ledger", "SKIP",
+                "not-run: no report.json (run a build first)", failures=[])
 
-    # Empty copy_text adds no row, so older callers keep the same results.
+    # Cited-text + anti-invention rows. cited_text always reports (SKIP when no
+    # copy_text, so unrun!=pass at ticket time); the older claim rows only run
+    # when copy is present, preserving their fail-closed behavior.
+    if extra_gates:
+        try:
+            _cited_text_row(rep, pages, copy_text or "")
+        except Exception as exc:  # fail closed
+            rep.add("cited_text", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
     if copy_text:
         claim_hits = _ungrounded_claim_hits(pages, copy_text)
         if claim_hits:
@@ -2669,6 +5386,10 @@ def check_site(
         if chrome_hits:
             extra = f" (+{len(chrome_hits) - 8} more)" if len(chrome_hits) > 8 else ""
             rep.add("invented_chrome", "FAIL", "; ".join(chrome_hits[:8]) + extra)
+        demo_hits = _part_demo_hits(pages, copy_text)
+        if demo_hits:
+            extra = f" (+{len(demo_hits) - 8} more)" if len(demo_hits) > 8 else ""
+            rep.add("part_demo", "FAIL", "; ".join(demo_hits[:8]) + extra)
 
     return rep
 
@@ -2822,6 +5543,20 @@ def check_reproducible(project_dir=None, quiet: bool = False, build=None) -> Rep
 
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
+    mobile_spec = None
+    for i, a in enumerate(list(args)):
+        if a.startswith("--mobile-spec="):
+            mobile_spec = a.split("=", 1)[1]
+        elif a == "--mobile-spec":
+            if i + 1 >= len(args) or args[i + 1].startswith("--"):
+                print("--mobile-spec needs a path to a patterns.json (or a folder holding one)")
+                return 2
+            mobile_spec = args[i + 1]
+    if mobile_spec is not None:
+        cut = [i for i, a in enumerate(args) if a == "--mobile-spec"]
+        if cut:
+            del args[cut[0]:cut[0] + 2]
+        args = [a for a in args if not a.startswith("--mobile-spec=")]
     positional = [a for a in args if not a.startswith("--")]
     if "--reproducible" in args:
         project = Path(positional[0]) if positional else None
@@ -2831,7 +5566,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"result: {c['PASS']} pass / {c['FAIL']} fail / {c['WARN']} warn / {c['SKIP']} skip")
         return 0 if rep.ok() else 1
     if not positional:
-        print("usage: python -m lib.check <site_dir> [--expect-noindex|--expect-indexable] [--typography-only]\n"
+        print("usage: python -m lib.check <site_dir> [--expect-noindex|--expect-indexable]\n"
+              "                         [--typography-only|--tap-only|--mobile-only] [--mobile-spec PATH]\n"
               "       python -m lib.check --reproducible [project_dir]")
         return 2
     site_dir = Path(positional[0])
@@ -2841,7 +5577,23 @@ def main(argv: list[str] | None = None) -> int:
     if "--expect-indexable" in args:
         expect = False
     print(f"checking {site_dir}")
-    if "--typography-only" in args:
+    if "--mobile-only" in args:
+        rep = Report()
+        pages = sorted(site_dir.glob("*.html"))
+        if pages:
+            _typography_rows(rep, pages, MOBILE_VIEWPORTS)
+            _tap_rows(rep, pages)
+            _mobile_rows(rep, pages, mobile_spec)
+        else:
+            rep.add("files_present", "FAIL", f"no .html in {site_dir}")
+    elif "--tap-only" in args:
+        rep = Report()
+        pages = sorted(site_dir.glob("*.html"))
+        if pages:
+            _tap_rows(rep, pages)
+        else:
+            rep.add("files_present", "FAIL", f"no .html in {site_dir}")
+    elif "--typography-only" in args:
         rep = Report()
         pages = sorted(site_dir.glob("*.html"))
         if pages:
@@ -2849,7 +5601,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             rep.add("files_present", "FAIL", f"no .html in {site_dir}")
     else:
-        rep = check_site(site_dir, expect)
+        rep = check_site(site_dir, expect, mobile_spec=mobile_spec)
     c = rep.counts()
     print(f"result: {c['PASS']} pass / {c['FAIL']} fail / {c['WARN']} warn / {c['SKIP']} skip")
     return 0 if rep.ok() else 1

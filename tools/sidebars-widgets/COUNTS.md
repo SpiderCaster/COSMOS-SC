@@ -1,11 +1,11 @@
 # COUNTS
 
-Updated 2026-10-03 21:06 Central Daylight Time by run_all.py.
+Updated 2026-10-03 22:25 Central Daylight Time by run_all.py.
 
 | Measure | Count |
 |---|---|
-| Items built | 30 (7 sidebar layouts, 23 widgets) |
-| Tested, pass (static and browser) | 30 |
+| Items built | 39 (7 sidebar layouts, 32 widgets) |
+| Tested, pass (static and browser) | 39 |
 | Tested, fail | 0 |
 | Static checks only, no browser run | 0 |
 | Not yet tested | 0 |

@@ -1,0 +1,14 @@
+/* Test context. Stands in for GeneratePress 3.6.1 inline "generate-style-inline-css" at default settings.
+   Values come from inc/defaults.php, inc/css-output.php and the global color defaults. Written for tests, not vendor output. */
+:root{--contrast:#222222;--contrast-2:#575760;--contrast-3:#b2b2be;--base:#f0f0f0;--base-2:#f7f8f9;--base-3:#ffffff;--accent:#1e73be}
+body{background-color:var(--base-2);color:var(--contrast)}
+a{color:var(--accent)}
+a:hover,a:focus,a:active{color:var(--contrast)}
+.grid-container{max-width:1200px}
+.sidebar .widget,.page-header,.widget-area .main-navigation,.site-main>*{margin-bottom:20px}
+.separate-containers .widget,.separate-containers .site-main>*,.separate-containers .page-header,.widget-area .main-navigation{margin-bottom:20px}
+.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:40px}
+.separate-containers .inside-article,.separate-containers .widget,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation{background-color:var(--base-3)}
+.widget-area .widget{padding:40px}
+.is-right-sidebar{width:30%}.is-left-sidebar{width:30%}.site-content .content-area{width:70%}
+@media (max-width:768px){.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:30px}}

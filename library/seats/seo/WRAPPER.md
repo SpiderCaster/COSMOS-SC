@@ -12,7 +12,7 @@ Load this file, then `SKILL.md`. Seat 6 of 7. Model `deepseek/deepseek-v4-flash`
 
 ## Allowed hands
 
-`uniqueness`, `meta_basics`
+`uniqueness`, `meta_basics`, `sitemap_check`
 
 In that order. No other hand.
 
@@ -20,6 +20,7 @@ In that order. No other hand.
 
 1. `uniqueness`. This site has one mold. Stop if that mold is already `"live": true` on another site. Do not bind.
 2. `meta_basics`. Read the checker rows for this `<out>` with noindex on. Staged pages stay noindex. Stop if `meta_basics` or `no_sample` is `FAIL`. Do not edit titles or body text to clear them. A `no_soft_placeholders` FAIL already stopped the crew at visual. Do not reopen it here.
+3. `sitemap_check`. Orphan pages, intent-less pages, non-frame sections, absolute/dangling links, one-h1-per-page, and FAQ-visible-match (FAQ sections need rendered `<details>`). A missing `sitemap.json` is `FAIL pages.scope`. Unrendered pages yield SKIP rows, never PASS.
 
 ## Pass
 

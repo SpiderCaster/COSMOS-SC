@@ -16,7 +16,7 @@ description: >-
 
 1. Read `library/seats/README.md` and `library/CREW.md`.
 2. Run commands from `V:\a\Ai\spidercaster\working`.
-3. Call only `uniqueness`, then `meta_basics`.
+3. Call only `uniqueness`, then `meta_basics`, then `sitemap_check`.
 4. Read-only orientation, not hands:
 
    `py -3.14 spidercaster.py doctor`
@@ -27,6 +27,7 @@ description: >-
 
 1. **uniqueness.** Read `library/ledger.json`. This site has one assignment. Its `live` value is false. No other row has the same `mold`, or the same non-null `vendor_frame`, with `"live": true`. If one does, stop. Do not bind.
 2. **meta_basics.** Read the visual seat's checker rows. If that run is missing, run `python spidercaster.py check <out> --expect-noindex`. Staged pages stay noindex. Stop if `meta_basics` or `no_sample` is `FAIL`. A `no_soft_placeholders` or `ungrounded_claim` FAIL already stopped the crew at visual. Do not reopen it. Do not edit titles or body text, and do not invent copy.
+3. **sitemap_check.** Orphan pages, intent-less pages, non-frame sections, absolute/dangling links, one-h1-per-page, FAQ-visible-match. A missing `sitemap.json` is `FAIL pages.scope`. Unrendered pages yield SKIP rows, never PASS.
 
 ## Exit
 

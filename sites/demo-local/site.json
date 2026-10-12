@@ -59,7 +59,8 @@
             "bullets": [],
             "image": "",
             "image_alt": ""
-          }
+          },
+          "_source": "overview.md"
         },
         {
           "id": "about",
@@ -100,7 +101,8 @@
                 "body": "rebuild after hand edits, zero tokens."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "iterate",
@@ -118,7 +120,8 @@
                 "body": "theme flips cost nothing."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "gate-and-preview",
@@ -136,7 +139,8 @@
                 "body": "preview on localhost before anything goes anywhere."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "features-2",
@@ -166,7 +170,8 @@
                 "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY. Values are never written to disk by the engine."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
         },
         {
           "id": "faq",
@@ -196,7 +201,8 @@
                 "a": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."
               }
             ]
-          }
+          },
+          "_source": "faq.md"
         },
         {
           "id": "features-3",
@@ -231,7 +237,8 @@
                 "body": "edit site.json directly and rebuild for free."
               }
             ]
-          }
+          },
+          "_source": "overview.md"
         }
       ]
     }
@@ -240,5 +247,60 @@
     "text": "(c) 2026 SpiderCaster: websites from real copy, on free tokens",
     "links": [],
     "credit": true
+  },
+  "citations": {
+    "hero": {
+      "file": "overview.md",
+      "texts": [
+        "SpiderCaster: websites from real copy, on free tokens",
+        "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed."
+      ]
+    },
+    "features": {
+      "file": "commands.md",
+      "texts": [
+        "Build"
+      ]
+    },
+    "iterate": {
+      "file": "commands.md",
+      "texts": [
+        "Iterate"
+      ]
+    },
+    "gate-and-preview": {
+      "file": "commands.md",
+      "texts": [
+        "Gate and preview"
+      ]
+    },
+    "features-2": {
+      "file": "commands.md",
+      "texts": [
+        "House rules the engine enforces"
+      ]
+    },
+    "faq": {
+      "file": "faq.md",
+      "texts": [
+        "Questions about the engine"
+      ]
+    },
+    "features-3": {
+      "file": "overview.md",
+      "texts": [
+        "Why it is cheap"
+      ]
+    }
+  },
+  "presentation": {
+    "frame_id": "",
+    "mold_id": "",
+    "slots": [
+      {
+        "section": "hero",
+        "required": true
+      }
+    ]
   }
 }

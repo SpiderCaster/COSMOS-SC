@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>visibility pass</title>
+<style>
+html{font-size:16px} body{margin:0;padding:0 16px;font-size:18px;color:#111;background:#fff;box-sizing:border-box}
+*{box-sizing:border-box}
+.home{display:inline-flex;min-height:44px;min-width:44px;align-items:center;padding:0 8px}
+.mobile-cta{display:none;min-height:48px}
+.deco{display:block;height:4px;background:#ccc}
+@media (max-width:600px){ .mobile-cta{display:block} .deco{display:none} }
+</style></head><body>
+<main><h1>Visible heading</h1><div class="deco"></div><p>Body copy stays visible.</p><a class="mobile-cta" href="tel:5550142288">Call 555 014 2288</a></main>
+</body></html>

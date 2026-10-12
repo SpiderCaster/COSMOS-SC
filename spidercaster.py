@@ -4,16 +4,22 @@
 Commands:
   init     scaffold a project (brief.md + copy/)
   build    project (or --from site.json) -> static site  [offline = 0 tokens]
+  compose  offline compose of one project (0 tokens, no publish)
   refine   patch one section of a built site (small token cost)
   check    run the built-in checks against a built site
+  visit    static visit check of a built site
   serve    preview a built site on localhost
+  studio   localhost desk for plan, paint, check, and preview (does not publish)
   models   show the provider chain (free tiers first); --probe queries live
   sections list the section types and their data fields
   library  vendor vault index, molds we made, live-use ledger
   crew     run the seven hands on one project (does not publish)
+  ui       stdio face: composer + ticket/ledger (propose-only, 0-token default)
   doctor   report python, molds, frames, seats, and hand order
   shipcheck say whether the app is ship-ready
   seat     print one seat pack
+  parts    index every part manifest; assemble one site that uses them
+  tools    list catalog rows; apply one built part onto a page
 
 Token rules: offline/rebuild = 0 tokens; AI build = 1-2 calls on the free
 chain (Gemini free tier -> OpenRouter :free -> OpenWork inference); paid
@@ -45,7 +51,8 @@ from lib.library import Library, LibraryError  # noqa: E402
 from lib.seatpack import pack as seat_pack   # noqa: E402
 from lib.shipcheck import main as shipcheck_main  # noqa: E402
 
-ROOT = Path(__file__).resolve().parent
+_HOME = os.environ.get("SPIDERCASTER_HOME", "").strip()
+ROOT = Path(_HOME).resolve() if _HOME else Path(__file__).resolve().parent
 
 
 # ---------------------------------------------------------------- helpers
@@ -185,7 +192,78 @@ def cmd_init(args) -> int:
     return 0
 
 
+def _compose_default_out(project: Path) -> Path:
+    return ROOT / "sites" / f"{Path(project).name}-compose"
+
+
+def _run_compose(
+    project: Path,
+    out: Path | None,
+    frame_id: str,
+    mold_id: str,
+    plan_only: bool = False,
+    accepted: str = "",
+) -> int:
+    """Offline compose. Prints the compose_project result. Does not write the ledger."""
+    from lib.compose import compose_project
+
+    project = Path(project)
+    dest = Path(out) if out else _compose_default_out(project)
+    if plan_only and accepted:
+        print("compose --plan does not take --structure")
+        return 1
+    result = compose_project(
+        project,
+        dest,
+        frame_id or "",
+        mold_id or "",
+        plan_only=plan_only,
+        accepted=Path(accepted) if accepted else None,
+    )
+    print(json.dumps(result, indent=2, ensure_ascii=False, default=str))
+    if not isinstance(result, dict) or not result.get("ok"):
+        return 1
+    return 0
+
+
+def _load_apply_mold(mold_id: str) -> dict:
+    """Read library/molds/<id>.json. Returns palette and type_lead only."""
+    mold_id = str(mold_id or "").strip()
+    if not mold_id or "/" in mold_id or "\\" in mold_id or ".." in mold_id:
+        raise ValueError(f"bad mold id: {mold_id}")
+    path = ROOT / "library" / "molds" / f"{mold_id}.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"mold missing: {path}") from exc
+    if not isinstance(data, dict):
+        raise ValueError(f"mold missing: {path}")
+    return {
+        "palette": data.get("palette") or "",
+        "type_lead": data.get("type_lead") or "",
+    }
+
+
 def cmd_build(args) -> int:
+    if getattr(args, "dry_run", False) and getattr(args, "compose", False):
+        print("build --dry-run does not combine with --compose; use compose --plan for a 0-token preview")
+        return 1
+    if getattr(args, "dry_run", False) and not getattr(args, "site_json", None):
+        # 0-token guarantee: a dry-run preview never calls providers.
+        args.offline = True
+    if getattr(args, "compose", False):
+        if getattr(args, "site_json", None) or not getattr(args, "project", None):
+            print("build --compose needs a project directory, not --from")
+            return 1
+        out = Path(args.out) if args.out else None
+        return _run_compose(
+            Path(args.project), out,
+            getattr(args, "frame", "") or "",
+            getattr(args, "mold", "") or "",
+            plan_only=bool(getattr(args, "plan", False)),
+            accepted=getattr(args, "structure", "") or "",
+        )
+
     ledger = providers.Ledger()
     warnings: list[str] = []
     noindex = not args.indexable
@@ -205,6 +283,25 @@ def cmd_build(args) -> int:
         brief = raw.get("brief", "")
         opts["brief"] = brief
         site = ir_mod.normalize_site(raw, opts)
+        # --from re-read: cited spans must still resolve against copy/.
+        # Legacy site.json without citations passes through, as does a
+        # layout with no copy/ dir next to the site (nothing to re-read).
+        from lib import copy_schema as _gaps
+        _copy_base = None
+        for _cand in (src.parent / "copy", src.parent.parent / "copy"):
+            if _cand.is_dir():
+                _copy_base = _cand.parent
+                break
+        if _copy_base is not None:
+            cite_gaps = _gaps.verify_citations(site, _copy_base)
+            if cite_gaps:
+                print(f"FAIL gap {cite_gaps[0]} (citation no longer resolves in copy/)",
+                      file=sys.stderr)
+                return 1
+        missing = _gaps.validate_site(site)
+        if missing:
+            print(f"FAIL gap {missing[0]}", file=sys.stderr)
+            return 1
     else:
         project_dir = Path(args.project)
         copy = ingest.load_project(project_dir)
@@ -212,7 +309,11 @@ def cmd_build(args) -> int:
         brief = copy.brief
         opts["brief"] = brief
         if args.offline:
-            raw = offline_mod.plan_offline(copy, opts)
+            try:
+                raw = offline_mod.plan_offline(copy, opts)
+            except SystemExit as exc:
+                print(str(exc) or "FAIL gap hero.headline", file=sys.stderr)
+                return 1
             mode, provider, model = "offline", None, None
         else:
             try:
@@ -222,9 +323,22 @@ def cmd_build(args) -> int:
                 if args.no_fallback:
                     raise
                 print(f"  [warn] AI build failed -> offline fallback ({exc})")
-                raw = offline_mod.plan_offline(copy, opts)
+                try:
+                    raw = offline_mod.plan_offline(copy, opts)
+                except SystemExit as exc2:
+                    print(str(exc2) or "FAIL gap hero.headline", file=sys.stderr)
+                    return 1
                 mode, provider, model = "offline-fallback", None, None
         site = ir_mod.normalize_site(raw, opts)
+        # Gap gate: mandatory miss is FAIL with no HTML emitted.
+        # plan_offline raises GapError for missing hero/integrity gaps, but
+        # the AI path (and hand-edited raw) can still arrive here hollow.
+        from lib import copy_schema as _gaps
+        try:
+            _gaps.raise_first_gap(site)
+        except SystemExit as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
 
     # output dir
     if args.out:
@@ -232,7 +346,27 @@ def cmd_build(args) -> int:
     else:
         slug = ir_mod.slugify(site["meta"]["title"]) or "site"
         out = ROOT / "sites" / slug
+    if getattr(args, "dry_run", False):
+        from lib import attempts as _attempts
+
+        _old = None
+        if (out / "site.json").is_file():
+            try:
+                _old = json.loads((out / "site.json").read_text(encoding="utf-8"))
+            except ValueError:
+                _old = None
+        print(_attempts.dry_run_diff(_old, site, label=str(out)), end="")
+        print("  (sitemap stage diff lands with lib/sitemap.py; IR layer above)")
+        return 0
     out.mkdir(parents=True, exist_ok=True)
+    if mode == "ai" and (out / "site.json").is_file():
+        from lib import attempts as _attempts
+
+        try:
+            _manifest = _attempts.snapshot(out, reason="ai-plan")
+            print(f"  attempt: {_manifest['id']} ({len(_manifest['files'])} files)")
+        except (ValueError, OSError) as exc:
+            print(f"  [warn] attempt snapshot skipped: {exc}")
 
     copied = copy_assets(site, project_dir if project_dir.exists() else out, out)
     if copied:
@@ -251,18 +385,62 @@ def cmd_build(args) -> int:
     print(f"  tokens: {ledger.summary_line()}")
     print(f"  index: {'NOINDEX (default; pass --indexable to flip)' if noindex else 'indexable'}")
     print_warnings(warnings)
+    from lib.seo_pack import SeoPackError, write_pack
+    try:
+        pack = write_pack(out, indexable=not noindex, host=getattr(args, "host", "") or "")
+    except SeoPackError as exc:
+        print(f"  [warn] {exc}")
+    else:
+        print(f"  robots: {pack['robots']}")
+        if pack["sitemap"]:
+            print(f"  sitemap: {pack['sitemap']}")
     print(f"  next: python spidercaster.py check {out}")
     print(f"        python spidercaster.py serve {out}")
     return 0
 
 
+def cmd_compose(args) -> int:
+    out = Path(args.out) if args.out else None
+    return _run_compose(
+        Path(args.project), out,
+        getattr(args, "frame", "") or "",
+        getattr(args, "mold", "") or "",
+        plan_only=bool(getattr(args, "plan", False)),
+        accepted=getattr(args, "structure", "") or "",
+    )
+
+
 def cmd_refine(args) -> int:
     site_dir = Path(args.site)
+    if getattr(args, "rollback", ""):
+        from lib import attempts as _attempts
+
+        try:
+            manifest = _attempts.rollback(site_dir, str(args.rollback))
+        except (ValueError, OSError) as exc:
+            print(f"rollback failed: {exc}")
+            return 1
+        print(f"rolled back {site_dir} to attempt {manifest['id']} "
+              f"({len(manifest.get('restored', []))} files, logged)")
+        return 0
     site_json = site_dir / "site.json"
+    if getattr(args, "dry_run", False) and not getattr(args, "offline", False):
+        print("refine --dry-run previews offline theme flips only at 0 tokens; "
+              "AI refine would spend tokens: refusing")
+        return 1
     if not site_json.exists():
         print(f"no site.json in {site_dir}; run a build first")
         return 1
     site = json.loads(site_json.read_text(encoding="utf-8"))
+    before_json = json.dumps(site, sort_keys=True)
+    if not getattr(args, "dry_run", False):
+        try:
+            from lib import attempts as _attempts
+
+            _manifest = _attempts.snapshot(site_dir, reason="refine")
+            print(f"  attempt: {_manifest['id']} ({len(_manifest['files'])} files)")
+        except (ValueError, OSError) as exc:
+            print(f"  [warn] attempt snapshot skipped: {exc}")
     ledger = providers.Ledger()
     opts = {"provider": args.provider, "model": args.model, "allow_paid": args.allow_paid,
             "max_tokens": args.max_tokens}
@@ -338,6 +516,16 @@ def cmd_refine(args) -> int:
         mode = "refine"
         provider, model = result["provider"], result["model"]
 
+    if getattr(args, "dry_run", False):
+        if not args.offline:
+            print("refine --dry-run previews offline theme flips only at 0 tokens; "
+                  "AI refine would spend tokens: refusing")
+            return 1
+        from lib import attempts as _attempts
+
+        _old = json.loads(before_json)
+        print(_attempts.dry_run_diff(_old, site, label=str(site_dir)), end="")
+        return 0
     # backup + rewrite + rebuild
     shutil.copy2(site_json, site_dir / "site.json.bak")
     site = ir_mod.normalize_site(site, {"brief": site.get("brief", "")})
@@ -368,10 +556,44 @@ def cmd_check(args) -> int:
     site_dir = Path(args.site)
     expect = True if args.expect_noindex else (False if args.expect_indexable else None)
     print(f"checking {site_dir}")
-    rep = check_mod.check_site(site_dir, expect)
+    project = getattr(args, "project", None)
+    if project:
+        from lib.copy_pack import project_copy_text
+        rep = check_mod.check_site(
+            site_dir, expect, copy_text=project_copy_text(Path(project)),
+        )
+    else:
+        rep = check_mod.check_site(site_dir, expect)
     c = rep.counts()
     print(f"result: {c['PASS']} pass / {c['FAIL']} fail / {c['WARN']} warn / {c['SKIP']} skip")
     return 0 if rep.ok() else 1
+
+
+def cmd_visit(args) -> int:
+    from lib.visit_check import visit_site
+    result = visit_site(Path(args.site))
+    print(f"mode: {result.get('mode', '')}")
+    for failure in result.get("failures") or []:
+        if isinstance(failure, dict):
+            print(f"  {failure.get('code', '')}: {failure.get('detail', '')}")
+        else:
+            print(f"  {failure}")
+    return 0 if result.get("ok") else 1
+
+
+def cmd_studio(args) -> int:
+    from lib.studio import serve_studio
+
+    httpd, port = serve_studio(port=args.port)
+    print(f"studio http://127.0.0.1:{port}/")
+    print("noindex. This does not publish.")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        httpd.server_close()
+    return 0
 
 
 def cmd_serve(args) -> int:
@@ -517,8 +739,21 @@ def cmd_library(args) -> int:
         print(f"mold saved: {mold['id']} ({mold['origin']})")
         return 0
     if args.library_cmd == "bind":
+        site_dir = None
+        if args.live:
+            raw_out = str(getattr(args, "out", "") or "").strip()
+            if raw_out:
+                site_dir = Path(raw_out)
+            else:
+                site_dir = ROOT / "sites" / ir_mod.slugify(args.site)
         try:
-            row = lib.bind(args.site, args.mold, vendor_frame=args.vendor, live=args.live)
+            row = lib.bind(
+                args.site,
+                args.mold,
+                vendor_frame=args.vendor,
+                live=args.live,
+                site_dir=site_dir,
+            )
         except LibraryError as exc:
             print(f"bind refused: {exc}")
             return 2
@@ -609,6 +844,74 @@ def cmd_shipcheck(_args) -> int:
     return shipcheck_main()
 
 
+def cmd_parts(args) -> int:
+    from lib.assemble import AssembleError, assemble_site
+    from lib.assemble_selftest import main as assemble_selftest
+    from lib.parts_lib import family_counts, scan
+
+    if args.parts_cmd == "selftest":
+        return assemble_selftest()
+    if args.parts_cmd == "scan":
+        parts = scan()
+        counts = family_counts(parts)
+        if args.json:
+            print(json.dumps({"parts": len(parts), "families": counts, "items": parts}, indent=2))
+            return 0 if parts else 1
+        print(f"{len(parts)} parts")
+        for name in sorted(counts):
+            print(f"  {name}: {counts[name]}")
+        return 0 if parts else 1
+    try:
+        info = assemble_site(Path(args.project), Path(args.out))
+    except AssembleError as exc:
+        print(str(exc))
+        return 1
+    fam = ", ".join(f"{name} {info['families'][name]}" for name in sorted(info["families"]))
+    print(f"assembled {info['out']} (mode: offline, 0 tokens)")
+    print(f"  parts: {info['parts']} ({fam})")
+    print(f"  header: {info['header']}")
+    print(f"  pages: {', '.join(info['pages'])}")
+    print(f"  next: python spidercaster.py check {info['out']}")
+    return 0
+
+
+def cmd_tools(args) -> int:
+    from lib.tools_apply import ToolsApplyError, apply_part
+    from lib.tools_index import ToolsIndexError, counts, index_rows
+
+    try:
+        if args.tools_cmd == "list":
+            rows = index_rows()
+            info = counts(rows)
+            print(f"{info['rows']} rows: {info['built']} built, {info['missing']} missing")
+            for row in rows:
+                part = row.get("part_dir") or ""
+                tail = f"  {part}" if part else ""
+                print(f"  {row['catalog_id']}  {row['route']}  {row['status']}{tail}")
+            return 0 if info["rows"] else 1
+        mold = None
+        if getattr(args, "mold", ""):
+            try:
+                mold = _load_apply_mold(args.mold)
+            except ValueError as exc:
+                print(str(exc))
+                return 1
+        project = Path(args.project) if getattr(args, "project", "") else None
+        info = apply_part(
+            args.catalog_id, Path(args.page), Path(args.out),
+            replace=bool(getattr(args, "replace", False)),
+            mold=mold,
+            project=project,
+        )
+    except (ToolsIndexError, ToolsApplyError) as exc:
+        print(str(exc))
+        return 1
+    print(f"applied {info['catalog_id']} -> {info['out']}")
+    print(f"  part: {info['part_dir']}")
+    print(f"  snippet: {info['snippet']}")
+    return 0
+
+
 def cmd_seat(args) -> int:
     try:
         data = seat_pack(ROOT, args.seat)
@@ -620,6 +923,38 @@ def cmd_seat(args) -> int:
 
 
 # ---------------------------------------------------------------- parser
+
+def cmd_ui(args) -> int:
+    """Stdio face: composer + ticket/ledger (steps 0-1), screens (steps 2+).
+
+    Default opens the composer loop (Projects screen, /plan dry-run,
+    ticket/ledger views, publish-readiness printer). --screens opens the
+    check-board / engine-room loop instead. --selftest runs both
+    batteries. Read-only throughout: consequential actions print the
+    exact CLI command and never execute it.
+    """
+    if getattr(args, "selftest", False):
+        from lib import ui_selftest as _screens_test
+        from lib.ui_composer import main as composer_selftest
+
+        code = composer_selftest()
+        code2 = _screens_test.main()
+        return 0 if (code == 0 and code2 == 0) else 1
+    if getattr(args, "screens", False):
+        from lib import ui_render as _ui
+
+        return _ui.UI().loop(args.project or "projects/demo-local")
+    from lib.ui_composer import run_ui
+
+    project = getattr(args, "project", None)
+    if project:
+        cand = Path(project)
+        if not cand.is_dir():
+            named = ROOT / "projects" / Path(project).name
+            if named.is_dir():
+                project = str(named)
+    return run_ui(project, root=ROOT)
+
 
 def add_provider_opts(p: argparse.ArgumentParser) -> None:
     p.add_argument("--provider", choices=list(providers.PROVIDERS), help="force one provider")
@@ -638,11 +973,17 @@ def main(argv=None) -> int:
     p.add_argument("--force", action="store_true")
     p.set_defaults(fn=cmd_init)
 
-    p = sub.add_parser("build", help="build a site (project dir or --from site.json)")
+    p = sub.add_parser("build", help="build a site (project dir, --from site.json, or --compose)")
     p.add_argument("project", nargs="?", help="project directory")
     p.add_argument("--from", dest="site_json", help="rebuild from an existing site.json (0 tokens)")
-    p.add_argument("--out", help="output site dir (default sites/<slug>)")
+    p.add_argument("--out", help="output site dir (default sites/<slug>, or sites/<name>-compose with --compose)")
     p.add_argument("--offline", action="store_true", help="zero-token deterministic build")
+    p.add_argument("--dry-run", action="store_true",
+                   help="0-token sitemap/IR diff preview; writes nothing")
+    p.add_argument("--compose", action="store_true",
+                   help="offline compose path; requires a project, not --from")
+    p.add_argument("--frame", default="", help="package frame id (used with --compose)")
+    p.add_argument("--mold", default="", help="package mold id (used with --compose)")
     p.add_argument("--no-fallback", action="store_true", help="fail instead of falling back offline")
     p.add_argument("--template", choices=ir_mod.TEMPLATES)
     p.add_argument("--dark", dest="dark", action="store_true", default=None)
@@ -651,15 +992,28 @@ def main(argv=None) -> int:
     p.add_argument("--brand", help="brand/title override")
     p.add_argument("--indexable", action="store_true",
                    help="omit robots noindex (default is noindex until approved)")
+    p.add_argument("--host", default="", help="origin for sitemap.xml, used only with --indexable")
     p.add_argument("--max-copy-chars", type=int, default=24000)
     add_provider_opts(p)
     p.set_defaults(fn=cmd_build)
+
+    p = sub.add_parser("compose", help="offline compose of one project (0 tokens, no publish)")
+    p.add_argument("project", help="project directory")
+    p.add_argument("--out", help="output site dir (default sites/<name>-compose)")
+    p.add_argument("--frame", default="", help="package frame id")
+    p.add_argument("--mold", default="", help="package mold id")
+    p.add_argument("--plan", action="store_true", help="write structure.json and do not write HTML")
+    p.add_argument("--structure", default="", help="accepted structure.json; drop or reorder only")
+    p.set_defaults(fn=cmd_compose)
 
     p = sub.add_parser("refine", help="patch one section of a built site")
     p.add_argument("site", help="built site dir")
     p.add_argument("instruction")
     p.add_argument("--section", help="target section id (default: auto-match)")
     p.add_argument("--offline", action="store_true", help="theme flips only, 0 tokens")
+    p.add_argument("--rollback", default="", help="restore a logged _attempts/<id> snapshot (0 tokens)")
+    p.add_argument("--dry-run", action="store_true",
+                   help="preview an offline refine as a 0-token diff; writes nothing")
     add_provider_opts(p)
     p.set_defaults(fn=cmd_refine)
 
@@ -667,7 +1021,25 @@ def main(argv=None) -> int:
     p.add_argument("site")
     p.add_argument("--expect-noindex", action="store_true")
     p.add_argument("--expect-indexable", action="store_true")
+    p.add_argument("--project", help="project dir; pass its copy text into the checker")
     p.set_defaults(fn=cmd_check)
+
+    p = sub.add_parser("ui", help="stdio face: composer + ticket/ledger + screens")
+    p.add_argument("project", nargs="?", default=None,
+                   help="project dir or name (default: Projects screen)")
+    p.add_argument("--selftest", action="store_true",
+                   help="composer/ticket batteries + screen walk; exit 0 required")
+    p.add_argument("--screens", action="store_true",
+                   help="check-board / engine-room loop instead of the composer")
+    p.set_defaults(fn=cmd_ui)
+
+    p = sub.add_parser("visit", help="visit-check a built site")
+    p.add_argument("site", help="built site directory")
+    p.set_defaults(fn=cmd_visit)
+
+    p = sub.add_parser("studio", help="localhost desk; does not publish")
+    p.add_argument("--port", type=int, default=4180)
+    p.set_defaults(fn=cmd_studio)
 
     p = sub.add_parser("serve", help="preview a built site")
     p.add_argument("site")
@@ -717,6 +1089,11 @@ def main(argv=None) -> int:
     p.add_argument("--mold", required=True)
     p.add_argument("--vendor", help="one as-is vendor frame, mutate molds only")
     p.add_argument("--live", action="store_true", help="mark live; refuses a frame or mold already live elsewhere")
+    p.add_argument(
+        "--out",
+        default="",
+        help="built site dir holding crew-ticket.json (default sites/<slug>); --live verifies it",
+    )
     p = libsub.add_parser("accept", help="record a snapshot directory that already sits in the vault")
     p.add_argument("--frame", required=True)
     p.add_argument("--snapshot", required=True)
@@ -750,6 +1127,28 @@ def main(argv=None) -> int:
     p = sub.add_parser("seat", help="print one seat pack")
     p.add_argument("seat", help="seat id")
     p.set_defaults(fn=cmd_seat)
+
+    partp = sub.add_parser("parts", help="index every part and assemble one site")
+    partsub = partp.add_subparsers(dest="parts_cmd", required=True)
+    p = partsub.add_parser("scan", help="count every part manifest")
+    p.add_argument("--json", action="store_true")
+    p = partsub.add_parser("assemble", help="build a noindex site that uses the parts")
+    p.add_argument("--project", default=str(ROOT / "projects" / "demo-local"))
+    p.add_argument("--out", default=str(ROOT / "sites" / "assembled"))
+    partsub.add_parser("selftest", help="scan, assemble to a temp dir, and run check")
+    partp.set_defaults(fn=cmd_parts)
+
+    toolp = sub.add_parser("tools", help="list catalog parts and apply one onto a page")
+    toolsub = toolp.add_subparsers(dest="tools_cmd", required=True)
+    toolsub.add_parser("list", help="list catalog rows as built or missing")
+    p = toolsub.add_parser("apply", help="append one built part onto a page")
+    p.add_argument("catalog_id", metavar="CATALOG_ID")
+    p.add_argument("--page", required=True, help="source HTML page")
+    p.add_argument("--out", required=True, help="output HTML path")
+    p.add_argument("--replace", action="store_true", help="replace the part already on the page")
+    p.add_argument("--mold", default="", help="mold id; palette and type lead are passed through")
+    p.add_argument("--project", default="", help="project dir passed through to the lock check")
+    toolp.set_defaults(fn=cmd_tools)
 
     args = ap.parse_args(argv)
     return args.fn(args)

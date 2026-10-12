@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Back to top button demo, generatepress-real context</title><link rel="stylesheet" href="../../../_vendor/generatepress/assets/css/main.min.css"><style>/* Test context. Stands in for GeneratePress 3.6.1 inline "generate-style-inline-css" at default settings.
+   Values come from inc/defaults.php, inc/css-output.php and the global color defaults. Written for tests, not vendor output. */
+:root{--contrast:#222222;--contrast-2:#575760;--contrast-3:#b2b2be;--base:#f0f0f0;--base-2:#f7f8f9;--base-3:#ffffff;--accent:#1e73be}
+body{background-color:var(--base-2);color:var(--contrast)}
+a{color:var(--accent)}
+a:hover,a:focus,a:active{color:var(--contrast)}
+.grid-container{max-width:1200px}
+.sidebar .widget,.page-header,.widget-area .main-navigation,.site-main>*{margin-bottom:20px}
+.separate-containers .widget,.separate-containers .site-main>*,.separate-containers .page-header,.widget-area .main-navigation{margin-bottom:20px}
+.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:40px}
+.separate-containers .inside-article,.separate-containers .widget,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation{background-color:var(--base-3)}
+.widget-area .widget{padding:40px}
+.is-right-sidebar{width:30%}.is-left-sidebar{width:30%}.site-content .content-area{width:70%}
+@media (max-width:768px){.separate-containers .inside-article,.separate-containers .comments-area,.separate-containers .page-header,.separate-containers .paging-navigation,.one-container .site-content,.inside-page-header{padding:30px}}
+.sc-tall{height:420px;margin:0}</style><style>.sc-btt{position:fixed;right:16px;bottom:16px;z-index:50;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:56px;min-height:48px;padding:8px 14px;border:0;border-radius:24px;background:var(--sc-accent,#0b5cad);color:#fff;font:inherit;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sc-btt[hidden]{display:none}
+.sc-btt:focus-visible{outline:3px solid var(--sc-fg,#1d2327);outline-offset:2px}
+</style></head><body class="wp-embed-responsive wp-theme-generatepress separate-containers right-sidebar"><a class="screen-reader-text skip-link" href="#content">Skip to content</a><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content"><div class="content-area" id="primary"><main class="site-main" id="main"><article class="page type-page"><div class="inside-article"><div class="entry-content"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div></div></article></main></div><div class="widget-area sidebar is-right-sidebar" id="right-sidebar"><div class="inside-right-sidebar"><aside id="custom_html-2" class="widget inner-padding widget_text widget_custom_html"><div class="textwidget custom-html-widget"><div id="sc-under-test"><button class="sc-btt" data-sc="btt" data-after="400" type="button" aria-label="Top" hidden><span aria-hidden="true">&#8593;</span> Top</button>
+</div></div></aside></div></div></div></div><script>(function(){"use strict";
+function init(b){
+ var after=parseInt(b.getAttribute("data-after"),10)||400;
+ function upd(){b.hidden=(window.pageYOffset||document.documentElement.scrollTop)<after}
+ window.addEventListener("scroll",upd,{passive:true});
+ b.addEventListener("click",function(){window.scrollTo(0,0);b.blur()});
+ upd()}
+function run(){var n=document.querySelectorAll('[data-sc="btt"]');for(var i=0;i<n.length;i++)init(n[i])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

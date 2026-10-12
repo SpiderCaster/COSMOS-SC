@@ -10,10 +10,10 @@ import json
 import re
 import struct
 from pathlib import Path
-from datetime import date
 from string import Template
 
 # ---------------------------------------------------------------- utils
+
 
 def esc(v) -> str:
     return (str(v if v is not None else "")
@@ -73,7 +73,8 @@ def hex_to_rgb(h: str) -> tuple[int, int, int]:
 
 
 def rgb_to_hex(r, g, b) -> str:
-    return "#{:02x}{:02x}{:02x}".format(max(0, min(255, int(r))), max(0, min(255, int(g))), max(0, min(255, int(b))))
+    r, g, b = (max(0, min(255, int(v))) for v in (r, g, b))
+    return f"#{r:02x}{g:02x}{b:02x}"
 
 
 def mix_hex(a: str, b: str, t: float) -> str:
@@ -141,7 +142,7 @@ def rgba(h: str, a: float) -> str:
 
 def hue_of(h: str) -> float:
     r, g, b = (v / 255.0 for v in hex_to_rgb(h))
-    hh, ss, vv = colorsys.rgb_to_hsv(r, g, b)
+    hh, _, _ = colorsys.rgb_to_hsv(r, g, b)
     return hh * 360
 
 
@@ -194,17 +195,20 @@ def build_palette(theme: dict, seed: str) -> dict:
 # ---------------------------------------------------------------- css
 
 CSS_TEMPLATE = Template("""*{box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:18px}
+html{scroll-behavior:smooth;font-size:18px;scroll-padding-top:calc(72px + env(safe-area-inset-top));scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 body{margin:0;font-family:$font_body;background:$bg;color:$text;line-height:1.6;-webkit-font-smoothing:antialiased}
 :root{--bg:$bg;--surface:$surface;--surface2:$surface2;--text:$text;--muted:$muted;--line:$line;--accent:$accent;--accent-text:$accent_text;--accent2:$accent2;--on-accent:$on_accent;--price:$price;--accent-soft:$accent_soft;--radius:$radius;--maxw:1120px;--font-head:$font_head;--font-body:$font_body}
 .skip{position:absolute;left:12px;top:-80px;background:$surface;color:$text;padding:10px 14px;min-height:44px;z-index:5;border-radius:10px;text-decoration:none}
 .phone-bar{display:none}
 .skip:focus{top:12px}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:2px}
-img{max-width:100%;display:block}
+img{max-width:100%;height:auto;display:block}
 a{color:var(--accent-text)}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 section{padding:72px 0;scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+/* D5 phone order: sections carrying data-sc-order reorder below 1280px only
+   (the mobile block, 360-first); 1280px and up keeps DOM order. */
+@media(max-width:1279px){main:has(>section[data-sc-order]){display:flex;flex-direction:column}}
 h1,h2,h3{font-family:var(--font-head);line-height:1.15;margin:0 0 12px;letter-spacing:-.015em}
 h1,h2{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
 h1{font-size:clamp(1.7rem,5.5vw,3.9rem);overflow-wrap:anywhere}
@@ -214,7 +218,7 @@ p{margin:0 0 14px}
 .lede{color:var(--muted);font-size:1.08rem;max-width:62ch}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);margin-bottom:16px}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
-.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:11px 18px;border-radius:10px;font-weight:600;text-decoration:none;font-size:1rem;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;padding:11px 18px;border-radius:10px;font-weight:600;text-decoration:none;font-size:1rem;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 6px 18px $accent_shadow}
 .btn.primary:hover{transform:translateY(-1px)}
 .btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface)}
@@ -229,7 +233,7 @@ p{margin:0 0 14px}
 .brand-mark{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent);font-family:Georgia,'Times New Roman',serif;font-weight:700;flex:none}
 .nav-here{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:1rem}
 .nav-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto;align-items:center;min-width:0}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;min-width:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 .nav-links a:hover,.nav-links a[aria-current="page"]{color:var(--text)}
 .nav-toggle{display:none;margin-left:auto;flex:none;background:none;border:1px solid var(--line);border-radius:12px;color:var(--text);width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
 .hero{padding:28px 0 56px}
@@ -243,6 +247,9 @@ linear-gradient(160deg,var(--surface),var(--bg))}
 .hero .lede{margin-bottom:18px}
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 18px}
 .hero-cta .btn{min-height:44px}
+.hero-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--muted);text-underline-offset:3px}
+.hero-more:hover{color:var(--text)}
+.cta-panel .cta-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:inherit;text-underline-offset:3px}
 .bullets{list-style:none;margin:0;padding:0;display:flex;gap:14px 18px;flex-wrap:wrap}
 .bullets li{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:1rem}
 .bullets .icon{color:var(--accent-text)}
@@ -264,6 +271,13 @@ linear-gradient(160deg,var(--surface),var(--bg))}
 .hero--modern .bullets,.hero--modern .hero-cta{justify-content:center}
 .hero--bold .hero-visual{height:380px}
 .hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:140px;aspect-ratio:2/1}
+}
+@media(min-width:1280px){
+section{padding:88px 0}
+.hero{padding:88px 0 96px}
+.hero-stage{gap:48px}
+.grid,.quotes,.pricing,.steps,.gallery,.team-grid{gap:20px}
+.wrap{padding:0 32px}
 }
 .sec-head{max-width:70ch;margin-bottom:28px}
 .sec-head .lede{margin-bottom:0}
@@ -321,11 +335,11 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .cta-panel .lede{color:inherit;margin:0 auto 20px}
 .cta-panel .btn.ghost{border-color:currentColor;color:inherit;background:transparent}
 .cta-panel .btn.primary{background:$bg;color:$text;box-shadow:none}
-.contact-grid{display:grid;gap:28px;grid-template-columns:1.1fr .9fr;align-items:start}
-@media(max-width:860px){.contact-grid{grid-template-columns:1fr}}
+.contact-grid{display:grid;gap:28px;grid-template-columns:1fr;align-items:start}
+@media(min-width:861px){.contact-grid{grid-template-columns:1.1fr .9fr}}
 .contact-info{display:grid;gap:12px}
 .contact-info .row{display:flex;gap:10px;align-items:center;color:var(--muted);min-height:44px}
-.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
 .contact-info .row .icon{color:var(--accent-text)}
 .form{display:grid;gap:12px}
 .form label{font-size:1rem;color:var(--muted);display:grid;gap:6px}
@@ -355,7 +369,7 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .site-footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom));color:var(--muted);font-size:1rem;margin-top:24px}
 .foot-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
 .foot-links{display:flex;gap:16px;flex-wrap:wrap}
-.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
 .foot-links a:hover{color:var(--text)}
 .credit{margin-top:10px;font-size:1rem}
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -453,7 +467,7 @@ else{document.querySelectorAll('.reveal').forEach(function(el){el.classList.add(
 
 def resolve_href(href: str, site: dict, current_slug: str) -> str:
     href = str(href or "#")
-    if href.startswith(("#", "http://", "https://", "mailto:", "tel:")) or href.startswith("/"):
+    if href.startswith(("#", "http://", "https://", "mailto:", "tel:", "/")):
         return href
     slug = re.sub(r"\.html?$", "", href)
     for page in site.get("pages", []):
@@ -462,11 +476,64 @@ def resolve_href(href: str, site: dict, current_slug: str) -> str:
     return href
 
 
-def btn(a: dict | None, site: dict, current_slug: str, primary: bool = True) -> str:
+def btn(a: dict | None, site: dict, current_slug: str, primary: bool = True, marker: bool = False) -> str:
     if not a or not a.get("label"):
         return ""
     cls = "btn primary" if primary else "btn ghost"
-    return f'<a class="{cls}" href="{esc(resolve_href(a.get("href"), site, current_slug))}">{esc(a["label"])}</a>'
+    tag = ' data-cta="primary"' if primary and marker else ""
+    return f'<a class="{cls}"{tag} href="{esc(resolve_href(a.get("href"), site, current_slug))}">{esc(a["label"])}</a>'
+
+
+def _alive_link(a) -> bool:
+    """A cited action with a real label and href. Guards hand-edited IR."""
+    return (
+        isinstance(a, dict)
+        and bool(str(a.get("label") or "").strip())
+        and bool(str(a.get("href") or "").strip())
+    )
+
+
+def _pick_actions(data: dict, site: dict, current_slug: str, link_cls: str, marker: bool = False) -> tuple[str, str]:
+    """One primary button plus, at most, a subordinate text link.
+
+    A lone secondary is promoted to the primary button. A secondary that
+    repeats the primary href or label is dropped: the same button twice is
+    a second competing treatment in one viewport.
+    """
+    primary = data.get("primary")
+    secondary = data.get("secondary")
+    if not _alive_link(primary):
+        primary = secondary if _alive_link(secondary) else None
+        secondary = None
+    p_html = btn(primary, site, current_slug, True, marker) if _alive_link(primary) else ""
+    s_html = ""
+    if _alive_link(secondary) and _alive_link(primary):
+        same_label = str(secondary.get("label")).strip().lower() == str(primary.get("label")).strip().lower()
+        same_href = resolve_href(secondary.get("href"), site, current_slug) == resolve_href(
+            primary.get("href"), site, current_slug
+        )
+        if not (same_label or same_href):
+            s_html = (
+                f'<a class="{link_cls}" href="{esc(resolve_href(secondary.get("href"), site, current_slug))}">'
+                f"{esc(str(secondary['label']).strip())}</a>"
+            )
+    return p_html, s_html
+
+
+def _hero_actions(data: dict, site: dict, current_slug: str) -> str:
+    """One cited primary CTA per hero; secondary is a text link, never a button."""
+    p_html, s_html = _pick_actions(data, site, current_slug, "hero-more", True)
+    if not (p_html or s_html):
+        return ""
+    return f'<div class="hero-cta">{p_html}{s_html}</div>'
+
+
+def _cta_actions(data: dict, site: dict, current_slug: str) -> str:
+    """CTA panel mirrors the hero contract: one button, subordinate link."""
+    p_html, s_html = _pick_actions(data, site, current_slug, "cta-more", False)
+    if not (p_html or s_html):
+        return ""
+    return f'<div class="hero-cta" style="justify-content:center">{p_html}{s_html}</div>'
 
 
 def sec_head(d: dict) -> str:
@@ -565,17 +632,130 @@ def _mail_href(email: str) -> str:
     return "mailto:" + text
 
 
-def _phone_bar(page: dict) -> str:
-    """Fixed phone tap target. The label is the number already in the copy."""
-    for sec in page.get("sections") or []:
-        if not isinstance(sec, dict) or sec.get("type") != "contact":
+_ASK_LINE_RE = re.compile(r"\b(call|phone|ring|dial|text|sms|reach)\b", re.IGNORECASE)
+_PHONE_RUN_RE = re.compile(r"\+?\(?\d[\d\s().\-]{5,}\d")
+
+
+def _ask_line_digits(data: dict) -> str:
+    """Digits from the first explicit ask line (G47 S5 precedence, level 1).
+
+    An ask line names the act (call/phone/ring/...) and carries the number,
+    e.g. ``Call (555) 999-0100 today``. Returns the matched digit run
+    verbatim, or ``""`` when no ask line carries one.
+    """
+    lines: list[str] = []
+    for key in ("title", "body"):
+        value = data.get(key)
+        if isinstance(value, str) and value.strip():
+            lines.extend(value.splitlines())
+        elif isinstance(value, list):
+            lines.extend(str(item) for item in value if isinstance(item, str))
+    for line in lines:
+        if not _ASK_LINE_RE.search(line):
             continue
-        data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+        match = _PHONE_RUN_RE.search(line)
+        if not match:
+            continue
+        run = match.group(0).strip()
+        if run.startswith("(") and ")" not in run:
+            run = run[1:].strip()
+        if len("".join(ch for ch in run if ch.isdigit())) >= 7:
+            return run
+    return ""
+
+
+def tel_autowire(*blocks: dict | None) -> tuple[str, str]:
+    """(href, label) per FINAL D4 / G47 S5 precedence.
+
+    First explicit ask line, else first phone, else first email across the
+    contact/cta blocks in order. Digits are verbatim from the copy: no
+    country code is added, a leading ``+`` is preserved. Absent contact
+    data returns ``("", "")``: the bar is omitted, never invented.
+    """
+    for data in blocks:
+        if not isinstance(data, dict):
+            continue
+        ask = _ask_line_digits(data)
+        if ask:
+            return _tel_href(ask), ask
+    for data in blocks:
+        if not isinstance(data, dict):
+            continue
         phone = str(data.get("phone") or "").strip()
         href = _tel_href(phone)
         if href:
-            return f'<a class="phone-bar" href="{esc(href)}">{esc(phone)}</a>'
-    return ""
+            return href, phone
+    for data in blocks:
+        if not isinstance(data, dict):
+            continue
+        href = _mail_href(str(data.get("email") or ""))
+        if href:
+            return href, str(data.get("email") or "").strip()
+    return "", ""
+
+
+def _phone_bar(page: dict) -> str:
+    """Fixed tap target, auto-wired at build time from verbatim copy digits.
+
+    Contact block first, cta block as fallback (G47 S5: the contact/cta
+    block). Absent digits and absent email render no bar: check FAILs the
+    ask slot instead of shipping an invented number.
+    """
+    contact: dict = {}
+    cta: dict = {}
+    for sec in page.get("sections") or []:
+        if not isinstance(sec, dict):
+            continue
+        data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+        if sec.get("type") == "contact" and not contact:
+            contact = data
+        elif sec.get("type") == "cta" and not cta:
+            cta = data
+    href, label = tel_autowire(contact, cta)
+    if not href:
+        return ""
+    return f'<a class="phone-bar" href="{esc(href)}">{esc(label)}</a>'
+
+
+def _mobile_section_attrs(sec: dict) -> str:
+    """Extra ``<section>`` attributes from the D5 ``mobile`` block.
+
+    ``order`` reorders below 1280px only (paired with the ``main:has()``
+    rule in CSS; 1280px+ keeps DOM order). ``stack`` is a declarative
+    marker: single-column below 1280px is already the CSS contract, so the
+    block records the 360-first design intent without new taxonomy.
+    """
+    data = sec.get("data") if isinstance(sec, dict) else None
+    mob = data.get("mobile") if isinstance(data, dict) else None
+    if not isinstance(mob, dict):
+        return ""
+    out = ""
+    order = mob.get("order")
+    if isinstance(order, bool):
+        order = None
+    if isinstance(order, int) and order >= 0:
+        out += f' data-sc-order="{order}" style="order:{order}"'
+    elif isinstance(order, float) and order.is_integer() and order >= 0:
+        out += f' data-sc-order="{int(order)}" style="order:{int(order)}"'
+    if mob.get("stack") is True and "data-sc-order" not in out:
+        out += ' data-sc-mobile="stack"'
+    return out
+
+
+def _apply_mobile_blocks(sections_html: str, sections: list) -> str:
+    """Splice D5 ``mobile`` attributes into rendered ``<section id=...>`` tags."""
+    for sec in sections or []:
+        if not isinstance(sec, dict) or not sec.get("id"):
+            continue
+        attrs = _mobile_section_attrs(sec)
+        if not attrs:
+            continue
+        needle = f'<section id="{esc(sec["id"])}"'
+        if needle in sections_html:
+            sections_html = sections_html.replace(
+                needle, needle + attrs, 1
+            )
+    return sections_html
 
 
 def _contact_row(kind: str, text: str, href: str) -> str:
@@ -689,11 +869,11 @@ def render_section(sec: dict, site: dict, pal: dict, current_slug: str) -> str:
         return (
             f'<section id="{sid}" class="hero hero--{esc(tpl)}"><div class="wrap hero-stage">'
             + hero_visual(d, brand)
-            + f'<div class="hero-copy">'
+            + '<div class="hero-copy">'
             + (f'<span class="eyebrow">{esc(d["eyebrow"])}</span>' if d.get("eyebrow") else "")
             + f'<h1>{esc(d["headline"])}</h1>'
             + _lede_html(d.get("subhead"))
-            + f'<div class="hero-cta">{btn(d.get("primary"), site, current_slug, True)}</div>'
+            + _hero_actions(d, site, current_slug)
             + (f'<ul class="bullets">{bullets}</ul>' if bullets else "")
             + "</div></div></section>")
 
@@ -778,7 +958,7 @@ def render_section(sec: dict, site: dict, pal: dict, current_slug: str) -> str:
         return (f'<section id="{sid}" class="sec"><div class="wrap"><div class="cta-panel">'
                 f'<h2>{esc(d["title"])}</h2>'
                 + (f'<p class="lede">{esc(d["body"])}</p>' if d.get("body") else "")
-                + f'<div class="hero-cta" style="justify-content:center">{btn(d.get("primary"), site, current_slug, True)}{btn(d.get("secondary"), site, current_slug, False)}</div>'
+                + _cta_actions(d, site, current_slug)
                 + "</div></div></section>")
 
     if kind == "contact":
@@ -870,8 +1050,8 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
         nav_links.append(f'<a href="{esc(href)}"{aria}>{esc(n["label"])}</a>')
     nav_html = "".join(nav_links)
 
-    foot_links = "".join(f'<a href="{esc(resolve_href(l["href"], site, current_slug))}">{esc(l["label"])}</a>'
-                         for l in site.get("footer", {}).get("links", []))
+    foot_links = "".join(f'<a href="{esc(resolve_href(lnk["href"], site, current_slug))}">{esc(lnk["label"])}</a>'
+                         for lnk in site.get("footer", {}).get("links", []))
 
     robots = '<meta name="robots" content="noindex, nofollow">' if noindex else ""
     robots_note = "<!-- SpiderCaster: noindex until approved -->" if noindex else ""
@@ -880,9 +1060,13 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
     jsonld = website_jsonld(site)
     faq_ld = faq_jsonld(page)
 
-    sections_html = "\n".join(render_section(sec, site, pal, current_slug) for sec in page["sections"])
+    sections_html = _apply_mobile_blocks(
+        "\n".join(render_section(sec, site, pal, current_slug) for sec in page["sections"]),
+        page["sections"],
+    )
     phone_bar = _phone_bar(page)
     title = page["title"] if page["title"] == brand else f"{page['title']} - {brand}"
+    desc = str(page.get("description") or "").strip() or str(site["meta"].get("description") or "")
 
     return f"""<!doctype html>
 <html lang="{esc(site['meta'].get('lang') or 'en')}">
@@ -890,10 +1074,10 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{esc(title)}</title>
-<meta name="description" content="{esc(site['meta']['description'])}">
+<meta name="description" content="{esc(desc)}">
 {robots}
 <meta property="og:title" content="{esc(page['title'])}">
-<meta property="og:description" content="{esc(site['meta']['description'])}">
+<meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="website">
 {og_image}
 <meta name="theme-color" content="{esc(pal['accent'])}">

@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Collapsible sidebar groups demo, oceanwp-real context</title><link rel="stylesheet" href="../../../_vendor/oceanwp/style.min.css"><style></style><style>.sc-lay{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;max-width:var(--sc-max,1200px);margin:0 auto}
+.sc-lay .sc-lay-main,.sc-lay .sc-lay-side{min-width:0}
+@media (min-width:900px){.sc-lay-r{grid-template-columns:minmax(0,1fr) var(--sc-side,300px);gap:32px}}
+.sc-lay .sc-grp{border-top:1px solid var(--sc-line,#c9d1d9);color:var(--sc-fg,#1d2327);font-size:16px}
+.sc-lay .sc-grp:last-of-type{border-bottom:1px solid var(--sc-line,#c9d1d9)}
+.sc-lay .sc-grp-s{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:8px 0;font-size:18px;font-weight:700;line-height:1.3;cursor:pointer;list-style:none}
+.sc-lay .sc-grp-s::-webkit-details-marker{display:none}
+.sc-lay .sc-grp-s::after{content:"+";flex:none;width:24px;text-align:center;font-size:24px;font-weight:400}
+.sc-lay .sc-grp[open]>.sc-grp-s::after{content:"\2212"}
+.sc-lay .sc-grp-b{padding:0 0 12px}
+.sc-lay .sc-grp-b ul{list-style:none;margin:0;padding:0}
+.sc-lay .sc-grp-b li{margin:0;padding:0;border:0}
+.sc-lay .sc-grp-b a{display:flex;align-items:center;min-height:44px;color:var(--sc-accent,#0b5cad);font-size:18px}
+.sc-lay .sc-grp :focus-visible{outline:3px solid var(--sc-accent,#0b5cad);outline-offset:2px}
+</style></head><body class="wp-embed-responsive oceanwp-theme dropdown-mobile default-breakpoint content-full-width"><div id="outer-wrap" class="site clr"><a class="skip-link screen-reader-text" href="#main">Skip to content</a><div id="wrap" class="clr"><main id="main" class="site-main clr" role="main"><div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="single-page-article clr"><div class="entry clr"><div id="sc-under-test"><div class="sc-lay sc-lay-r sc-lay-c" data-sc="groups">
+<div class="sc-lay-main"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></div>
+<aside class="sc-lay-side" aria-label="Sidebar"><details class="sc-grp" open><summary class="sc-grp-s">Fixture group one</summary><div class="sc-grp-b"><ul><li><a href="/fixture-a/">Fixture link A</a></li><li><a href="/fixture-b/">Fixture link B</a></li></ul></div></details><details class="sc-grp" open><summary class="sc-grp-s">Fixture group two</summary><div class="sc-grp-b"><ul><li><a href="/fixture-c/">Fixture link C</a></li></ul></div></details><details class="sc-grp" open><summary class="sc-grp-s">Fixture group three</summary><div class="sc-grp-b"><ul><li><a href="/fixture-d/">Fixture link D</a></li></ul></div></details></aside>
+</div>
+</div></div></article></div></div></div></main></div></div><script>(function(){"use strict";
+function init(box){
+ var d=box.querySelectorAll("details.sc-grp");
+ if(!window.matchMedia||!window.matchMedia("(max-width:899px)").matches)return;
+ for(var i=1;i<d.length;i++)d[i].open=false}
+function run(){var n=document.querySelectorAll('[data-sc="groups"]');for(var i=0;i<n.length;i++)init(n[i])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

@@ -21,6 +21,7 @@ _STEPS: tuple[tuple[str, tuple[str, ...], tuple[str, ...], bool], ...] = (
     ("lib.regress", ("-m", "lib.regress"), ("lib", "regress.py"), True),
     ("lib.triggers", ("-m", "lib.triggers"), ("lib", "triggers.py"), False),
     ("lib.mobile_selftest", ("-m", "lib.mobile_selftest"), ("lib", "mobile_selftest.py"), False),
+    ("lib.attempts_selftest", ("-m", "lib.attempts_selftest"), ("lib", "attempts_selftest.py"), False),
     (
         "spidercaster.py crew selftest",
         ("spidercaster.py", "crew", "selftest"),
@@ -37,6 +38,24 @@ _STEPS: tuple[tuple[str, tuple[str, ...], tuple[str, ...], bool], ...] = (
         "lib/check_typography_selftest.py",
         ("lib/check_typography_selftest.py",),
         ("lib", "check_typography_selftest.py"),
+        False,
+    ),
+    (
+        "lib/ui_selftest.py",
+        ("lib/ui_selftest.py",),
+        ("lib", "ui_selftest.py"),
+        False,
+    ),
+    (
+        "lib/check_tap_selftest.py",
+        ("lib/check_tap_selftest.py",),
+        ("lib", "check_tap_selftest.py"),
+        False,
+    ),
+    (
+        "lib/check_mobile_selftest.py",
+        ("lib/check_mobile_selftest.py",),
+        ("lib", "check_mobile_selftest.py"),
         False,
     ),
 )

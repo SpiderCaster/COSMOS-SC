@@ -1,13 +1,19 @@
 {
  "slug": "archives",
  "status": "pass",
- "passed": 58,
+ "passed": 98,
  "failed": 0,
- "total": 58,
- "seconds": 8.1,
+ "total": 98,
+ "seconds": 21.0,
  "extra": {
   "bytes": 1988,
   "gzip_bytes": 737,
+  "root_font": {
+   "oceanwp": "10px",
+   "generatepress": "16px",
+   "oceanwp-real": "10px",
+   "generatepress-real": "16px"
+  },
   "measured_360": {
    "text_nodes": 6,
    "tap_targets": 3,
@@ -302,6 +308,206 @@
   },
   {
    "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.three_links.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.count_optional.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.urls_are_paths.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.three_links.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.count_optional.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.urls_are_paths.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.three_links.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.count_optional.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.urls_are_paths.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.three_links.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.count_optional.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.urls_are_paths.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@1280",
    "ok": true,
    "detail": "no visible text measured"
   }

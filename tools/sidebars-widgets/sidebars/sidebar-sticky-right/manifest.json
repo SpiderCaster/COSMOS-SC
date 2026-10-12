@@ -64,11 +64,11 @@
   "real OceanWP install",
   "real GeneratePress install"
  ],
- "last_tested": "2026-10-03 21:06 Central Daylight Time",
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
  "checks": {
-  "passed": 54,
+  "passed": 90,
   "failed": 0,
-  "total": 54
+  "total": 90
  },
  "bytes": 682,
  "gzip_bytes": 367

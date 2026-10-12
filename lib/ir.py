@@ -76,7 +76,9 @@ def normalize_data(kind: str, d: dict) -> dict:
 
     if kind == "hero":
         out["eyebrow"] = s(d.get("eyebrow"))
-        out["headline"] = s(d.get("headline")) or "Welcome"
+        # Strict gap-gate: no invented headline. An empty headline stays
+        # empty here; copy_schema.validate_site() FAILs gap hero.headline.
+        out["headline"] = s(d.get("headline"))
         out["subhead"] = s(d.get("subhead"))
         out["primary"] = link_obj(d.get("primary"))
         out["secondary"] = link_obj(d.get("secondary"))
@@ -172,13 +174,15 @@ def normalize_data(kind: str, d: dict) -> dict:
         out["items"] = items
 
     elif kind == "cta":
-        out["title"] = s(d.get("title")) or "Ready when you are"
+        # Strict gap-gate: no invented title or button. Empty stays empty;
+        # an optional cta with nothing real is omitted by normalize_site().
+        out["title"] = s(d.get("title"))
         out["body"] = s(d.get("body"))
-        out["primary"] = link_obj(d.get("primary")) or {"label": "Get started", "href": "#contact"}
+        out["primary"] = link_obj(d.get("primary"))
         out["secondary"] = link_obj(d.get("secondary"))
 
     elif kind == "contact":
-        out["title"] = s(d.get("title")) or "Get in touch"
+        out["title"] = s(d.get("title"))
         out["body"] = s(d.get("body"))
         out["email"] = s(d.get("email"))
         out["phone"] = s(d.get("phone"))
@@ -228,6 +232,21 @@ def normalize_data(kind: str, d: dict) -> dict:
         out["title"] = s(d.get("title"))
         out["items"] = [s(i) for i in clamp(d.get("items"), 8) if is_str(i)]
 
+    # D5 mobile block (FINAL MERGE): optional per-section phone design data,
+    # extended in place on the section — no new section taxonomy. Preserved
+    # verbatim (JSON scalars only) so --from rebuilds keep it and the
+    # mobile_block gate row can judge it strictly.
+    mob = d.get("mobile")
+    if isinstance(mob, dict):
+        clean: dict = {}
+        for key, value in mob.items():
+            if not isinstance(key, str):
+                continue
+            if isinstance(value, bool) or isinstance(value, (int, float, str)):
+                clean[key] = value
+        if clean:
+            out["mobile"] = clean
+
     return out
 
 
@@ -245,7 +264,47 @@ def normalize_section(raw, seen_ids: set):
         n += 1
     seen_ids.add(sec_id)
     data = raw.get("data") if isinstance(raw.get("data"), dict) else {}
-    return {"id": sec_id, "type": kind, "data": normalize_data(kind, data)}
+    sec = {"id": sec_id, "type": kind, "data": normalize_data(kind, data)}
+    # Carry the planner's source file through normalize so --from rebuilds
+    # can re-slice the cited span. The renderer ignores this key.
+    if isinstance(raw.get("_source"), str) and raw.get("_source"):
+        sec["_source"] = raw["_source"]
+    return sec
+
+
+def _section_has_content(kind: str, data: dict) -> bool:
+    """True when an optional section has something real to render.
+
+    Optional miss = omit: normalize_site() drops sections with no content
+    instead of emitting hollow markup. hero is never dropped here; an
+    empty headline is a gap FAIL raised by the caller.
+    """
+    if not isinstance(data, dict):
+        return False
+    if kind == "hero":
+        return True
+    if kind in ("features", "stats", "steps", "testimonials", "team"):
+        return bool(data.get("items"))
+    if kind == "faq":
+        return bool(data.get("items"))
+    if kind == "pricing":
+        return bool(data.get("items"))
+    if kind == "menu":
+        return bool(data.get("groups"))
+    if kind == "gallery":
+        return bool(data.get("items"))
+    if kind == "logocloud":
+        return bool(data.get("items"))
+    if kind == "contact":
+        return any(str(data.get(k) or "").strip()
+                   for k in ("title", "body", "email", "phone", "address", "hours"))
+    if kind == "cta":
+        return bool(str(data.get("title") or "").strip()
+                    or str(data.get("body") or "").strip()
+                    or data.get("primary"))
+    if kind == "about":
+        return bool(data.get("body") or data.get("points") or str(data.get("title") or "").strip())
+    return bool(data)
 
 
 def normalize_site(raw: dict, opts: dict | None = None) -> dict:
@@ -290,7 +349,10 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
     pages = []
     for pi, p in enumerate(clamp(pages_in, 5)):
         p = p if isinstance(p, dict) else {}
-        sections = [sec for sec in (normalize_section(x, seen_ids) for x in clamp(p.get("sections"), 12)) if sec]
+        normalized = [sec for sec in (normalize_section(x, seen_ids) for x in clamp(p.get("sections"), 12)) if sec]
+        # Optional miss = omit: drop hollow optional sections. hero is kept
+        # even when empty so the gap gate can name hero.headline.
+        sections = [sec for sec in normalized if _section_has_content(sec["type"], sec["data"])]
         pages.append({
             "slug": slugify(p.get("slug")) or ("index" if pi == 0 else f"page-{pi + 1}"),
             "title": s(p.get("title")) or site["meta"]["title"],
@@ -299,13 +361,9 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
     if not pages:
         pages = [{"slug": "index", "title": site["meta"]["title"], "sections": []}]
     pages[0]["slug"] = "index"
-    if not pages[0]["sections"]:
-        pages[0]["sections"] = [
-            normalize_section({"id": "hero", "type": "hero",
-                               "data": {"headline": site["meta"]["title"], "subhead": site["meta"]["description"],
-                                        "primary": {"label": "Learn more", "href": "#about"}}}, seen_ids),
-            normalize_section({"id": "about", "type": "about", "data": {"body": [site["meta"]["description"]]}}, seen_ids),
-        ]
+    # Strict gap-gate: no invented hero/about when the planner produced no
+    # sections. An empty index page stays empty; the caller FAILs
+    # gap hero.headline instead of rendering a substitute sentence.
     site["pages"] = pages
 
     # Auto-nav from section titles when the planner skipped it.
@@ -326,6 +384,11 @@ def normalize_site(raw: dict, opts: dict | None = None) -> dict:
         "links": [lo for lo in (link_obj(l) for l in clamp(foot_in.get("links"), 6)) if lo],
         "credit": foot_in.get("credit") is not False,
     }
+    # Preserve the gap-gate record through normalize. The renderer ignores it.
+    if isinstance(raw.get("citations"), dict):
+        site["citations"] = raw["citations"]
+    if isinstance(raw.get("presentation"), dict):
+        site["presentation"] = raw["presentation"]
     return site
 
 

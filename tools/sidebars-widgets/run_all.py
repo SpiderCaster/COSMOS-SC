@@ -56,7 +56,7 @@ def main():
             m["checks"] = {"passed": r["passed"], "failed": r["failed"], "total": r["total"]}
             m["bytes"] = r["extra"].get("bytes"); m["gzip_bytes"] = r["extra"].get("gzip_bytes")
             if r["status"] == "pass":
-                m["verified_in"] = ["headless Chrome/Edge at 360 px and 1280 px", "OceanWP-like context (root 62.5%)", "GeneratePress-like context"]
+                m["verified_in"] = ["headless Chrome at 360 px and 1280 px", "OceanWP-like context (root 62.5%)", "GeneratePress-like context", "real OceanWP 4.2.5 style.min.css, default settings", "real GeneratePress 3.6.1 main.min.css with default dynamic CSS approximation"]
             else:
                 m["verified_in"] = []
             (d / "manifest.json").write_text(json.dumps(m, indent=1), encoding="utf-8")
@@ -82,8 +82,8 @@ def main():
              "| Not yet tested | %d |" % cnt["untested"], ""]
     if fails:
         lines += ["Failed items: " + ", ".join(fails), ""]
-    lines += ["A pass means every check passed: manifest, tokens, HTML, CSS and JS lint, secret scan, size budget, then headless Chrome at 360 px and 1280 px in two theme-like contexts (tap targets 44 px, text 16 px and 18 px floors, 4.5:1 contrast, no horizontal overflow, scripted behavior).",
-              "The contexts are approximations written for these tests. No item has run on a real OceanWP or GeneratePress install yet.", ""]
+    lines += ["A pass means every check passed: manifest, tokens, HTML, CSS and JS lint, secret scan, size budget, then headless Chrome at 360 px and 1280 px in four contexts, two approximations written for these tests and two built on the real vendor CSS of OceanWP 4.2.5 and GeneratePress 3.6.1 (tap targets 44 px, text 16 px and 18 px floors, 4.5:1 contrast, no horizontal overflow, scripted behavior).",
+              "Real-theme contexts load the theme stylesheets kept in _vendor with the theme markup wrappers and default settings. Not verified: live OceanWP or GeneratePress sites, Customizer overrides, GeneratePress Premium, plugins that restyle widgets, native scroll timing (tests dispatch synthetic scroll events).", ""]
     (ROOT / "COUNTS.md").write_text("\n".join(lines), encoding="utf-8")
     print("built %d  pass %d  fail %d  static-only %d  untested %d" % (n, cnt["pass"], cnt["fail"], cnt["static-only"], cnt["untested"]))
     sys.exit(1 if cnt["fail"] else 0)

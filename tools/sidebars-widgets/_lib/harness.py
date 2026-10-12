@@ -16,7 +16,19 @@ ROOT = LIB.parent
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 WIDTHS = (360, 1280)
-CTXS = ("oceanwp", "generatepress")
+VENDOR = ROOT / "_vendor"
+OWP_CSS = VENDOR / "oceanwp" / "style.min.css"
+GP_CSS = VENDOR / "generatepress" / "assets" / "css" / "main.min.css"
+
+
+def contexts():
+    c = ["oceanwp", "generatepress"]
+    if OWP_CSS.exists():
+        c.append("oceanwp-real")
+    if GP_CSS.exists():
+        c.append("generatepress-real")
+    return c
+
 REQUIRED_MANIFEST = ("name", "slug", "kind", "purpose", "inputs", "files", "test_command", "status", "version", "themes", "budget_bytes")
 BAD_WORDS = re.compile(r"\b(lorem|ipsum|sample|placeholder|original schematic|amazing|awesome|best[- ]in[- ]class|cutting[- ]edge|world[- ]class|seamless|stunning|revolutionary|powerful|click here)\b", re.I)
 SECRET_RES = [re.compile(p, re.I) for p in (
@@ -284,6 +296,27 @@ def fragment_for(d, m, fx, data=None, lint=False):
 
 
 def ctx_wrap(ctx, kind, inner):
+    if ctx == "oceanwp-real":
+        page = '<div data-sc-test-skip>' + read(LIB / "page_content.html") + '</div>'
+        if kind == "sidebar":
+            return ('<div id="outer-wrap" class="site clr"><a class="skip-link screen-reader-text" href="#main">Skip to content</a><div id="wrap" class="clr"><main id="main" class="site-main clr" role="main">'
+                    '<div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="single-page-article clr"><div class="entry clr">'
+                    '<div id="sc-under-test">%s</div></div></article></div></div></div></main></div></div>' % inner)
+        return ('<div id="outer-wrap" class="site clr"><a class="skip-link screen-reader-text" href="#main">Skip to content</a><div id="wrap" class="clr"><main id="main" class="site-main clr" role="main">'
+                '<div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="single-page-article clr"><div class="entry clr">%s</div></article></div></div>'
+                '<aside id="right-sidebar" class="sidebar-container widget-area sidebar-primary" role="complementary" aria-label="Primary Sidebar"><div id="right-sidebar-inner" class="clr">'
+                '<div id="custom_html-2" class="widget_text sidebar-box widget_custom_html clr"><div class="textwidget custom-html-widget"><div id="sc-under-test">%s</div></div></div></div></aside>'
+                '</div></main></div></div>' % (page, inner))
+    if ctx == "generatepress-real":
+        page = '<div data-sc-test-skip>' + read(LIB / "page_content.html") + '</div>'
+        if kind == "sidebar":
+            return ('<a class="screen-reader-text skip-link" href="#content">Skip to content</a><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content">'
+                    '<div class="content-area" id="primary"><main class="site-main" id="main"><article class="page type-page"><div class="inside-article"><div class="entry-content">'
+                    '<div id="sc-under-test">%s</div></div></div></article></main></div></div></div>' % inner)
+        return ('<a class="screen-reader-text skip-link" href="#content">Skip to content</a><div class="site grid-container container hfeed" id="page"><div class="site-content" id="content">'
+                '<div class="content-area" id="primary"><main class="site-main" id="main"><article class="page type-page"><div class="inside-article"><div class="entry-content">%s</div></div></article></main></div>'
+                '<div class="widget-area sidebar is-right-sidebar" id="right-sidebar"><div class="inside-right-sidebar"><aside id="custom_html-2" class="widget inner-padding widget_text widget_custom_html">'
+                '<div class="textwidget custom-html-widget"><div id="sc-under-test">%s</div></div></aside></div></div></div></div>' % (page, inner))
     if kind == "sidebar":
         if ctx == "oceanwp":
             return ('<div id="outer-wrap" class="site clr"><div id="wrap" class="clr"><main id="main" class="site-main clr">'
@@ -304,9 +337,23 @@ def ctx_wrap(ctx, kind, inner):
             '<aside class="widget inner-padding widget_custom_html"><div id="sc-under-test">%s</div></aside></div></div></div></div>' % (page, inner))
 
 
-def build_page(ctx, m, inner, css, js, test_js=None, title_suffix=""):
-    body_cls = "oceanwp-theme content-full-width" if ctx == "oceanwp" else "wp-theme-generatepress no-sidebar"
-    ctxcss = read(LIB / ("ctx_%s.css" % ctx))
+def build_page(ctx, m, inner, css, js, test_js=None, rel_vendor=None):
+    """rel_vendor: path prefix to _vendor for saved demo pages; None means absolute file URI (test pages)."""
+    side = m["kind"] == "widget"
+    if ctx == "oceanwp-real":
+        body_cls = "wp-embed-responsive oceanwp-theme dropdown-mobile default-breakpoint " + ("content-right-sidebar has-sidebar" if side else "content-full-width")
+        href = (rel_vendor + "oceanwp/style.min.css") if rel_vendor else OWP_CSS.as_uri()
+        ctxcss = ".sc-tall{height:420px;margin:0}"
+        head_link = '<link rel="stylesheet" href="%s">' % href
+    elif ctx == "generatepress-real":
+        body_cls = "wp-embed-responsive wp-theme-generatepress separate-containers " + ("right-sidebar" if side else "no-sidebar")
+        href = (rel_vendor + "generatepress/assets/css/main.min.css") if rel_vendor else GP_CSS.as_uri()
+        ctxcss = read(LIB / "ctx_gp_dynamic.css") + ".sc-tall{height:420px;margin:0}"
+        head_link = '<link rel="stylesheet" href="%s">' % href
+    else:
+        body_cls = "oceanwp-theme content-full-width" if ctx == "oceanwp" else "wp-theme-generatepress no-sidebar"
+        ctxcss = read(LIB / ("ctx_%s.css" % ctx))
+        head_link = ""
     extra = ""
     if test_js is not None:
         extra = ("<style>*{transition:none!important;animation:none!important;scroll-behavior:auto!important}</style>"
@@ -322,9 +369,9 @@ def build_page(ctx, m, inner, css, js, test_js=None, title_suffix=""):
                  ".then(function(){var H=(window.parent!==window?window.parent.document:document);var pre=H.createElement('pre');pre.id='sc-result';pre.textContent=JSON.stringify(res);H.body.appendChild(pre);});},50)});</script>"
                  % (read(LIB / "measure.js"), test_js))
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<meta name="robots" content="noindex"><title>%s demo, %s context</title><style>%s</style><style>%s</style></head>'
+            '<meta name="robots" content="noindex"><title>%s demo, %s context</title>%s<style>%s</style><style>%s</style></head>'
             '<body class="%s">%s<script>%s</script>%s</body></html>'
-            % (html.escape(m["name"]), ctx, ctxcss, css, body_cls, ctx_wrap(ctx, m["kind"], inner), js, extra))
+            % (html.escape(m["name"]), ctx, head_link, ctxcss, css, body_cls, ctx_wrap(ctx, m["kind"], inner), js, extra))
 
 
 # ---------- main entry ----------
@@ -435,9 +482,9 @@ def run_item(test_file, write_demo=True):
     if write_demo:
         demo.mkdir(exist_ok=True)
     try:
-        for ctx in CTXS:
+        for ctx in contexts():
             if write_demo:
-                (demo / (ctx + ".html")).write_text(build_page(ctx, m, h, css, js), encoding="utf-8")
+                (demo / (ctx + ".html")).write_text(build_page(ctx, m, h, css, js, rel_vendor="../../../_vendor/"), encoding="utf-8")
             test_page = build_page(ctx, m, h, css, js, test_js)
             for w in WIDTHS:
                 tag = "%s@%d" % (ctx, w)
@@ -450,6 +497,7 @@ def run_item(test_file, write_demo=True):
                 browser_ran = True
                 R.add("browser.error." + tag, not res.get("error"), res.get("error"))
                 R.add("browser.viewport." + tag, abs(res["w"] - w) <= 20, "innerWidth %s" % res["w"])
+                extra.setdefault("root_font", {})[ctx] = res["rootFont"]
                 if ctx == "oceanwp":
                     R.add("browser.root62." + tag, res["rootFont"] == "10px", "root font %s" % res["rootFont"])
                 for b in res.get("behavior", []):

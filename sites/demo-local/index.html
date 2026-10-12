@@ -19,14 +19,14 @@
 <!-- SpiderCaster: noindex until approved -->
 <style>
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:18px}
+html{scroll-behavior:smooth;font-size:18px;scroll-padding-top:calc(72px + env(safe-area-inset-top));scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 body{margin:0;font-family:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;background:#0a0e14;color:#e9eef6;line-height:1.6;-webkit-font-smoothing:antialiased}
 :root{--bg:#0a0e14;--surface:#111722;--surface2:#161e2c;--text:#e9eef6;--muted:#b7c2d0;--line:rgba(255, 255, 255, 0.1);--accent:#fcd34d;--accent-text:#fcd34d;--accent2:#fb7185;--on-accent:#10131a;--price:#fcd34d;--accent-soft:rgba(252, 211, 77, 0.14);--radius:16px;--maxw:1120px;--font-head:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;--font-body:ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif}
 .skip{position:absolute;left:12px;top:-80px;background:#111722;color:#e9eef6;padding:10px 14px;min-height:44px;z-index:5;border-radius:10px;text-decoration:none}
 .phone-bar{display:none}
 .skip:focus{top:12px}
 a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--text);outline-offset:2px}
-img{max-width:100%;display:block}
+img{max-width:100%;height:auto;display:block}
 a{color:var(--accent-text)}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 section{padding:72px 0;scroll-margin-top:calc(72px + env(safe-area-inset-top))}
@@ -39,19 +39,22 @@ p{margin:0 0 14px}
 .lede{color:var(--muted);font-size:1.08rem;max-width:62ch}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);margin-bottom:16px}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
-.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:11px 18px;border-radius:10px;font-weight:600;text-decoration:none;font-size:1rem;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;padding:11px 18px;border-radius:10px;font-weight:600;text-decoration:none;font-size:1rem;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease}
 .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 6px 18px rgba(252, 211, 77, 0.3)}
 .btn.primary:hover{transform:translateY(-1px)}
 .btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface)}
-.site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(10, 14, 20, 0.82);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(10, 14, 20, 0.82);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);transition:background .2s ease,box-shadow .2s ease}
 .site-header.is-stuck{background:var(--bg);box-shadow:0 10px 28px rgba(0,0,0,.35)}
+/* blur lives on a pseudo-element layer: backdrop-filter on .site-header itself would make the header the
+   containing block for the position:fixed mobile drawer and trap it in the 65px bar (DEFECT_4) */
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);pointer-events:none}
 .nav{display:flex;align-items:center;gap:12px;min-height:64px;flex-wrap:wrap}
 .brand{display:inline-flex;align-items:center;gap:10px;min-width:0;min-height:44px;font-weight:700;font-size:1.05rem;text-decoration:none;color:var(--text);font-family:var(--font-head)}
 .brand-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .brand-mark{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent);font-family:Georgia,'Times New Roman',serif;font-weight:700;flex:none}
 .nav-here{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:1rem}
 .nav-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-left:auto;align-items:center;min-width:0}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:1rem;min-height:44px;min-width:44px;display:inline-flex;align-items:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 .nav-links a:hover,.nav-links a[aria-current="page"]{color:var(--text)}
 .nav-toggle{display:none;margin-left:auto;flex:none;background:none;border:1px solid var(--line);border-radius:12px;color:var(--text);width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer}
 .hero{padding:28px 0 56px}
@@ -65,6 +68,9 @@ linear-gradient(160deg,var(--surface),var(--bg))}
 .hero .lede{margin-bottom:18px}
 .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 18px}
 .hero-cta .btn{min-height:44px}
+.hero-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--muted);text-underline-offset:3px}
+.hero-more:hover{color:var(--text)}
+.cta-panel .cta-more{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:inherit;text-underline-offset:3px}
 .bullets{list-style:none;margin:0;padding:0;display:flex;gap:14px 18px;flex-wrap:wrap}
 .bullets li{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:1rem}
 .bullets .icon{color:var(--accent-text)}
@@ -86,6 +92,13 @@ linear-gradient(160deg,var(--surface),var(--bg))}
 .hero--modern .bullets,.hero--modern .hero-cta{justify-content:center}
 .hero--bold .hero-visual{height:380px}
 .hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:140px;aspect-ratio:2/1}
+}
+@media(min-width:1280px){
+section{padding:88px 0}
+.hero{padding:88px 0 96px}
+.hero-stage{gap:48px}
+.grid,.quotes,.pricing,.steps,.gallery,.team-grid{gap:20px}
+.wrap{padding:0 32px}
 }
 .sec-head{max-width:70ch;margin-bottom:28px}
 .sec-head .lede{margin-bottom:0}
@@ -143,11 +156,11 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .cta-panel .lede{color:inherit;margin:0 auto 20px}
 .cta-panel .btn.ghost{border-color:currentColor;color:inherit;background:transparent}
 .cta-panel .btn.primary{background:#0a0e14;color:#e9eef6;box-shadow:none}
-.contact-grid{display:grid;gap:28px;grid-template-columns:1.1fr .9fr;align-items:start}
-@media(max-width:860px){.contact-grid{grid-template-columns:1fr}}
+.contact-grid{display:grid;gap:28px;grid-template-columns:1fr;align-items:start}
+@media(min-width:861px){.contact-grid{grid-template-columns:1.1fr .9fr}}
 .contact-info{display:grid;gap:12px}
 .contact-info .row{display:flex;gap:10px;align-items:center;color:var(--muted);min-height:44px}
-.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.contact-info .row a{color:inherit;text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
 .contact-info .row .icon{color:var(--accent-text)}
 .form{display:grid;gap:12px}
 .form label{font-size:1rem;color:var(--muted);display:grid;gap:6px}
@@ -177,7 +190,7 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .site-footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom));color:var(--muted);font-size:1rem;margin-top:24px}
 .foot-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
 .foot-links{display:flex;gap:16px;flex-wrap:wrap}
-.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.foot-links a{color:var(--muted);text-decoration:none;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
 .foot-links a:hover{color:var(--text)}
 .credit{margin-top:10px;font-size:1rem}
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
@@ -186,9 +199,9 @@ details .a{padding:0 18px 16px;color:var(--muted)}
 .nav{flex-wrap:nowrap}
 .brand{flex:1 1 auto;min-width:0}
 .reveal{opacity:1;transform:none}
-.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow:auto}
+.nav-links{display:none;position:fixed;z-index:40;left:0;right:0;bottom:0;top:calc(64px + env(safe-area-inset-top));background:var(--bg);flex-direction:column;flex-wrap:nowrap;align-items:stretch;padding:8px 18px calc(18px + env(safe-area-inset-bottom));gap:0;overflow-y:auto;overscroll-behavior:contain}
 .nav-links.open{display:flex}
-.nav-links a{width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
+.nav-links a{flex:none;width:100%;min-height:48px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.05rem}
 .hero-cta{flex-direction:column;align-items:stretch}
 .hero-cta .btn{width:100%;justify-content:center}
 .nav-toggle{display:inline-flex}
@@ -241,7 +254,7 @@ body.nav-open .phone-bar{display:none}
 @media(max-width:860px) and (scripting:none){
 .nav{flex-wrap:wrap}
 .nav-toggle{display:none}
-.nav-links{display:flex;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
+.nav-links{display:flex;flex-wrap:wrap;position:static;flex:1 1 100%;top:auto;right:auto;bottom:auto;left:auto;background:transparent;padding:0}
 }
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.site-header,.btn{transition:none}.btn:hover{transform:none}}
 .tpl-bold .btn{border-radius:999px;padding:13px 22px}
@@ -260,7 +273,7 @@ body.nav-open .phone-bar{display:none}
 </div>
 </header>
 <main id="main">
-<section id="hero" class="hero hero--modern"><div class="wrap hero-stage"><div class="hero-visual hero-mark" aria-hidden="true"><span>S</span></div><div class="hero-copy"><h1>SpiderCaster: websites from real copy, on free tokens</h1><p class="lede">SpiderCaster is a copy-driven static website engine.</p><p class="lede">You give it a brief and real copy files; it returns a self-contained static site.</p><p class="lede">The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens.</p><p class="lede">AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference.</p><p class="lede">Paid models join only when explicitly allowed.</p><div class="hero-cta"><a class="btn primary" href="#features">Build</a></div></div></div></section>
+<section id="hero" class="hero hero--modern"><div class="wrap hero-stage"><div class="hero-visual hero-mark" aria-hidden="true"><span>S</span></div><div class="hero-copy"><h1>SpiderCaster: websites from real copy, on free tokens</h1><p class="lede">SpiderCaster is a copy-driven static website engine.</p><p class="lede">You give it a brief and real copy files; it returns a self-contained static site.</p><p class="lede">The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens.</p><p class="lede">AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference.</p><p class="lede">Paid models join only when explicitly allowed.</p><div class="hero-cta"><a class="btn primary" data-cta="primary" href="#features">Build</a></div></div></div></section>
 <section id="about" class="sec"><div class="wrap"><div class="about-body"><p>The engine follows the WebDev package rails: it never invents facts, prices or claims; output stays noindex until approved; secrets are read from environment variable names only; and every run writes a token ledger so the cost is auditable.</p></div></div></section>
 <section id="features" class="sec"><div class="wrap"><div class="sec-head"><h2>Build</h2></div><div class="grid c3"><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>forge init PROJECT</h3><p>scaffold a project with brief.md and a copy folder.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>forge build PROJECT --offline</h3><p>zero-token build mapped from your copy.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2z"/></svg></span><h3>forge build PROJECT</h3><p>AI build on the free chain, with offline fallback.</p></div><div class="card reveal"><span class="chip"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z"/><path d="M19 15l.9 1.8 1.8.9-1.8.9L19 21l-.9-2.1-1.8-.9 1.8-.9L19 15z"/></svg></span><h3>forge build --from SITE/site.json</h3><p>rebuild after hand edits, zero tokens.</p></div></div></div></section>
 <section id="iterate" class="sec"><div class="wrap"><div class="sec-head"><h2>Iterate</h2></div><div class="about-body"><div class="points"><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>forge refine SITE &quot;instruction&quot;</b><span>patch one section, small token cost.</span></div></div><div class="pt"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b>forge refine SITE &quot;light theme&quot; --offline</b><span>theme flips cost nothing.</span></div></div></div></div></div></section>

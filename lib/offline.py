@@ -32,12 +32,12 @@ FEATURE_ICON_HINTS = [
     ("cpu|engine|model|compute", "cpu"),
 ]
 
-CONTACT_TITLE_RE = re.compile(r"\bcontact\b|\bget in touch\b|\breach us\b", re.I)
-FAQ_TITLE_RE = re.compile(r"\bfaq\b|frequently asked", re.I)
-PRICING_TITLE_RE = re.compile(r"\bpric(e|ing|es|plans)\b", re.I)
-MENU_TITLE_RE = re.compile(r"\bmenu\b", re.I)
-TEAM_TITLE_RE = re.compile(r"\bteam\b|\bstaff\b|\babout us\b|\bour story\b", re.I)
-GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b", re.I)
+CONTACT_TITLE_RE = re.compile(r"\bcontact\b|\bget in touch\b|\breach us\b", re.IGNORECASE)
+FAQ_TITLE_RE = re.compile(r"\bfaq\b|frequently asked", re.IGNORECASE)
+PRICING_TITLE_RE = re.compile(r"\bpric(e|ing|es|plans)\b", re.IGNORECASE)
+MENU_TITLE_RE = re.compile(r"\bmenu\b", re.IGNORECASE)
+TEAM_TITLE_RE = re.compile(r"\bteam\b|\bstaff\b|\babout us\b|\bour story\b", re.IGNORECASE)
+GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b", re.IGNORECASE)
 
 
 def guess_icon(text: str) -> str:
@@ -103,21 +103,46 @@ def _cut_description(text: str, limit: int = 160) -> str:
     return window
 
 
+def _span_file(text: str, blocks) -> str | None:
+    """File holding text as an exact span, else None.
+
+    --brand (and any future override) is honored only when it equals a
+    cited span: a block title, or a verbatim substring of a paragraph,
+    bullet, numbered item, question, answer, or price name.
+    """
+    want = str(text or "").strip()
+    if not want:
+        return None
+    for b in blocks:
+        if want == str(b.title or "").strip():
+            return b.file
+        hay = list(b.paragraphs) + list(b.bullets) + list(b.numbered)
+        hay += [qa.get("q", "") for qa in b.qa] + [qa.get("a", "") for qa in b.qa]
+        hay += [p.get("name", "") for p in b.prices]
+        if any(want == h.strip() or want in h for h in hay if isinstance(h, str)):
+            return b.file
+    return None
+
+
 def plan_offline(copy, opts: dict) -> dict:
     """Build the raw IR dict from ingested copy only. Zero tokens."""
+    from .copy_schema import GapError, load_frame_slots
+
     blocks = [b for b in copy.blocks if b.title or b.paragraphs or b.bullets]
     if not blocks:
-        raise SystemExit("offline planner: no copy blocks found; add files under copy/")
+        raise SystemExit("FAIL gap hero.headline (no copy blocks found; add files under copy/)")
 
-    # hero first, so the brand derives from the same block the hero uses
+    # hero first, so the brand derives from the same block the hero uses.
+    # Strict: the headline must be a cited span. An uncited --brand is
+    # ignored; brief/Local Build never supply visible words.
     hero_block = _pick_hero(blocks)
-    if opts.get("brand"):
-        brand = opts["brand"]
-    elif hero_block.title:
-        brand = hero_block.title[:60]
+    brand_opt = str((opts or {}).get("brand") or "").strip()
+    if brand_opt and _span_file(brand_opt, blocks):
+        brand = brand_opt[:60]
+    elif hero_block.title and hero_block.title.strip():
+        brand = hero_block.title.strip()[:60]
     else:
-        first_line = copy.brief.splitlines()[0].strip() if copy.brief else ""
-        brand = first_line[:60] or "Local Build"
+        raise GapError("hero", "headline", "no cited headline in copy")
 
     sections: list[dict] = []
     hero_sub = _first_paragraph(hero_block)
@@ -131,6 +156,7 @@ def plan_offline(copy, opts: dict) -> dict:
             "secondary": None,
             "bullets": hero_block.bullets[:4],
         },
+        "_source": hero_block.file,
     })
     # remaining real paragraphs from the hero block keep their place on the page
     extra_paras = [p for p in hero_block.paragraphs if p != hero_sub]
@@ -155,31 +181,41 @@ def plan_offline(copy, opts: dict) -> dict:
             paras = b.paragraphs[:]
             addr = next((p for p in paras if re.match(r"^\d{1,4}\s+\w", p)), "")
             hours = next((p for p in paras
-                          if re.search(r"\bam\b|\bpm\b|closed|\b(?:mon|tue|wed|thu|fri|sat|sun)", p, re.I)
+                          if re.search(r"\bam\b|\bpm\b|closed|\b(?:mon|tue|wed|thu|fri|sat|sun)", p, re.IGNORECASE)
                           and p != addr), "")
             phone = (b.phones or copy.phones or [""])[0]
             email = (b.emails or copy.emails or [""])[0]
             exact = {x.strip() for x in (phone, email, addr) if str(x).strip()}
             body = [p for p in paras if p != hours and p.strip() not in exact]
+            data = {
+                "title": title or "Contact",
+                "body": " ".join(body[:2]),
+                "email": email,
+                "phone": phone,
+                "address": addr,
+                "hours": hours,
+            }
+            if not any(str(data[k] or "").strip() for k in ("body", "email", "phone", "address", "hours")):
+                raise GapError("contact", "body", f"block '{b.file}' asks for contact with no cited facts")
             sections.append({
-                "id": "contact", "type": "contact",
-                "data": {
-                    "title": title or "Contact",
-                    "body": " ".join(body[:2]),
-                    "email": email,
-                    "phone": phone,
-                    "address": addr,
-                    "hours": hours,
-                },
+                "id": "contact", "type": "contact", "data": data, "_source": b.file,
             })
             continue
+        if FAQ_TITLE_RE.search(title) and not b.qa:
+            # A FAQ heading with no Q&A pairs is a gap, not generic prose.
+            raise GapError("faq", "items", f"block '{b.file}' has a faq heading with no cited Q&A")
         if has_qa or FAQ_TITLE_RE.search(title):
             sections.append({
                 "id": "faq", "type": "faq",
                 "data": {"title": title or "Questions", "subhead": "",
                          "items": b.qa[:8] or [{"q": q, "a": a} for q, a in []]},
+                "_source": b.file,
             })
             continue
+        if (PRICING_TITLE_RE.search(title) or MENU_TITLE_RE.search(title)) and not has_prices:
+            # A Pricing/Menu heading with zero price rows is a gap, not about text.
+            kind = "menu" if MENU_TITLE_RE.search(title) else "pricing"
+            raise GapError(kind, "items", f"block '{b.file}' has a {kind} heading with no cited prices")
         if has_prices and (PRICING_TITLE_RE.search(title) or MENU_TITLE_RE.search(title)):
             kind = "menu" if MENU_TITLE_RE.search(title) else "pricing"
             if kind == "menu":
@@ -192,6 +228,7 @@ def plan_offline(copy, opts: dict) -> dict:
                              "groups": [{"name": group_name,
                                          "items": [{"name": p["name"], "desc": p["desc"], "price": p["price"]}
                                                    for p in b.prices[:8]]}]},
+                    "_source": b.file,
                 })
             else:
                 items = []
@@ -201,6 +238,7 @@ def plan_offline(copy, opts: dict) -> dict:
                 sections.append({
                     "id": "pricing", "type": "pricing",
                     "data": {"title": title, "subhead": " ".join(b.paragraphs[:1]), "items": items},
+                    "_source": b.file,
                 })
             continue
         if has_bullets and not GALLERY_TITLE_RE.search(title):
@@ -210,6 +248,7 @@ def plan_offline(copy, opts: dict) -> dict:
                          "items": [{"icon": guess_icon(f"{x} {title}"), "title": x.split(":")[0][:60],
                                     "body": x.split(":", 1)[1].strip() if ":" in x else ""}
                                    for x in b.bullets[:8]]},
+                "_source": b.file,
             })
             continue
         if has_images and (GALLERY_TITLE_RE.search(title) or copy.assets):
@@ -219,6 +258,7 @@ def plan_offline(copy, opts: dict) -> dict:
                 "data": {"title": title or "Gallery", "subhead": "",
                          "items": [{"label": im.get("alt") or "", "caption": "", "src": im.get("src", ""),
                                     "alt": im.get("alt") or "", "hue": None} for im in imgs[:12]]},
+                "_source": b.file,
             })
             continue
         if TEAM_TITLE_RE.search(title):
@@ -228,9 +268,12 @@ def plan_offline(copy, opts: dict) -> dict:
                          "points": [{"title": x.split(":")[0][:60],
                                      "body": x.split(":", 1)[1].strip() if ":" in x else ""}
                                     for x in b.bullets[:4]]},
+                "_source": b.file,
             })
             continue
-        # default: about-style text section
+        # default: about-style text section for cited leftover prose only.
+        # Blocks that asked for a required slot above already raised GapError;
+        # reaching here means plain prose with no special contract.
         if b.paragraphs or b.bullets or b.numbered:
             sections.append({
                 "id": ir.slugify(title) or "section", "type": "about",
@@ -238,6 +281,7 @@ def plan_offline(copy, opts: dict) -> dict:
                          "points": [{"title": x.split(":")[0][:60],
                                      "body": x.split(":", 1)[1].strip() if ":" in x else ""}
                                     for x in (b.bullets + b.numbered)[:4]]},
+                "_source": b.file,
             })
 
     # de-dup ids like faq/faq
@@ -276,10 +320,31 @@ def plan_offline(copy, opts: dict) -> dict:
             sections[0]["data"]["secondary"] = secondary
 
     theme = {
-        "template": opts.get("template") or "modern",
-        "dark": opts.get("dark") if isinstance(opts.get("dark"), bool) else True,
+        "template": (opts or {}).get("template") or "modern",
+        "dark": (opts or {}).get("dark") if isinstance((opts or {}).get("dark"), bool) else True,
         "accent": None,
         "accent2": None,
+    }
+    # Gap-gate record: per-section source files for --from re-read, plus the
+    # frame slot contract the planner enforced. normalize_site() preserves
+    # both keys; the renderer ignores them.
+    citations: dict = {}
+    for sec in sections:
+        if not isinstance(sec, dict):
+            continue
+        src = sec.get("_source")
+        data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+        texts = [str(v).strip() for v in (
+            data.get("headline"), data.get("title"), data.get("subhead"),
+        ) if isinstance(v, str) and str(v).strip()]
+        if isinstance(src, str) and src:
+            citations[str(sec.get("id"))] = {"file": src, "texts": texts[:3]}
+    slots = load_frame_slots((opts or {}).get("frame"))
+    presentation = {
+        "frame_id": str((opts or {}).get("frame") or ""),
+        "mold_id": str((opts or {}).get("mold") or ""),
+        "slots": [{"section": name, "required": True} for name in slots.get("required", [])]
+        + [{"section": name, "required": False} for name in slots.get("optional", [])],
     }
     return {
         "meta": {"title": brand, "description": _cut_description(_first_paragraph(hero_block)) or f"{brand} - local build"},
@@ -289,6 +354,8 @@ def plan_offline(copy, opts: dict) -> dict:
                 for label in [_nav_label(s["data"].get("title") or "")] if label][:6],
         "pages": [{"slug": "index", "title": brand, "sections": sections}],
         "footer": {"text": f"(c) {date.today().year} {brand}", "links": [], "credit": True},
+        "citations": citations,
+        "presentation": presentation,
     }
 
 

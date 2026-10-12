@@ -1,0 +1,67 @@
+{
+ "name": "Reading progress bar",
+ "slug": "reading-progress",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Thin bar fixed to the top of the page that fills as the visitor scrolls the article. Reports the value to screen readers through progressbar attributes.",
+ "inputs": [
+  {
+   "name": "label",
+   "type": "string",
+   "required": false,
+   "description": "Accessible name.",
+   "default": "Reading progress"
+  },
+  {
+   "name": "source",
+   "type": "string",
+   "required": false,
+   "description": "CSS selector of the article.",
+   "default": "article"
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "reading-progress.html",
+  "reading-progress.css",
+  "reading-progress.js",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 3000,
+ "tags": [
+  "progress",
+  "js",
+  "fixed"
+ ],
+ "external_hosts": [],
+ "notes": [
+  "The test sends synthetic scroll events. Headless dump-dom draws no frames, so native scroll timing is not covered."
+ ],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 131,
+  "failed": 0,
+  "total": 131
+ },
+ "bytes": 1318,
+ "gzip_bytes": 747
+}

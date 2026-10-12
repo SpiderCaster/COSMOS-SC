@@ -31,7 +31,7 @@ def pack(root: Path | None, seat_id: str) -> dict:
 def main() -> int:
     architect = pack(None, "architect")
     pack(None, "content")
-    assert architect["hands"] == ["brief_read", "frame_pick", "mold_pick", "library_bind"]
+    assert architect["hands"] == ["brief_read", "frame_pick", "mold_pick", "library_bind", "sitemap_read"]
     print("seatpack selftest ok")
     return 0
 

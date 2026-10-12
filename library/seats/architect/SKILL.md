@@ -16,7 +16,7 @@ description: >-
 
 1. Read `library/seats/README.md` and `library/CREW.md`.
 2. Run commands from `V:\a\Ai\spidercaster\working`.
-3. Call only `brief_read`, `frame_pick`, `mold_pick`, `library_bind`.
+3. Call only `brief_read`, `frame_pick`, `mold_pick`, `library_bind`, `sitemap_read`.
 4. Read-only orientation, not hands:
 
    `py -3.14 spidercaster.py doctor`
@@ -39,6 +39,7 @@ description: >-
    `python spidercaster.py library bind --site <site> --mold <id>`
 
    Do not pass `--live` or `--vendor`. Stop if the command says `refused`. Publish is Keith's `library bind --live`. `crew run` does not publish.
+5. **sitemap_read.** Crew runs require `sitemap.json` (FINAL D1, scoped). FAIL on an intent-less page or a non-frame section; a missing doc is `FAIL pages.scope`.
 
 ## Exit
 

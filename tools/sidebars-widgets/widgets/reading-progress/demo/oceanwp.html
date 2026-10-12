@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Reading progress bar demo, oceanwp context</title><style>/* Test context. Approximates OceanWP base rules that touch widgets and layout.
+   Not vendor CSS. Root size is 62.5% to catch any rem use. */
+html{font-size:62.5%}
+body{margin:0;font-family:"Open Sans",Arial,sans-serif;font-size:14px;line-height:1.8;color:#3a3a3a;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#333;text-decoration:none}
+h1,h2,h3,h4{font-weight:600;line-height:1.4;margin:0 0 20px;color:#333}
+p{margin:0 0 20px}
+ul,ol{margin:0 0 20px 20px;padding:0}
+#wrap{overflow:hidden}
+.container{width:1200px;max-width:90%;margin:0 auto}
+#content-wrap{padding:30px 0}
+#primary{width:100%}
+#right-sidebar,#left-sidebar{width:100%;margin-top:30px}
+.widget-area ul{list-style:none;margin:0;padding:0}
+.widget-area li{padding:4px 0;border-bottom:1px solid #f1f1f1;list-style:none}
+.widget-area a{color:#555;text-decoration:none}
+.widget-area p{margin:0 0 20px;font-size:13px}
+.widget-title{font-size:13px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #f1f1f1;margin:0 0 20px}
+.sidebar-box{margin-bottom:30px}
+button,input[type=submit]{font-family:inherit}
+input[type=search],input[type=email],input[type=text]{border:1px solid #ddd;padding:6px 12px;font-size:14px;line-height:1.5}
+@media(min-width:960px){#content-wrap::after{content:"";display:block;clear:both}#primary{float:left;width:72%}#right-sidebar{float:right;width:24%;margin-top:0}}
+.sc-tall{height:420px;margin:0}
+</style><style>.sc-rp{position:fixed;top:0;left:0;right:0;z-index:60;height:6px;background:var(--sc-line,#c9d1d9);color:var(--sc-fg,#1d2327);font-size:16px}
+.sc-rp .sc-rp-bar{display:block;height:100%;background:var(--sc-accent,#0b5cad);transform-origin:0 50%;transform:scaleX(var(--sc-p,0))}
+.sc-rp .sc-rp-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body class="oceanwp-theme content-full-width"><div id="outer-wrap" class="site clr"><div id="wrap" class="clr"><main id="main" class="site-main clr"><div id="content-wrap" class="container clr"><div id="primary" class="content-area clr"><div id="content" class="site-content clr"><article class="entry-content clr"><div data-sc-test-skip><h1 class="sc-fixture">Fixture article</h1>
+<p>Fixture text for layout tests. It stands in for page content.</p>
+<h2>Fixture section one</h2>
+<p>Fixture paragraph one. The test page needs height so sticky and scroll checks run.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection one</h3>
+<p>Fixture paragraph two.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section two</h2>
+<p>Fixture paragraph three.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h3>Fixture subsection two</h3>
+<p>Fixture paragraph four.</p>
+<p class="sc-tall">Fixture block, tall.</p>
+<h2>Fixture section three</h2>
+<p>Fixture paragraph five.</p>
+</div></article></div></div><aside id="right-sidebar" class="sidebar-container widget-area sidebar-primary" role="complementary" aria-label="Primary Sidebar"><div id="right-sidebar-inner" class="clr"><div class="sidebar-box widget_custom_html clr"><div id="sc-under-test"><div class="sc-rp" data-sc="progress" data-source="article" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="sc-rp-bar"></span><span class="sc-rp-t">Reading progress</span></div>
+</div></div></div></aside></div></main></div></div><script>(function(){"use strict";
+function init(el){
+ var src=document.querySelector(el.getAttribute("data-source")||"article");if(!src)return;
+ var bar=el;
+ function upd(){
+  var r=src.getBoundingClientRect(),h=r.height-window.innerHeight,p=h<=0?1:Math.min(1,Math.max(0,-r.top/h));
+  bar.style.setProperty("--sc-p",p.toFixed(3));bar.setAttribute("aria-valuenow",String(Math.round(p*100)))}
+ window.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);upd()}
+function run(){var n=document.querySelectorAll('[data-sc="progress"]');for(var i=0;i<n.length;i++)init(n[i])}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run);else run()})();
+</script></body></html>

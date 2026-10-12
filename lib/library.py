@@ -13,6 +13,7 @@ Mix cites two or more parents and is not an as-is vendor frame.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -44,6 +45,98 @@ def _slug(value: str) -> str:
     if not out:
         raise LibraryError("empty id")
     return out[:48]
+
+
+def _sha_bound_dir(dest: Path) -> dict[str, str]:
+    """sha256 of the release artifact: HTML + assets + site.json.
+
+    Mirrors lib.hands._sha_bound (crew-ticket.json excluded, since a
+    ticket cannot hash itself). A byte change in any bound file
+    invalidates sign-off: re-run the crew.
+    """
+    bound: dict[str, str] = {}
+    if not dest.is_dir():
+        return bound
+    for path in sorted(dest.rglob("*")):
+        if not path.is_file() or path.name == "crew-ticket.json":
+            continue
+        try:
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            continue
+        key = str(path.relative_to(dest)).replace("\\", "/")
+        bound[key] = digest
+    return bound
+
+
+def _ticket_visual_status(ticket: dict) -> str | None:
+    """Visual-critic status across both ticket hands shapes.
+
+    Crew tickets carry {"role": "visual"} rows; direct-hands tickets
+    carry {"hand": "check_site"} rows. Either form counts.
+    """
+    hands = ticket.get("hands")
+    if not isinstance(hands, list):
+        return None
+    for row in hands:
+        if isinstance(row, dict) and row.get("role") == "visual":
+            status = row.get("status")
+            return str(status) if status else None
+    for row in hands:
+        if isinstance(row, dict) and row.get("hand") == "check_site":
+            status = row.get("status")
+            return str(status) if status else None
+    return None
+
+
+def verify_live_ticket(site_dir: Path, site: str, mold_id: str) -> dict:
+    """Recompute hashes and refuse a stale or forged ticket.
+
+    Fail-closed publish gate (round2 3.7/3.9): missing/unreadable
+    ticket, site/mold mismatch, "ok" not true, visual not PASS, empty
+    hash map, or any recomputed hash difference raises LibraryError.
+    Returns the ticket plus recomputed hashes and ticket path.
+    """
+    dest = Path(site_dir)
+    path = dest / "crew-ticket.json"
+    if not path.is_file():
+        raise LibraryError(f"bad ticket: {path} missing; re-run the crew")
+    try:
+        ticket = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise LibraryError(f"bad ticket: {path} unreadable") from exc
+    if not isinstance(ticket, dict):
+        raise LibraryError(f"bad ticket: {path} is not an object")
+    if ticket.get("site") != site:
+        raise LibraryError(
+            f"ticket site {ticket.get('site')!r} != {site!r}"
+        )
+    if ticket.get("mold") != mold_id:
+        raise LibraryError(
+            f"ticket mold {ticket.get('mold')!r} != {mold_id!r}"
+        )
+    if ticket.get("ok") is not True:
+        raise LibraryError('ticket "ok" is not true; re-run the crew')
+    visual = _ticket_visual_status(ticket)
+    if visual != "PASS":
+        raise LibraryError(f"visual is not PASS ({visual}); re-run the crew")
+    recorded = ticket.get("sha256")
+    if recorded is None:
+        recorded = ticket.get("hashes")
+    if not isinstance(recorded, dict) or not recorded:
+        raise LibraryError("bad ticket: no sha256/hashes map")
+    now = _sha_bound_dir(dest)
+    if now != recorded:
+        bad = next(
+            (
+                key
+                for key in sorted(set(now) | set(recorded))
+                if now.get(key) != recorded.get(key)
+            ),
+            "artifact",
+        )
+        raise LibraryError(f"hash mismatch: {bad} changed; re-run the crew")
+    return {"ticket": ticket, "sha256": now, "path": path}
 
 
 class Library:
@@ -248,8 +341,22 @@ class Library:
     def live_conflict(self, mold_id: str, site: str) -> str | None:
         return self._live_owner("mold", mold_id, site)
 
-    def bind(self, site: str, mold_id: str, vendor_frame: str | None = None, live: bool = False) -> dict:
-        """Attach one mold to a site. At most one vendor frame. Live use is exclusive."""
+    def bind(
+        self,
+        site: str,
+        mold_id: str,
+        vendor_frame: str | None = None,
+        live: bool = False,
+        site_dir: Path | str | None = None,
+    ) -> dict:
+        """Attach one mold to a site. At most one vendor frame. Live use is exclusive.
+
+        When live=True and site_dir is given, the crew ticket in that dir is
+        verified first: bad ticket, site/mold mismatch, ok not true, visual
+        not PASS, or any hash mismatch refuses before the mold-collision
+        check. Direct calls without site_dir keep the legacy
+        collision-only gate (selftests, drafts).
+        """
         site = _slug(site) if "." not in site else str(site).strip().lower()
         mold = self.load_mold(mold_id)
         if vendor_frame:
@@ -260,12 +367,26 @@ class Library:
             if mold.get("origin") == "scratch":
                 raise LibraryError("a scratch mold does not wear a vendor frame")
         owner = self._live_owner("mold", mold["id"], site)
+        bound_hashes: dict[str, str] = {}
+        ticket_hash = ""
+        if live and site_dir is not None:
+            checked = verify_live_ticket(Path(site_dir), site, mold["id"])
+            bound_hashes = checked["sha256"]
+            ticket_path = checked["path"]
+            try:
+                ticket_hash = hashlib.sha256(
+                    ticket_path.read_bytes()
+                ).hexdigest()
+            except OSError:
+                ticket_hash = ""
         if live and owner:
             raise LibraryError(f"mold {mold['id']} is already live on {owner}")
         if live and vendor_frame:
             frame_owner = self._live_owner("vendor_frame", vendor_frame, site)
             if frame_owner:
-                raise LibraryError(f"frame {vendor_frame} is already live on {frame_owner}")
+                raise LibraryError(
+                    f"frame {vendor_frame} is already live on {frame_owner}"
+                )
         data = self.ledger()
         kept = [r for r in data["assignments"] if r.get("site") != site]
         row = {
@@ -274,6 +395,9 @@ class Library:
             "vendor_frame": vendor_frame,
             "live": bool(live),
         }
+        if live and site_dir is not None:
+            row["sha256"] = bound_hashes
+            row["ticket_sha256"] = ticket_hash
         kept.append(row)
         data["assignments"] = kept
         self.save_ledger(data)
@@ -355,5 +479,106 @@ def selftest(root: Path) -> int:
         raise SystemExit("package dir accepted as a vendor snapshot")
     except LibraryError:
         pass
+    live_mold = lib.save_mold({
+        "id": "bind-live", "origin": "scratch",
+        "palette": "#1f6f5b", "type_lead": "serif", "nav": "segmented",
+    })
+    site_dir = root / "live-site"
+    site_dir.mkdir(parents=True, exist_ok=True)
+    (site_dir / "index.html").write_text("<html></html>\n", encoding="utf-8")
+    (site_dir / "site.json").write_text('{"site": "x"}\n', encoding="utf-8")
+
+    def _write_live_ticket(ok: bool, visual: str) -> None:
+        hands = [
+            {"role": "visual", "status": visual, "detail": "checker"},
+            {"role": "deployer", "status": "PASS", "detail": "ticket"},
+        ]
+        ticket = {
+            "site": "bind-live.example",
+            "mold": live_mold["id"],
+            "publish": "Keith click. This run does not deploy.",
+            "hands": hands,
+            "ok": ok,
+            "sha256": _sha_bound_dir(site_dir),
+        }
+        (site_dir / "crew-ticket.json").write_text(
+            json.dumps(ticket, indent=2) + "\n", encoding="utf-8"
+        )
+
+    _write_live_ticket(True, "PASS")
+    row = lib.bind(
+        "bind-live.example", live_mold["id"], live=True, site_dir=site_dir
+    )
+    if not row.get("live") or row.get("sha256") != _sha_bound_dir(site_dir):
+        raise SystemExit("verified live bind did not record hashes")
+    if not row.get("ticket_sha256"):
+        raise SystemExit("verified live bind did not record ticket hash")
+    (site_dir / "index.html").write_text("<html>changed</html>\n", encoding="utf-8")
+    try:
+        lib.bind(
+            "bind-live.example", live_mold["id"], live=True, site_dir=site_dir
+        )
+        raise SystemExit("hash mismatch was allowed")
+    except LibraryError as exc:
+        if "hash mismatch" not in str(exc):
+            raise SystemExit(f"wrong refusal: {exc}")
+    (site_dir / "index.html").write_text("<html></html>\n", encoding="utf-8")
+    _write_live_ticket(False, "PASS")
+    try:
+        lib.bind(
+            "bind-live.example", live_mold["id"], live=True, site_dir=site_dir
+        )
+        raise SystemExit("ok:false ticket was allowed")
+    except LibraryError as exc:
+        if '"ok" is not true' not in str(exc):
+            raise SystemExit(f"wrong refusal: {exc}")
+    _write_live_ticket(True, "FAIL")
+    try:
+        lib.bind(
+            "bind-live.example", live_mold["id"], live=True, site_dir=site_dir
+        )
+        raise SystemExit("visual FAIL ticket was allowed")
+    except LibraryError as exc:
+        if "visual is not PASS" not in str(exc):
+            raise SystemExit(f"wrong refusal: {exc}")
+    _write_live_ticket(True, "PASS")
+    (site_dir / "crew-ticket.json").unlink()
+    try:
+        lib.bind(
+            "bind-live.example", live_mold["id"], live=True, site_dir=site_dir
+        )
+        raise SystemExit("missing ticket was allowed")
+    except LibraryError as exc:
+        if "bad ticket" not in str(exc):
+            raise SystemExit(f"wrong refusal: {exc}")
+    second_dir = root / "live-site-two"
+    second_dir.mkdir(parents=True, exist_ok=True)
+    (second_dir / "index.html").write_text("<html></html>\n", encoding="utf-8")
+    (second_dir / "site.json").write_text('{"site": "y"}\n', encoding="utf-8")
+    second_ticket = {
+        "site": "bind-live-two.example",
+        "mold": live_mold["id"],
+        "publish": "Keith click. This run does not deploy.",
+        "hands": [
+            {"role": "visual", "status": "PASS", "detail": "checker"},
+            {"role": "deployer", "status": "PASS", "detail": "ticket"},
+        ],
+        "ok": True,
+        "sha256": _sha_bound_dir(second_dir),
+    }
+    (second_dir / "crew-ticket.json").write_text(
+        json.dumps(second_ticket, indent=2) + "\n", encoding="utf-8"
+    )
+    try:
+        lib.bind(
+            "bind-live-two.example",
+            live_mold["id"],
+            live=True,
+            site_dir=second_dir,
+        )
+        raise SystemExit("live reuse was allowed after verify")
+    except LibraryError as exc:
+        if "already live" not in str(exc):
+            raise SystemExit(f"wrong refusal: {exc}")
     print("library selftest ok")
     return 0

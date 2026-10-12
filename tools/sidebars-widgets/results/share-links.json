@@ -1,13 +1,19 @@
 {
  "slug": "share-links",
  "status": "pass",
- "passed": 75,
+ "passed": 131,
  "failed": 0,
- "total": 75,
- "seconds": 7.9,
+ "total": 131,
+ "seconds": 21.1,
  "extra": {
   "bytes": 3323,
   "gzip_bytes": 1255,
+  "root_font": {
+   "oceanwp": "10px",
+   "generatepress": "16px",
+   "oceanwp-real": "10px",
+   "generatepress-real": "16px"
+  },
   "measured_360": {
    "text_nodes": 7,
    "tap_targets": 5,
@@ -387,6 +393,286 @@
   },
   {
    "id": "measure.has_content.generatepress@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.four_links_one_button.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.encoded_url_in_hrefs.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.no_raw_url_in_query.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.external_rel.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.copy_writes_url.oceanwp-real@360",
+   "ok": true,
+   "detail": "/fixture-post-one/"
+  },
+  {
+   "id": "behavior.copy_message.oceanwp-real@360",
+   "ok": true,
+   "detail": "Link copied."
+  },
+  {
+   "id": "behavior.copy_failure_message.oceanwp-real@360",
+   "ok": true,
+   "detail": "Copy failed. Copy the address from the address bar."
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.oceanwp-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.four_links_one_button.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.encoded_url_in_hrefs.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.no_raw_url_in_query.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.external_rel.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.copy_writes_url.oceanwp-real@1280",
+   "ok": true,
+   "detail": "/fixture-post-one/"
+  },
+  {
+   "id": "behavior.copy_message.oceanwp-real@1280",
+   "ok": true,
+   "detail": "Link copied."
+  },
+  {
+   "id": "behavior.copy_failure_message.oceanwp-real@1280",
+   "ok": true,
+   "detail": "Copy failed. Copy the address from the address bar."
+  },
+  {
+   "id": "measure.no_overflow.oceanwp-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.oceanwp-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.oceanwp-real@1280",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@360",
+   "ok": true,
+   "detail": "innerWidth 360"
+  },
+  {
+   "id": "behavior.four_links_one_button.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.encoded_url_in_hrefs.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.no_raw_url_in_query.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.external_rel.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.copy_writes_url.generatepress-real@360",
+   "ok": true,
+   "detail": "/fixture-post-one/"
+  },
+  {
+   "id": "behavior.copy_message.generatepress-real@360",
+   "ok": true,
+   "detail": "Link copied."
+  },
+  {
+   "id": "behavior.copy_failure_message.generatepress-real@360",
+   "ok": true,
+   "detail": "Copy failed. Copy the address from the address bar."
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@360",
+   "ok": true,
+   "detail": "[] doc=360"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@360",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@360",
+   "ok": true,
+   "detail": "no visible text measured"
+  },
+  {
+   "id": "browser.error.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "browser.viewport.generatepress-real@1280",
+   "ok": true,
+   "detail": "innerWidth 1280"
+  },
+  {
+   "id": "behavior.four_links_one_button.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.encoded_url_in_hrefs.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.no_raw_url_in_query.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.external_rel.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "behavior.copy_writes_url.generatepress-real@1280",
+   "ok": true,
+   "detail": "/fixture-post-one/"
+  },
+  {
+   "id": "behavior.copy_message.generatepress-real@1280",
+   "ok": true,
+   "detail": "Link copied."
+  },
+  {
+   "id": "behavior.copy_failure_message.generatepress-real@1280",
+   "ok": true,
+   "detail": "Copy failed. Copy the address from the address bar."
+  },
+  {
+   "id": "measure.no_overflow.generatepress-real@1280",
+   "ok": true,
+   "detail": "[] doc=1280"
+  },
+  {
+   "id": "measure.text_floor.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.contrast.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.tap_44.generatepress-real@1280",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "measure.has_content.generatepress-real@1280",
    "ok": true,
    "detail": "no visible text measured"
   }

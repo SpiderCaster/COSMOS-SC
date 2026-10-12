@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>broken aria-controls</title>
+<style>
+html{font-size:16px} body{margin:0;padding:0 16px;font-size:18px;color:#111;background:#fff;box-sizing:border-box}
+*{box-sizing:border-box}
+.home{display:inline-flex;min-height:44px;min-width:44px;align-items:center;padding:0 8px}
+.toggle{display:none;width:48px;height:48px;border:1px solid #333;background:#fff}
+.menu a{display:inline-flex;min-height:44px;align-items:center;padding:0 8px;color:#111}
+@media (max-width:860px){
+ .toggle{display:inline-flex}
+ .menu{display:none}
+ .menu.open{display:block}
+ .menu a{display:flex}
+}
+</style></head><body>
+<header class="site-header"><a class="home" href="index.html">Home</a><button class="toggle" aria-expanded="true" aria-controls="nope" aria-label="Menu"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 6h18"/></svg></button><nav id="menu" class="menu" aria-label="Main"><a href="#s1">Section 1</a><a href="#s2">Section 2</a><a href="#s3">Section 3</a><a href="#s4">Section 4</a><a href="#s5">Section 5</a><a href="#s6">Section 6</a></nav></header><main><h1>Drawer fixture</h1><p>Body copy for the drawer fixture page.</p></main><script>
+var t=document.querySelector('.toggle'),m=document.getElementById('menu');
+t.addEventListener('click',function(){var o=m.classList.toggle('open');t.setAttribute('aria-expanded',o?'true':'false');});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){m.classList.remove('open');t.setAttribute('aria-expanded','false');}});
+</script>
+</body></html>

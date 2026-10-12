@@ -1,0 +1,28 @@
+{
+  "project": "V:\\A\\Ai\\spidercaster\\working\\projects\\demo-local",
+  "out": "V:\\A\\Ai\\spidercaster\\working\\sites\\assembled",
+  "mode": "offline",
+  "tokens": 0,
+  "header": "hdr-classic-sticky+cmp-scroll-progress",
+  "parts": 383,
+  "families": {
+    "headers": 45,
+    "hooks_blocks": 44,
+    "popups_callouts": 166,
+    "sidebars": 128
+  },
+  "used_on_index": [
+    "definition-callout",
+    "key-takeaways",
+    "step-callout",
+    "editors-note",
+    "stat-callout",
+    "back-to-top-button",
+    "hdr-classic-sticky+cmp-scroll-progress"
+  ],
+  "pages": [
+    "index.html",
+    "catalog.html",
+    "favicon.svg"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+ "name": "Who to call",
+ "slug": "who-to-call",
+ "kind": "widget",
+ "version": "1.0.0",
+ "purpose": "Agency and phone list for residents. Each row is a tap-to-call link. An optional first row marks an emergency number.",
+ "inputs": [
+  {
+   "name": "title",
+   "type": "string",
+   "required": false,
+   "description": "Widget heading.",
+   "default": "Who to call"
+  },
+  {
+   "name": "uid",
+   "type": "string",
+   "required": false,
+   "description": "Short id that keeps element ids unique when the item is used twice on one page.",
+   "default": "1"
+  },
+  {
+   "name": "items",
+   "type": "list",
+   "required": true,
+   "description": "Contacts.",
+   "fields": [
+    "name",
+    "role",
+    "phone",
+    "phone_href",
+    "urgent"
+   ],
+   "field_notes": {
+    "urgent": "any value styles the row as an emergency line",
+    "phone_href": "digits for the tel link, such as +15550100"
+   }
+  }
+ ],
+ "files": [
+  "manifest.json",
+  "who-to-call.html",
+  "who-to-call.css",
+  "fixture.json",
+  "test.behavior.js",
+  "test.py"
+ ],
+ "test_command": "python test.py",
+ "status": "pass",
+ "themes": [
+  "oceanwp",
+  "generatepress"
+ ],
+ "budget_bytes": 6144,
+ "tags": [
+  "local",
+  "contacts",
+  "tel",
+  "arkansas-coverage"
+ ],
+ "external_hosts": [],
+ "notes": [],
+ "mobile_first": true,
+ "tap_target_px": 44,
+ "verified_in": [
+  "headless Chrome/Edge at 360 px and 1280 px",
+  "OceanWP-like context (root 62.5%)",
+  "GeneratePress-like context"
+ ],
+ "not_verified_in": [
+  "real OceanWP install",
+  "real GeneratePress install"
+ ],
+ "last_tested": "2026-10-03 22:25 Central Daylight Time",
+ "checks": {
+  "passed": 106,
+  "failed": 0,
+  "total": 106
+ },
+ "bytes": 2103,
+ "gzip_bytes": 773
+}

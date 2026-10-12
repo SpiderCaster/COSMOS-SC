@@ -1,0 +1,22 @@
+{
+ "data": {
+  "title": "Who to call",
+  "uid": "1",
+  "items": [
+   {
+    "name": "Fixture emergency line",
+    "role": "Fixture role",
+    "phone": "000",
+    "phone_href": "000",
+    "urgent": "1"
+   },
+   {
+    "name": "Fixture office",
+    "role": "",
+    "phone": "555 0100",
+    "phone_href": "+15550100",
+    "urgent": ""
+   }
+  ]
+ }
+}

@@ -50,6 +50,7 @@ def main() -> int:
         "frame_pick",
         "mold_pick",
         "library_bind",
+        "sitemap_read",
     ]
     print("seat_gate selftest ok")
     return 0

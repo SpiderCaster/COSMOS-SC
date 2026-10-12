@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from lib.crew import ROLES
@@ -94,7 +94,7 @@ def session_mark(out, root, seat, hand, status, detail, restore=None) -> dict:
         "hand": hand,
         "status": status,
         "detail": detail,
-        "at": datetime.now(timezone.utc).isoformat(),
+        "at": datetime.now(UTC).isoformat(),
     }
     line = json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n"
     with log.open("a", encoding="utf-8", newline="\n") as handle:
