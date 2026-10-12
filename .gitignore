@@ -22,6 +22,8 @@ bench/results/
 stage/
 preview/
 node_modules/
+build/
+dist/
 
 # secrets - never commit (see scripts/secret_scan.py + scripts/hooks/pre-commit)
 .env

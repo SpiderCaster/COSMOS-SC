@@ -18,7 +18,25 @@ and a token ledger on every run.
 
 ## Install
 
-None. Python 3.11+ with stdlib only.
+Python 3.11+, stdlib only (no runtime pip deps). Two ways in:
+
+```
+pip install git+https://github.com/SpiderCaster/COSMOS-SC.git
+spidercaster doctor          # "ok": true means molds, frames, seats, hands line up
+```
+
+The pip install ships the `spidercaster` command and the `lib` engine package.
+The data tree (`library/`, `projects/`, `sites/`) stays in the clone; point at
+it with `SPIDERCASTER_HOME` when it is not the current directory:
+
+```
+git clone https://github.com/SpiderCaster/COSMOS-SC.git
+cd COSMOS-SC
+pip install .
+SPIDERCASTER_HOME=%CD% spidercaster doctor   # Windows; Unix: SPIDERCASTER_HOME=$PWD
+```
+
+Classic no-install run still works (nothing to install):
 
 ```
 cd SpiderCaster
