@@ -18,8 +18,9 @@ page can pass these; they are CSS and markup, not content.
 On-page rows: a relative canonical link, a WebSite JSON-LD script with no
 aggregateRating anywhere in the html, a non-empty meta description, exactly
 one h1 on the index, and a non-empty alt on every img. A page with no img
-still passes img_alt. FAQPage JSON-LD, when present, must use only question
-strings that are also visible; a page with no FAQPage passes faq_schema.
+still passes img_alt. FAQPage JSON-LD is retired (Google removed the FAQ rich
+result 2023-2026): any page emitting FAQPage/Question/Answer markup fails
+faq_schema; a page with no FAQPage passes. Visible FAQ sections stay.
 A relative img src must name a file beside that HTML; a page with no img
 passes missing_file. When copy_text is non-empty, an h2 whose text is
 exactly About fails lone_about if the word About is not in the copy, and
@@ -276,22 +277,10 @@ def _has_type(node, wanted: str) -> bool:
     return False
 
 
-def _question_names(node, found: list[str]) -> None:
-    if isinstance(node, dict):
-        if "Question" in _type_names(node) and isinstance(node.get("name"), str):
-            found.append(node["name"])
-        for value in node.values():
-            _question_names(value, found)
-    elif isinstance(node, list):
-        for value in node:
-            _question_names(value, found)
-
-
-def _faq_questions(html: str) -> list[str]:
-    """Question names from JSON-LD that contains FAQPage. Empty if no FAQPage."""
+def _has_faqpage(html: str) -> bool:
+    """True when any JSON-LD block carries @type FAQPage (retired type)."""
     if "FAQPage" not in html:
-        return []
-    found: list[str] = []
+        return False
     for match in re.finditer(r"<script\b([^>]*)>(.*?)</script>", html, re.I | re.S):
         kind = _attr(match.group(1), "type")
         if not kind or kind.lower() != "application/ld+json":
@@ -300,23 +289,9 @@ def _faq_questions(html: str) -> list[str]:
             data = json.loads(match.group(2).strip())
         except ValueError:
             continue
-        if not _has_type(data, "FAQPage"):
-            continue
-        _question_names(data, found)
-    return found
-
-
-def _faq_schema_gaps(html: str) -> list[str]:
-    """JSON question strings that are not in the visible text."""
-    visible = visible_text(html)
-    missing: list[str] = []
-    seen: set[str] = set()
-    for question in _faq_questions(html):
-        if question in visible or question in seen:
-            continue
-        seen.add(question)
-        missing.append(question)
-    return missing
+        if _has_type(data, "FAQPage"):
+            return True
+    return False
 
 
 def _description_ok(html: str) -> bool:
@@ -4977,6 +4952,557 @@ def _mobile_rows(rep: "Report", pages: list[Path], mobile_spec=None) -> None:
 
 
 
+# ---------------------------------------------------------------------------
+# SEO-research rows (static-only subset of seo-research/*.md, D1/D6 scope).
+# Google link/SEO rules (google.md G-LINK/G-SEO/G-CRW) + schema.org required
+# props (schema.md: BreadcrumbList >= 2 items, LocalBusiness name+address,
+# HowTo deprecated, FAQPage retired and owned by faq_schema) + high-signal
+# ahrefs/moz/stox rules (orphans, depth, nofollow misuse, sitemap parity,
+# plan-vs-render links). Lab-only rules (LCP/INP/CLS measurement, SERP or
+# traffic joins, GSC field data) are NOT static and stay out. QAPage intent
+# and keyword-stuffing need judgement and stay out too. Numeric cutoffs
+# (title 15-70 chars, 300 words, 3 clicks) are practitioner heuristics, never
+# Google quotas. Chain detection skips nav/header/footer (menus sit adjacent
+# legitimately). Message shape per row: "page: field detail".
+# ---------------------------------------------------------------------------
+_SEO_TITLE_MIN = 15
+_SEO_TITLE_MAX = 70
+_SEO_BODY_MIN_WORDS = 300
+_SEO_CLICK_MAX = 3
+_TITLE_BOILERPLATE = frozenset((
+    "home", "untitled", "page", "welcome", "index", "homepage", "new page",
+))
+_GENERIC_ANCHORS = frozenset((
+    "click here", "read more", "learn more", "more", "here", "click this",
+    "read on", "click this link", "link",
+))
+_INTERNAL_REL_BAD = frozenset(("nofollow", "sponsored", "ugc"))
+_SEO_BARE_URL_RE = re.compile(r"^(?:https?://|www\.)\S+$", re.IGNORECASE)
+_SEO_CHAIN_RE = re.compile(r"</a\s*>\s*<a\b", re.IGNORECASE)
+_SEO_CHROME_RE = re.compile(
+    r"<(?:nav|header|footer)\b.*?</(?:nav|header|footer)\s*>",
+    re.IGNORECASE | re.DOTALL,
+)
+_SEO_LANG_RE = re.compile(r"<html\b([^>]*)>", re.IGNORECASE)
+_SEO_H1_RE = re.compile(r"<h1\b[^>]*>(.*?)</h1\s*>", re.IGNORECASE | re.DOTALL)
+_SEO_TITLE_RE = re.compile(
+    r"<title\b[^>]*>(.*?)</title\s*>", re.IGNORECASE | re.DOTALL)
+_SEO_ANCHOR_RE = re.compile(
+    r"<a\b([^>]*)>(.*?)</a\s*>", re.IGNORECASE | re.DOTALL)
+_SEO_NOINDEX_RE = re.compile(
+    r"<meta\b[^>]*\bname\s*=\s*(?:\"robots\"|'robots')[^>]*>", re.IGNORECASE)
+_SEO_LOC_RE = re.compile(r"<loc\b[^>]*>(.*?)</loc\s*>", re.IGNORECASE | re.DOTALL)
+_SEO_LD_RE = re.compile(
+    r"<script\b[^>]*\btype\s*=\s*(?:\"application/ld\+json\"|'application/ld\+json')"
+    r"[^>]*>(.*?)</script\s*>",
+    re.IGNORECASE | re.DOTALL,
+)
+_LB_TYPES = frozenset((
+    "LocalBusiness", "Restaurant", "CafeOrCoffeeShop", "Store", "ClothingStore",
+    "OnlineStore", "DaySpa", "HealthClub", "Dentist", "Hotel", "FoodEstablishment",
+))
+_ARTICLE_TYPES = frozenset(("Article", "NewsArticle", "BlogPosting"))
+
+
+def _seo_collapse(text: str) -> str:
+    return " ".join(str(text).split())
+
+
+def _seo_strip_tags(text: str) -> str:
+    return re.sub(r"<[^>]*>", "", text)
+
+
+def _seo_title(html: str) -> str:
+    match = _SEO_TITLE_RE.search(html)
+    return _seo_collapse(_seo_strip_tags(match.group(1))) if match else ""
+
+
+def _seo_description(html: str) -> str:
+    for match in re.finditer(r"<meta\b([^>]*)>", html, re.IGNORECASE):
+        name = _attr(match.group(1), "name")
+        content = _attr(match.group(1), "content")
+        if name and name.lower() == "description":
+            return _seo_collapse(content or "")
+    return ""
+
+
+def _seo_noindex(html: str) -> bool:
+    for match in _SEO_NOINDEX_RE.finditer(html):
+        content = _attr(match.group(0), "content")
+        if content and "noindex" in content.lower():
+            return True
+    return False
+
+
+def _seo_lang(html: str) -> str:
+    match = _SEO_LANG_RE.search(html)
+    if not match:
+        return ""
+    return (_attr(match.group(1), "lang") or "").strip()
+
+
+def _seo_h1_texts(html: str) -> list[str]:
+    return [_seo_collapse(_seo_strip_tags(m.group(1))) for m in _SEO_H1_RE.finditer(html)]
+
+
+def _seo_anchors(html: str) -> list[dict]:
+    out: list[dict] = []
+    for match in _SEO_ANCHOR_RE.finditer(html):
+        attrs, inner = match.group(1), match.group(2)
+        alts = re.findall(
+            r"<img\b[^>]*\balt\s*=\s*(?:\"([^\"]*)\"|'([^']*)')", inner, re.IGNORECASE)
+        out.append({
+            "href": _attr(attrs, "href"),
+            "seen_href": re.search(r"\bhref\s*=", attrs, re.IGNORECASE) is not None,
+            "text": _seo_collapse(_seo_strip_tags(inner)),
+            "title": (_attr(attrs, "title") or "").strip(),
+            "img_alt": " ".join(
+                _seo_collapse(first or second) for first, second in alts).strip(),
+            "rel": (_attr(attrs, "rel") or "").lower().split(),
+        })
+    return out
+
+
+def _seo_is_external(href: str) -> bool:
+    low = href.strip().lower()
+    return low.startswith(("http://", "https://", "//", "mailto:", "tel:", "data:"))
+
+
+def _seo_edge_file(page: Path, href: str) -> str | None:
+    """Rendered filename an internal href points at, else None (not a page edge)."""
+    target = href.split("#", 1)[0].split("?", 1)[0].strip().replace("\\", "/")
+    target = target.lstrip("/")
+    if not target or target.startswith("#") or _seo_is_external(target):
+        return None
+    if target.lower().startswith("javascript:"):
+        return None
+    cand = page.parent / target
+    if cand.suffix.lower() != ".html":
+        cand = cand.parent / (cand.name + ".html")
+    try:
+        return cand.name if cand.is_file() else None
+    except OSError:
+        return None
+
+
+def _seo_graph(pages: list[Path]) -> dict[str, set[str]]:
+    edges: dict[str, set[str]] = {p.name: set() for p in pages}
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        for link in _seo_anchors(html):
+            if link["href"] is None:
+                continue
+            hit = _seo_edge_file(page, link["href"])
+            if hit and hit in edges and hit != page.name:
+                edges[page.name].add(hit)
+    return edges
+
+
+def _seo_depths(pages: list[Path], edges: dict[str, set[str]]) -> dict[str, int]:
+    names = {p.name for p in pages}
+    if not names:
+        return {}
+    start = "index.html" if "index.html" in names else min(names)
+    depths = {start: 0}
+    frontier = [start]
+    while frontier:
+        cur = frontier.pop(0)
+        for nxt in sorted(edges.get(cur, ())):
+            if nxt not in depths:
+                depths[nxt] = depths[cur] + 1
+                frontier.append(nxt)
+    return depths
+
+
+def _robots_disallows(site_dir: Path) -> list[str] | None:
+    """Disallow paths from User-agent: * groups, or None when no robots.txt."""
+    path = site_dir / "robots.txt"
+    if not path.is_file():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    found: list[str] = []
+    applies = False
+    in_agents = True
+    for raw_line in text.splitlines():
+        bare = raw_line.split("#", 1)[0].strip()
+        if not bare:
+            continue  # blank lines never end a group; a new User-agent line does
+        agent = re.match(r"(?i)^user-agent\s*:\s*(\S+)\s*$", bare)
+        if agent:
+            if not in_agents:
+                applies = False
+            in_agents = True
+            if agent.group(1).strip() == "*":
+                applies = True
+            continue
+        rule = re.match(r"(?i)^disallow\s*:\s*(\S*)\s*$", bare)
+        if rule:
+            in_agents = False
+            if applies and rule.group(1).strip() not in found:
+                found.append(rule.group(1).strip())
+            continue
+        in_agents = False
+    return found
+
+
+def _sitemap_expected(site_dir: Path) -> tuple[str | None, list[str] | None, dict]:
+    """(kind, files, planned): kind in {"json", "xml"}; planned maps file to edges."""
+    doc_path = site_dir / "sitemap.json"
+    if doc_path.is_file():
+        try:
+            doc = json.loads(doc_path.read_text(encoding="utf-8", errors="replace"))
+        except ValueError:
+            return ("json", None, {})
+        entries = doc.get("pages") if isinstance(doc, dict) else None
+        if not isinstance(entries, list):
+            return ("json", None, {})
+        files = [p["file"] for p in entries
+                 if isinstance(p, dict) and isinstance(p.get("file"), str)]
+        planned: dict[str, list[str]] = {}
+        for entry in entries:
+            if not isinstance(entry, dict) or not isinstance(entry.get("file"), str):
+                continue
+            edges = [h.strip() for h in (entry.get("links") or []) if isinstance(h, str)]
+            planned[entry["file"]] = [e for e in edges if e.endswith(".html")]
+        return ("json", files, planned)
+    xml_path = site_dir / "sitemap.xml"
+    if xml_path.is_file():
+        try:
+            text = xml_path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return ("xml", None, {})
+        files = []
+        for match in _SEO_LOC_RE.finditer(text):
+            loc = match.group(1).strip().split("?", 1)[0].rstrip("/")
+            files.append(loc.rsplit("/", 1)[-1] or "index.html")
+        return ("xml", files, {})
+    return (None, None, {})
+
+
+def _ld_nodes(node):
+    if isinstance(node, dict):
+        yield node
+        for value in node.values():
+            yield from _ld_nodes(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from _ld_nodes(value)
+
+
+def _ld_typed_blocks(all_html: str) -> list[tuple[str, dict]]:
+    """Parsed (page marker, node) pairs for every dict node carrying @type."""
+    out: list[tuple[str, dict]] = []
+    for match in _SEO_LD_RE.finditer(all_html):
+        try:
+            data = json.loads(match.group(1).strip())
+        except ValueError:
+            continue
+        for node in _ld_nodes(data):
+            kind = node.get("@type")
+            kinds = kind if isinstance(kind, list) else [kind]
+            for name in kinds:
+                if isinstance(name, str) and name:
+                    out.append((name, node))
+    return out
+
+
+def _breadcrumb_faults(node: dict, page: str) -> list[str]:
+    items = node.get("itemListElement")
+    if not isinstance(items, list) or len(items) < 2:
+        return [f"{page}: BreadcrumbList itemListElement needs >= 2 ListItems"]
+    got = [it.get("position") if isinstance(it, dict) else None for it in items]
+    if got != list(range(1, len(items) + 1)):
+        return [f"{page}: BreadcrumbList position must run 1..{len(items)}"]
+    faults = []
+    for pos, item in enumerate(items, 1):
+        if not isinstance(item, dict):
+            return [f"{page}: BreadcrumbList item {pos} not an object"]
+        name = item.get("name")
+        if not (isinstance(name, str) and name.strip()):
+            faults.append(f"{page}: BreadcrumbList name missing on item {pos}")
+        if pos < len(items) and not item.get("item"):
+            faults.append(f"{page}: BreadcrumbList item missing on item {pos}")
+    return faults
+
+
+def _seo_rows(rep: Report, site_dir: Path, pages: list[Path]) -> None:
+    """SEO-research battery. Row names, severities and sources in order below."""
+    site_dir = Path(site_dir)
+    htmls = {p.name: p.read_text(encoding="utf-8", errors="replace") for p in pages}
+    names = sorted(htmls)
+    noindexed = {name for name, html in htmls.items() if _seo_noindex(html)}
+    indexable = [name for name in names if name not in noindexed]
+
+    def _verdict(name: str, fails: list[str], warns: list[str], ok_detail: str) -> None:
+        if fails:
+            detail = "; ".join(fails[:8])
+            if len(fails) > 8:
+                detail += f" (+{len(fails) - 8} more)"
+            if warns:
+                detail += "; also: " + "; ".join(warns[:4])
+            rep.add(name, "FAIL", detail)
+        elif warns:
+            detail = "; ".join(warns[:8])
+            if len(warns) > 8:
+                detail += f" (+{len(warns) - 8} more)"
+            rep.add(name, "WARN", detail)
+        else:
+            rep.add(name, "PASS", ok_detail)
+
+    # G-SEO-01 + Ahrefs titles: unique, non-empty, non-boilerplate; 15-70 chars heuristic.
+    titles = {name: _seo_title(html) for name, html in htmls.items()}
+    seen: dict[str, str] = {}
+    title_fails, title_warns = [], []
+    for name in names:
+        title = titles[name]
+        if not title:
+            title_fails.append(f"{name}: title empty")
+            continue
+        if title.lower() in _TITLE_BOILERPLATE:
+            title_fails.append(f"{name}: title boilerplate-only {title!r}")
+        key = title.casefold()
+        if key in seen:
+            title_fails.append(f"{name}: title duplicate of {seen[key]}")
+        else:
+            seen[key] = name
+        if len(title) < _SEO_TITLE_MIN:
+            title_warns.append(f"{name}: title {len(title)} chars (<{_SEO_TITLE_MIN})")
+        elif len(title) > _SEO_TITLE_MAX:
+            title_warns.append(f"{name}: title {len(title)} chars (>{_SEO_TITLE_MAX})")
+    _verdict("title_unique", title_fails, title_warns, f"{len(pages)} page(s), unique")
+
+    # G-SEO-02: missing description already FAILs in description; here duplicates WARN.
+    descs = {name: _seo_description(html) for name, html in htmls.items() if _seo_description(html)}
+    desc_seen: dict[str, str] = {}
+    desc_warns = []
+    for name in names:
+        if name not in descs:
+            continue
+        key = descs[name].casefold()
+        if key in desc_seen:
+            desc_warns.append(f"{name}: meta description duplicate of {desc_seen[key]}")
+        else:
+            desc_seen[key] = name
+    _verdict("description_unique", [], desc_warns, f"{len(pages)} page(s)")
+
+    # G-SEO-03: exactly one non-empty h1 on EVERY page (one_h1 covers index only).
+    h1_fails = []
+    for name in names:
+        texts = _seo_h1_texts(htmls[name])
+        if len(texts) != 1:
+            h1_fails.append(f"{name}: h1 count={len(texts)}, want 1")
+        elif not texts[0]:
+            h1_fails.append(f"{name}: h1 empty")
+    _verdict("h1_every_page", h1_fails, [], f"{len(pages)} page(s), one h1 each")
+
+    # G-LINK-01 + Stox C2: every link is <a> with a resolvable URI. A bare "#"
+    # is a WARN (placeholder or script hook; sole-route-to-content needs a
+    # browser to judge), while missing/empty/javascript: hrefs FAIL outright.
+    href_fails, href_warns = [], []
+    for name in names:
+        for link in _seo_anchors(htmls[name]):
+            raw = link["href"]
+            if raw is None or not link["seen_href"] or not raw.strip():
+                href_fails.append(f"{name}: a without href")
+            elif raw.strip().lower().startswith("javascript:"):
+                href_fails.append(f"{name}: a javascript: href")
+            elif raw.strip() == "#":
+                href_warns.append(f"{name}: a placeholder href=#")
+    _verdict("link_href", sorted(set(href_fails)), sorted(set(href_warns)),
+             f"{len(pages)} page(s), crawlable hrefs")
+
+    # G-LINK-02/03/04 + Stox C3: named anchors, descriptive, unchained.
+    anchor_fails, anchor_warns = [], []
+    for name in names:
+        html = htmls[name]
+        for link in _seo_anchors(html):
+            label = link["text"] or link["title"] or link["img_alt"]
+            if not label:
+                href = (link["href"] or "").strip() or "<missing href>"
+                anchor_fails.append(f"{name}: empty anchor -> {href[:60]}")
+            elif label.lower() in _GENERIC_ANCHORS or _SEO_BARE_URL_RE.match(label):
+                anchor_warns.append(f"{name}: generic anchor {label[:40]!r}")
+        prose = _SEO_CHROME_RE.sub(" ", html)
+        if _SEO_CHAIN_RE.search(prose):
+            anchor_warns.append(f"{name}: adjacent links with no separating text")
+    _verdict("anchor_text", sorted(set(anchor_fails)), sorted(set(anchor_warns)),
+             f"{len(pages)} page(s), named anchors")
+
+    # G-LINK-05 + G-CRW-01 + Stox C1: zero inbound internal links on indexable pages.
+    edges = _seo_graph(pages)
+    inbound: dict[str, set[str]] = {name: set() for name in names}
+    for src, targets in edges.items():
+        for hit in targets:
+            inbound[hit].add(src)
+    orphan_fails = [f"{name}: zero inbound internal links" for name in indexable
+                    if not inbound[name]]
+    if len(pages) == 1:
+        rep.add("orphan_pages", "PASS", "single-page emit-only (D1)")
+    else:
+        _verdict("orphan_pages", orphan_fails, [],
+                 f"{len(pages)} page(s), every indexable page linked")
+
+    # G-LINK-06 + Stox C5: BFS depth from index; >3 clicks is a heuristic WARN.
+    depths = _seo_depths(pages, edges)
+    deep_warns = [f"{name}: {depths[name]} clicks from index (heuristic limit {_SEO_CLICK_MAX})"
+                  for name in indexable
+                  if name in depths and depths[name] > _SEO_CLICK_MAX]
+    deep_warns += [f"{name}: unreachable from index" for name in indexable if name not in depths]
+    if len(pages) == 1:
+        rep.add("click_depth", "PASS", "single-page emit-only (D1)")
+    else:
+        _verdict("click_depth", [], sorted(deep_warns),
+                 f"max depth {max(depths.values()) if depths else 0} from index")
+
+    # Stox C4 (VERIFIED-core): rel sculpting values are the wrong tool in-site.
+    sculpt_fails = []
+    for name in names:
+        for link in _seo_anchors(htmls[name]):
+            raw = (link["href"] or "").strip()
+            if not raw or _seo_is_external(raw) or raw.startswith("#"):
+                continue
+            bad = sorted(set(link["rel"]) & _INTERNAL_REL_BAD)
+            if bad:
+                sculpt_fails.append(f"{name}: rel={'+'.join(bad)} on internal {raw[:60]}")
+    _verdict("internal_nofollow", sorted(set(sculpt_fails)), [],
+             f"{len(pages)} page(s), no internal sculpting")
+
+    # G-SEO-08 + G-CRW-02: render-critical assets and index-intended pages stay allowed.
+    disallows = _robots_disallows(site_dir)
+    asset_hit = ""
+    if disallows:
+        for rule in disallows:
+            low = rule.lower()
+            if any(token in low for token in (".css", ".js", ".png", ".jpg", ".jpeg",
+                                              ".webp", ".avif", ".svg", "favicon",
+                                              "/assets", "/static", "/images")):
+                asset_hit = rule
+                break
+    if disallows is None:
+        rep.add("robots_allow", "PASS", "no robots.txt")
+    elif not indexable:
+        rep.add("robots_allow", "PASS", "staging posture: noindex pages + disallow coherent")
+    elif "" in disallows or "/" in disallows:
+        rep.add("robots_allow", "FAIL", "robots.txt: Disallow: / blocks index-intended pages")
+    elif asset_hit:
+        rep.add("robots_allow", "FAIL", f"robots.txt: Disallow: {asset_hit} blocks assets")
+    else:
+        rep.add("robots_allow", "PASS", "index-intended pages and assets allowed")
+
+    # G-CRW-03: a noindex page that is also disallowed can never have it seen.
+    crawl_warns = []
+    if disallows:
+        blanket = "" in disallows or "/" in disallows
+        for name in sorted(noindexed):
+            hit = blanket or any(name.startswith(rule.lstrip("/")) for rule in disallows if rule)
+            if hit:
+                crawl_warns.append(f"{name}: noindex but robots-disallowed (directive never seen)")
+    _verdict("noindex_crawl", [], crawl_warns, "no noindex/crawl conflict")
+
+    # G-CRW-05 + S1/S2/S3 + G-SEO-09, D1-scoped: sitemap lists canonical indexable URLs.
+    kind, files, _planned = _sitemap_expected(site_dir)
+    if kind is None and len(pages) == 1:
+        rep.add("sitemap_parity", "PASS", "single-page emit-only (D1)")
+    elif kind is None:
+        rep.add("sitemap_parity", "WARN",
+                "multi-page without sitemap (D1: required for crew/multi-page)")
+    elif files is None:
+        rep.add("sitemap_parity", "FAIL", "sitemap present but unreadable")
+    else:
+        on_disk = set(names)
+        listed = set(files)
+        miss_fails = [f"sitemap lists missing {item}" for item in files if item not in on_disk]
+        gap_warns = [f"{name}: indexable page missing from sitemap" for name in indexable
+                     if name not in listed]
+        _verdict("sitemap_parity", miss_fails, sorted(gap_warns),
+                 f"sitemap lists {len(files)} file(s), parity holds")
+
+    # schema.md: required props per type; HowTo deprecated; FAQPage owned by faq_schema.
+    typed = _ld_typed_blocks("\n".join(htmls.values()))
+    schema_fails, schema_warns = [], []
+    for _kind, node in typed:
+        where = next((n for n, h in htmls.items() if _kind in h), "?")
+        if _kind == "FAQPage":
+            continue
+        if _kind == "HowTo":
+            schema_fails.append(f"{where}: HowTo deprecated (rich result retired); remove")
+        elif _kind == "BreadcrumbList":
+            schema_fails.extend(_breadcrumb_faults(node, where))
+        elif _kind in _LB_TYPES:
+            if not (isinstance(node.get("name"), str) and node.get("name").strip()):
+                schema_fails.append(f"{where}: LocalBusiness name missing")
+            addr = node.get("address")
+            addr_fields = ("streetAddress", "addressLocality", "addressRegion",
+                           "postalCode", "addressCountry")
+            addr_full = (isinstance(addr, str) and bool(addr.strip())
+                         or isinstance(addr, dict)
+                         and any(addr.get(k) for k in addr_fields))
+            if addr_full:
+                pass
+            elif isinstance(addr, dict):
+                schema_warns.append(f"{where}: LocalBusiness address thin (add locality+)")
+            else:
+                schema_fails.append(f"{where}: LocalBusiness address missing")
+            if not node.get("telephone"):
+                schema_warns.append(f"{where}: LocalBusiness telephone missing")
+        elif _kind in _ARTICLE_TYPES and not (
+                isinstance(node.get("headline"), str) and node.get("headline").strip()):
+            schema_warns.append(f"{where}: {_kind} without headline")
+    if not typed or all(k == "FAQPage" for k, _n in typed):
+        rep.add("schema_required", "PASS", "no typed blocks (valid-or-absent)")
+    else:
+        _verdict("schema_required", schema_fails, sorted(set(schema_warns)),
+                 f"{len(typed)} typed block(s), required props present")
+
+    # G-SEO-07: thin pages WARN (300-word practitioner heuristic).
+    thin_warns = []
+    for name in names:
+        words = len(visible_text(htmls[name]).split())
+        if words < _SEO_BODY_MIN_WORDS:
+            thin_warns.append(f"{name}: {words} words (<{_SEO_BODY_MIN_WORDS} heuristic)")
+    _verdict("thin_content", [], sorted(thin_warns), f"{len(pages)} page(s), substantive")
+
+    # G-SEO-06: identical visible text under multiple URLs needs canonical intent.
+    buckets: dict[str, list[str]] = {}
+    for name in names:
+        key = _seo_collapse(visible_text(htmls[name])).casefold()
+        buckets.setdefault(key, []).append(name)
+    dup_fails = [f"identical visible text: {', '.join(sorted(group))}"
+                 for group in buckets.values() if len(group) > 1]
+    _verdict("duplicate_content", sorted(dup_fails), [], f"{len(pages)} page(s), distinct")
+
+    # Stox C9 (heuristic): dead-end pages kill equity circulation on multi-page sites.
+    if len(pages) == 1:
+        rep.add("dead_end", "PASS", "single-page emit-only (D1)")
+    else:
+        dead_warns = [f"{name}: zero outbound internal links (heuristic)" for name in indexable
+                      if not edges[name]]
+        _verdict("dead_end", [], sorted(dead_warns), "every indexable page links onward")
+
+    # Ahrefs localization family: the document language must be declared.
+    lang_fails = [f"{name}: html lang missing" for name in names if not _seo_lang(htmls[name])]
+    _verdict("doc_lang", sorted(lang_fails), [], f"{len(pages)} page(s), lang declared")
+
+    # D1/D6 plan-vs-render: sitemap.json edges must exist in HTML and vice versa.
+    if kind != "json" or files is None:
+        rep.add("plan_links", "SKIP", "not-run: no sitemap.json grouping data")
+    else:
+        _kind2, _files2, planned = _sitemap_expected(site_dir)
+        plan_fails, plan_warns = [], []
+        for src in names:
+            want = set(planned.get(src, ()))
+            got = edges.get(src, set())
+            for hit in sorted(want - got):
+                if hit in names:
+                    plan_fails.append(f"{src}: planned link to {hit} not in HTML")
+            for hit in sorted(got - want):
+                plan_warns.append(f"{src}: unplanned link to {hit}")
+        _verdict("plan_links", plan_fails, plan_warns, "plan edges match rendered HTML")
+
+
 class Report:
     def __init__(self, quiet: bool = False):
         self.rows: list[dict] = []
@@ -5197,7 +5723,7 @@ def check_site(
     missing_ld = []
     rated = []
     bad_alt = []
-    faq_missing = []
+    faq_pages = []
     img_count = 0
     for p in pages:
         html = p.read_text(encoding="utf-8", errors="replace")
@@ -5214,16 +5740,16 @@ def check_site(
             if alt is None or not str(alt).strip():
                 bad_alt.append(p.name)
                 break
-        for question in _faq_schema_gaps(html):
-            shown = question if len(question) <= 80 else question[:77] + "..."
-            faq_missing.append(f"{p.name}: {shown}")
+        if _has_faqpage(html):
+            faq_pages.append(p.name)
     if bad_canonical:
         rep.add("canonical", "FAIL", "missing rel=canonical: " + ", ".join(bad_canonical))
     else:
         rep.add("canonical", "PASS", f"{len(pages)} page(s)")
     # JSON-LD valid-or-absent: absent is PASS (thin copy cannot fill a type).
-    # Present must parse, must not invent aggregateRating, and FAQ questions
-    # must be visible. The @context identifier is not a fetch (see no_hotlink).
+    # Present must parse and must not invent aggregateRating. Retired FAQPage
+    # is judged by faq_schema, not here. The @context identifier is not a
+    # fetch (see no_hotlink).
     _ld_blocks = re.findall(
         r'<script\b[^>]*type\s*=\s*["\']application/ld\+json["\'][^>]*>(.*?)</script>',
         all_html,
@@ -5244,7 +5770,7 @@ def check_site(
         rep.add("json_ld", "PASS", "absent (copy cannot fill a type)")
     elif missing_ld:
         # ld+json present but no WebSite type: still valid-or-absent PASS when
-        # the present types (e.g. FAQPage) are valid; faq_schema judges those.
+        # the blocks parse; faq_schema rejects retired FAQPage separately.
         rep.add("json_ld", "PASS", "present types valid; WebSite absent (copy cannot fill it)")
     else:
         rep.add("json_ld", "PASS", "WebSite; no aggregateRating")
@@ -5282,11 +5808,22 @@ def check_site(
         rep.add("missing_file", "PASS", "no img")
     else:
         rep.add("missing_file", "PASS", f"{local_imgs} local img file(s)")
-    if faq_missing:
-        extra = f" (+{len(faq_missing) - 8} more)" if len(faq_missing) > 8 else ""
-        rep.add("faq_schema", "FAIL", "; ".join(faq_missing[:8]) + extra)
+    if faq_pages:
+        extra = f" (+{len(faq_pages) - 8} more)" if len(faq_pages) > 8 else ""
+        rep.add(
+            "faq_schema",
+            "FAIL",
+            "FAQPage retired (Google removed the FAQ rich result); "
+            "remove JSON-LD, keep visible FAQ: " + ", ".join(faq_pages[:8]) + extra,
+        )
     else:
-        rep.add("faq_schema", "PASS", "questions visible or no FAQPage")
+        rep.add("faq_schema", "PASS", "no FAQPage")
+
+    # SEO-research battery (google/schema/ahrefs/moz/stox, static D1/D6 subset).
+    try:
+        _seo_rows(rep, site_dir, pages)
+    except Exception as exc:  # noqa: BLE001 -- fail closed, file convention
+        rep.add("seo_rows", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
 
     # Type floor and WCAG contrast over every page. typography=False skips both rows.
     if typography:

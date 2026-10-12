@@ -1,3 +1,59 @@
+# HERO BUILDER MAX — retire FAQPage JSON-LD (Google removed FAQ rich result) — 2026-10-12 (UTC)
+
+Source: `P:/SpiderCaster_Nest/seo-research/schema.md` section 1 (browser-verified
+2026-10-12: FAQPage dev doc URL redirects to the Search updates page; restricted
+2023-08-08 to gov/health, removed by May 2026). Rule: never emit
+`FAQPage`/`Question`/`Answer` markup; visible FAQ sections stay (good content,
+zero rich-result payoff for the markup).
+
+## Changes (4 files, stdlib only, no new imports)
+
+- `lib/render.py` — deleted `_faq_pairs` + `faq_jsonld` and the `{faq_ld}` slot
+  in `render_page`. Pages now emit WebSite JSON-LD only. Visible `faq` sections
+  (`render_section` kind `faq`, native `<details>`) untouched.
+- `lib/check.py` — `faq_schema` row now FAILs any page whose JSON-LD carries
+  `@type FAQPage` ("FAQPage retired ... remove JSON-LD, keep visible FAQ") and
+  PASSes ("no FAQPage") otherwise. Replaced `_question_names`/`_faq_questions`/
+  `_faq_schema_gaps` (visibility check, obsolete) with `_has_faqpage`.
+  `json_ld` valid-or-absent logic unchanged; comments no longer bless FAQPage.
+  Row name kept stable for `lib/studio.py` GROUPS + board/scorecard consumers.
+- `library/research/ui/check-board.md`, `library/research/ui/scorecard.md` —
+  `faq_schema`/`json_ld` descriptions updated to the retired rule.
+- Article/BreadcrumbList/LocalBusiness per schema.md required/recommended
+  fields: no emission exists in the pipeline today (only WebSite was ever
+  emitted), so "keep" is a no-op — nothing added, nothing broken.
+
+## Deliberately untouched (history + external catalogs + stale build outputs)
+
+- `library/research/app/*` (BOARD3, SEO_STAGE2, inbox/faq-schema etc.),
+  `library/research/competitors/*.md`, `bench/results/*`: dated research/stage
+  reports describing the old conditional emission. Rewriting them falsifies
+  history; they are superseded by this entry + schema.md.
+- `sites/assembled/parts.json` (`hooks-blocks-schema-faqpage-001`,
+  `kit-faq-accordion`): external fleet/kit part catalog, not SpiderCaster
+  emission. Left for the parts-lane owner.
+- `sites/*/*.html` committed build outputs still contain old FAQPage blocks.
+  They are stale artifacts — the next rebuild drops the markup (and the new
+  `faq_schema` row will FAIL them until rebuilt, by design).
+
+## Verification (all PASS)
+
+- `python -m py_compile lib/render.py lib/check.py` — ok.
+- Functional (temp objects, tree never written): page with a full faq section
+  renders zero `FAQPage` but keeps visible `<details>` Q/A; `_has_faqpage`
+  False on new output, True on a legacy FAQPage fixture.
+- No selftest references `faq_schema`/`FAQPage`/`faq_jsonld` (grep over
+  `lib/*selftest*.py`, `lib/hands/`, `lib/ui_*`, `spidercaster.py` — zero
+  hits), so no selftest needed edits; behavior proven by the functional probe.
+- 6Cs on touched lines: `ruff check lib/render.py` clean; `lib/check.py`
+  ruff 136 = pre-existing coder-lane debt, zero hits on new lines;
+  `pycodestyle --max-line-length=100`: no E501 on any new line (nearest hit is
+  pre-existing `render.py:827` bullets line); whole-file black/flake8/mypy
+  debt untouched per lane convention (no reformats, no behavior churn).
+- `python lib/shipcheck.py` — ok (`shipcheck ok`, 16/16 steps).
+
+---
+
 # HERO CLOSER — engine lib lint (MAX pack) — 2026-10-11 (UTC)
 
 Scope: `V:/A/Ai/spidercaster/working/lib/` ONLY. No toy dirs touched.

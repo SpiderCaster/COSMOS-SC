@@ -810,50 +810,10 @@ def website_jsonld(site: dict) -> str:
     return f'<script type="application/ld+json">{blob}</script>'
 
 
-def _faq_pairs(page: dict) -> list[tuple[str, str]]:
-    """Question/answer strings copied from faq items. Empty answers are skipped."""
-    pairs: list[tuple[str, str]] = []
-    for sec in page.get("sections") or []:
-        if not isinstance(sec, dict) or sec.get("type") != "faq":
-            continue
-        data = sec.get("data") if isinstance(sec.get("data"), dict) else {}
-        items = data.get("items") or []
-        if not isinstance(items, list):
-            continue
-        for it in items:
-            if not isinstance(it, dict) or "q" not in it or "a" not in it:
-                continue
-            q_raw, a_raw = it.get("q"), it.get("a")
-            q = q_raw if isinstance(q_raw, str) else ("" if q_raw is None else str(q_raw))
-            a = a_raw if isinstance(a_raw, str) else ("" if a_raw is None else str(a_raw))
-            if not q.strip() or not a.strip():
-                continue
-            pairs.append((q, a))
-    return pairs
-
-
-def faq_jsonld(page: dict) -> str:
-    """Second JSON-LD script. No script when the page has no complete faq pair.
-
-    Question name and Answer text are the item q and a. No rating, review, or address.
-    """
-    pairs = _faq_pairs(page)
-    if not pairs:
-        return ""
-    payload = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": q,
-                "acceptedAnswer": {"@type": "Answer", "text": a},
-            }
-            for q, a in pairs
-        ],
-    }
-    blob = json.dumps(payload, ensure_ascii=True).replace("<", "\\u003c")
-    return f'<script type="application/ld+json">{blob}</script>'
+# FAQPage JSON-LD is retired (Google removed the FAQ rich result 2023-2026;
+# P:/SpiderCaster_Nest/seo-research/schema.md section 1). The renderer emits
+# no FAQPage/Question/Answer structured data. Visible FAQ sections
+# (render_section kind "faq", native <details>) are unchanged.
 
 
 # ---------------------------------------------------------------- sections
@@ -1058,7 +1018,6 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
     fname = page_filename(page)
     og_image = hero_og_image(page)
     jsonld = website_jsonld(site)
-    faq_ld = faq_jsonld(page)
 
     sections_html = _apply_mobile_blocks(
         "\n".join(render_section(sec, site, pal, current_slug) for sec in page["sections"]),
@@ -1085,7 +1044,6 @@ def render_page(page: dict, site: dict, noindex: bool) -> str:
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
 {jsonld}
-{faq_ld}
 {robots_note}
 <style>
 {css}

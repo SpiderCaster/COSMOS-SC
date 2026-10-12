@@ -9,6 +9,7 @@ Commands:
   check    run the built-in checks against a built site
   visit    static visit check of a built site
   serve    preview a built site on localhost
+  start    first run: doctor + demo site + studio desk in browser (0 tokens)
   studio   localhost desk for plan, paint, check, and preview (does not publish)
   models   show the provider chain (free tiers first); --probe queries live
   sections list the section types and their data fields
@@ -581,6 +582,92 @@ def cmd_visit(args) -> int:
     return 0 if result.get("ok") else 1
 
 
+def cmd_start(args) -> int:
+    """First run for a cold machine: doctor + demo site + studio desk.
+
+    0 tokens, localhost only, never publishes. Steps:
+      1. doctor gate (fail fast with the JSON error list);
+      2. ensure an offline demo site exists (builds demo-local if missing);
+      3. serve the studio desk and open it in the default browser.
+    The desk IS the engaging face (plan / paint / check / preview rooms,
+    crew hands); the stdio composer stays one `ui` command away.
+    --dry-run prints the exact steps and runs doctor only (no writes,
+    no server, no browser) so a cold install can be rehearsed.
+    """
+    import argparse as _ap
+    import webbrowser as _wb
+
+    project = getattr(args, "project", "") or "demo-local"
+    port = int(getattr(args, "port", 4180) or 4180)
+    dry = bool(getattr(args, "dry_run", False))
+    no_browser = bool(getattr(args, "no_browser", False))
+    no_build = bool(getattr(args, "no_build", False))
+
+    if dry:
+        print("start --dry-run (no writes, no server, no browser):")
+        print(f"  1. doctor gate (python, molds, frames, seats, hands)")
+        print(f"  2. ensure offline demo site from project {project!r} (0 tokens)")
+        print(f"  3. serve studio desk on http://127.0.0.1:{port}/ and open browser")
+        print(f"  live agent: desk rooms (plan/check/preview/crew) + `spidercaster.py ui`")
+    rep = doctor_report()
+    if not rep.get("ok"):
+        print(f"doctor FAIL: {rep.get('errors')}")
+        if dry:
+            print("(dry-run stops here: fix the checkout, then re-run without --dry-run)")
+        return 1
+    if dry:
+        print("doctor ok")
+        return 0
+
+    print(f"doctor ok (python {rep.get('python')}, "
+          f"{len(rep.get('molds', []))} molds, {rep.get('frames')} frames)")
+
+    if not no_build:
+        demo_proj = Path(project)
+        if not demo_proj.is_dir():
+            cand = ROOT / "projects" / Path(project).name
+            if cand.is_dir():
+                demo_proj = cand
+        out = ROOT / "sites" / demo_proj.name
+        if not (out / "index.html").is_file():
+            print(f"building offline demo site from {demo_proj} -> {out} (0 tokens) ...")
+            ns = _ap.Namespace(project=str(demo_proj), site_json=None, out=str(out),
+                               offline=True, compose=False, dry_run=False,
+                               frame="", mold="", plan=None, structure="",
+                               indexable=False, host="", provider=None, model=None,
+                               allow_paid=False, max_tokens=8192, max_copy_chars=24000,
+                               template=None, dark=None, pages=1, brand=None,
+                               no_fallback=True)
+            code = cmd_build(ns)
+            if code != 0:
+                print("demo build failed; fix copy/ gaps, then re-run start")
+                return code
+        else:
+            print(f"demo site ready: {out}")
+    else:
+        print("(skipping demo build: --no-build)")
+
+    from lib.studio import serve_studio
+
+    httpd, port = serve_studio(port=port)
+    url = f"http://127.0.0.1:{port}/"
+    print(f"studio {url}")
+    print("Engaging face: Desk/Plan/Preview/Check rooms. Live agent: Crew room + `spidercaster.py ui`.")
+    print("noindex. This does not publish. Ctrl+C to stop.")
+    if not no_browser:
+        try:
+            _wb.open(url, new=2)
+        except Exception as exc:  # browser opener is best-effort only
+            print(f"  [warn] could not open browser: {exc}")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        httpd.server_close()
+    return 0
+
+
 def cmd_studio(args) -> int:
     from lib.studio import serve_studio
 
@@ -1036,6 +1123,14 @@ def main(argv=None) -> int:
     p = sub.add_parser("visit", help="visit-check a built site")
     p.add_argument("site", help="built site directory")
     p.set_defaults(fn=cmd_visit)
+
+    p = sub.add_parser("start", help="first run: doctor + demo site + studio desk in browser (0 tokens)")
+    p.add_argument("--project", default="demo-local", help="demo project (default demo-local)")
+    p.add_argument("--port", type=int, default=4180)
+    p.add_argument("--dry-run", action="store_true", help="print steps + doctor only; no writes, server, or browser")
+    p.add_argument("--no-browser", action="store_true", help="serve but do not auto-open the browser")
+    p.add_argument("--no-build", action="store_true", help="skip the demo-site ensure step")
+    p.set_defaults(fn=cmd_start)
 
     p = sub.add_parser("studio", help="localhost desk; does not publish")
     p.add_argument("--port", type=int, default=4180)

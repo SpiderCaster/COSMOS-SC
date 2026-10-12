@@ -15,7 +15,6 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "SpiderCaster: websites from real copy, on free tokens", "description": "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site."}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does the offline build really cost zero tokens?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The offline planner maps your copy files into sections with deterministic rules, and the renderer assembles the HTML from code. No model is called."}}, {"@type": "Question", "name": "What does an AI build cost?", "acceptedAnswer": {"@type": "Answer", "text": "One planning call, plus at most one repair retry if the reply is not valid JSON. On the Gemini free tier the estimated cost is zero dollars; the ledger in report.json records the exact token counts."}}, {"@type": "Question", "name": "Can the AI invent content?", "acceptedAnswer": {"@type": "Answer", "text": "No. The planning prompt restricts the model to facts and wording present in your source copy. It may reorganize and tighten, but it may not invent facts, prices, names or claims."}}, {"@type": "Question", "name": "How do I change something without tokens?", "acceptedAnswer": {"@type": "Answer", "text": "Edit sites/NAME/site.json by hand and rebuild with forge build --from. The renderer is deterministic, so the rebuild is free."}}, {"@type": "Question", "name": "How does this fit the fleet checks?", "acceptedAnswer": {"@type": "Answer", "text": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."}}]}</script>
 <!-- SpiderCaster: noindex until approved -->
 <style>
 *{box-sizing:border-box}
@@ -30,6 +29,9 @@ img{max-width:100%;height:auto;display:block}
 a{color:var(--accent-text)}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 section{padding:72px 0;scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+/* D5 phone order: sections carrying data-sc-order reorder below 1280px only
+   (the mobile block, 360-first); 1280px and up keeps DOM order. */
+@media(max-width:1279px){main:has(>section[data-sc-order]){display:flex;flex-direction:column}}
 h1,h2,h3{font-family:var(--font-head);line-height:1.15;margin:0 0 12px;letter-spacing:-.015em}
 h1,h2{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
 h1{font-size:clamp(1.7rem,5.5vw,3.9rem);overflow-wrap:anywhere}

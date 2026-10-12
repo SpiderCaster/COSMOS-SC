@@ -1,11 +1,22 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
+# SpiderCaster portable spec: bundle engine data so the exe runs from any
+# cold-machine folder (no absolute dev paths, no CWD dependence).
+# Rebuild: pyinstaller SpiderCaster.spec (stdlib-only engine, no hidden imports)
+import os
+
+_here = os.path.dirname(os.path.abspath(SPEC)) if 'SPEC' in globals() else os.getcwd()
+
 a = Analysis(
-    ['V:/A/Ai/spidercaster/working/spidercaster.py'],
-    pathex=[],
+    [os.path.join(_here, 'spidercaster.py')],
+    pathex=[_here],
     binaries=[],
-    datas=[],
+    datas=[
+        (os.path.join(_here, 'library'), 'library'),
+        (os.path.join(_here, 'plugin'), 'plugin'),
+        (os.path.join(_here, 'projects', 'demo-local'), os.path.join('projects', 'demo-local')),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

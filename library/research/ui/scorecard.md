@@ -127,7 +127,7 @@ PASS only when all of these are PASS.
 - `json_ld` — every page has a WebSite JSON-LD script, and the html contains no `aggregateRating`.
 - `description` — every page has a non-empty meta description.
 
-`meta_basics` (doctype, title, description, viewport) is printed beside Crawl. It is not a second description grade. A FAIL still fails the exit code. `faq_schema` is also printed: a page with no FAQPage passes; a FAQPage whose question is not visible text fails. `img_alt` and `missing_file` are printed the same way. A page with no img passes both.
+`meta_basics` (doctype, title, description, viewport) is printed beside Crawl. It is not a second description grade. A FAIL still fails the exit code. `faq_schema` is also printed: a page with no FAQPage passes; any page emitting FAQPage JSON-LD fails (Google removed the FAQ rich result 2023-2026 — keep the visible FAQ section, drop the markup). `img_alt` and `missing_file` are printed the same way. A page with no img passes both.
 
 ## Plus
 

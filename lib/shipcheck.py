@@ -53,6 +53,12 @@ _STEPS: tuple[tuple[str, tuple[str, ...], tuple[str, ...], bool], ...] = (
         False,
     ),
     (
+        "lib/check_seo_selftest.py",
+        ("lib/check_seo_selftest.py",),
+        ("lib", "check_seo_selftest.py"),
+        False,
+    ),
+    (
         "lib/check_mobile_selftest.py",
         ("lib/check_mobile_selftest.py",),
         ("lib", "check_mobile_selftest.py"),
