@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generator": "spidercaster/0.1",
-  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 2-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
+  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 1-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
   "meta": {
     "title": "SpiderCaster turns words into websites.",
     "description": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log int",
@@ -36,7 +36,7 @@
     },
     {
       "label": "Install",
-      "href": "#two-clicks-to-install"
+      "href": "#one-click-install"
     },
     {
       "label": "Questions",
@@ -56,23 +56,23 @@
             "headline": "SpiderCaster turns words into websites.",
             "subhead": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again.",
             "primary": {
-              "label": "Start with words.",
-              "href": "#start-with-words"
+              "label": "Download SpiderCaster",
+              "href": "#one-click-install"
             },
             "secondary": {
               "label": "What you get",
               "href": "#what-you-get"
             },
             "bullets": [
-              "Start with a page of plain writing.",
+              "Download SpiderCaster to start.",
               "Run one command and get a site.",
               "Change the words and build again.",
               "Keep every file. The site is yours."
             ],
             "image": "assets/hero-reading-room.jpg",
-            "image_alt": "",
-            "image_w": null,
-            "image_h": null
+            "image_alt": "A room built to hold what people wrote",
+            "image_w": 1600,
+            "image_h": 900
           },
           "_source": "overview.md"
         },
@@ -151,8 +151,8 @@
                 "label": "tokens to build the offline draft"
               },
               {
-                "value": "2",
-                "label": "clicks to install: get folder, run start"
+                "value": "1",
+                "label": "click to install: open installer icon"
               },
               {
                 "value": "7",
@@ -279,24 +279,31 @@
           "_source": "rails.md"
         },
         {
-          "id": "two-clicks-to-install",
+          "id": "one-click-install",
           "type": "about",
           "data": {
-            "title": "Two clicks to install",
+            "title": "One click to install",
             "body": [
-              "One command fetches the SpiderCaster build from its hosted download, checks the file's checksum, and leaves a starter on your machine. Windows needs nothing else. macOS and Linux need Python 3.11 or newer.",
-              "Windows (PowerShell, click one):",
-              "irm mdata.tokenctr.com/spidercaster/install.ps1 | iex",
-              "macOS or Linux (click one):"
+              "Download SpiderCaster and click the installer icon to launch.",
+              "The app starts immediately and opens the studio desk in your browser.",
+              "Windows, macOS, and Linux ready."
             ],
             "points": [
               {
-                "title": "python spidercaster.py start --dry-run runs doctor only. No",
-                "body": "writes, no server, no browser."
+                "title": "Download for Windows: click the SpiderCaster installer to start.",
+                "body": ""
               },
               {
-                "title": "python spidercaster.py doctor prints a JSON report. \"ok\"",
-                "body": "true means the molds, frames, seats, and hands line up."
+                "title": "Download for macOS: open the package to start.",
+                "body": ""
+              },
+              {
+                "title": "The desk opens in your browser with rooms for the plan, the paint, the check, and the preview.",
+                "body": ""
+              },
+              {
+                "title": "Nothing publishes from here. Publish stays a command a person runs.",
+                "body": ""
               }
             ]
           },

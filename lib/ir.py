@@ -20,7 +20,7 @@ ICON_NAMES = [
     "globe", "sparkles", "layers", "cpu", "camera", "mail", "map", "users",
     "clock", "trending", "phone", "pin", "terminal", "browser", "database",
     "server", "palette", "layout", "feather", "compass", "award", "rocket",
-    "box", "arrow_right", "refresh", "search", "sliders",
+    "box", "arrow_right", "refresh", "search", "sliders", "download",
 ]
 
 TEMPLATES = ["modern", "editorial", "bold"]
