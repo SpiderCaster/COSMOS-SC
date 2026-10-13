@@ -32,7 +32,7 @@ Changed files: `lib/render.py`, `lib/ingest.py`, `lib/ir.py`, `lib/offline.py`, 
 - Windows process query fix in `lib/ui_render.py`: safe `OpenProcess` check prevents WinError 87 kernel locks during UI selftests.
 
 ### 6. Verification (all PASS)
-- `python spidercaster.py shipcheck` — 18/18 steps green (`shipcheck ok`).
+- `python spidercaster.py shipcheck` — 19/19 steps green (`shipcheck ok`, incl. `graphics_engine`).
 - `python scripts/enforce_boundaries.py` — `boundaries ok`.
 - `python scripts/secret_scan.py --all` — 0 findings (exit 0).
 - `python -m unittest tests.test_secret_scan -v` — 17/17 tests green.
@@ -40,6 +40,14 @@ Changed files: `lib/render.py`, `lib/ingest.py`, `lib/ir.py`, `lib/offline.py`, 
 - `python spidercaster.py ui --selftest` — ok.
 - `python spidercaster.py check sites/demo-local` — 59 pass / 0 fail / 1 warn / 4 skip.
 - `python spidercaster.py check sites/demo-local-compose` — 59 pass / 0 fail / 1 warn / 4 skip.
+- `python spidercaster.py check sites/spidercaster-com` — 58 pass / 0 fail / 3 warn / 3 skip.
+
+### 7. Multi-Level Graphics Engine (`lib/graphics_engine.py`, CLI `spidercaster.py graphics`)
+- **Level 0 (Vector Art):** Algorithmic 16:9 vector illustration generator across `browser`, `terminal`, `dashboard`, `isometric`, and `editorial` kinds; 100% vector geometry, 0 text nodes.
+- **Level 1 (Sparklines & Gauges):** Dynamic SVG sparkline trend paths and data curves for metric cards.
+- **Level 2 (Asset Audit & Normalization):** `audit_project_assets()` and `normalize_image_luma_and_weight()` automatically optimize file sizes (<= 200KB) and luminance (90 <= luma <= 200).
+- **Level 3 (AI Multi-Slot Imagine):** `imagine_project_slots()` synthesizes hero still lifes, documentary gallery suites, and card spotlights with proven camera rules.
+- **Level 4 (Verification):** Integrated into `spidercaster.py shipcheck` (19/19 steps green).
 
 ---
 

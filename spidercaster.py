@@ -912,6 +912,71 @@ def cmd_image(args) -> int:
     return 0
 
 
+def cmd_graphics(args) -> int:
+    from lib import graphics_engine as ge
+
+    subcmd = getattr(args, "graphics_cmd", None)
+    if subcmd == "selftest":
+        return ge.selftest()
+
+    if subcmd == "vector":
+        kind = getattr(args, "kind", "browser")
+        brand = getattr(args, "brand", "Studio")
+        svg = ge.generate_vector_scene(kind=kind, brand=brand)
+        out_path = getattr(args, "out", None)
+        if out_path:
+            p = Path(out_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(svg, encoding="utf-8")
+            print(f"saved vector scene ({kind}): {p}")
+        else:
+            print(svg)
+        return 0
+
+    if subcmd == "audit":
+        project_dir = Path(args.project)
+        report = ge.audit_project_assets(project_dir)
+        print(f"assets audit for {project_dir}: {report['count']} file(s)")
+        for a in report["assets"]:
+            status = "PASS" if a["ok"] else "FAIL"
+            print(f"  [{status}] {a['file']}: {a['width']}x{a['height']}, {a['bytes']}B, luma={a['luma']}")
+        return 0 if report["ok"] else 1
+
+    if subcmd == "optimize":
+        project_dir = Path(args.project)
+        assets_dir = project_dir / "assets"
+        if not assets_dir.is_dir():
+            print(f"no assets/ directory under {project_dir}")
+            return 1
+        count = 0
+        for p in assets_dir.iterdir():
+            if p.is_file() and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}:
+                if ge.normalize_image_luma_and_weight(p):
+                    count += 1
+        print(f"optimized {count} asset(s) under {assets_dir}")
+        return 0
+
+    if subcmd == "imagine":
+        project_dir = Path(args.project)
+        slots = [s.strip() for s in getattr(args, "slots", "hero").split(",") if s.strip()]
+        receipts = ge.imagine_project_slots(
+            project_dir,
+            slots=slots,
+            provider=getattr(args, "provider", "xai"),
+            model=getattr(args, "model", "") or "",
+        )
+        print(f"imagine for {project_dir}: {len(receipts)} slot(s)")
+        for rc in receipts:
+            if "error" in rc:
+                print(f"  [FAIL] {rc['slot']}: {rc['error']}")
+            else:
+                print(f"  [PASS] {rc['file']}: {rc['provider']}/{rc['model']} ({rc['bytes']} bytes)")
+        return 0
+
+    print("graphics subcommand required: vector | audit | optimize | imagine | selftest")
+    return 2
+
+
 def cmd_crew(args) -> int:
     if args.crew_cmd == "roles":
         for role in ROLES:
@@ -1197,6 +1262,25 @@ def main(argv=None) -> int:
     p.add_argument("--aspect", default="16:9")
     p.add_argument("--quality", default="low", choices=["low", "medium", "auto"])
     p.set_defaults(fn=cmd_image)
+
+    grp = sub.add_parser("graphics", help="multi-level graphics generator: vector, imagine, audit, optimize")
+    grsub = grp.add_subparsers(dest="graphics_cmd", required=True)
+    p = grsub.add_parser("selftest", help="run graphics engine unit selftest")
+    p = grsub.add_parser("vector", help="generate procedural 16:9 vector scene (0 tokens)")
+    p.add_argument("name", nargs="?", default="scene")
+    p.add_argument("--kind", choices=["browser", "terminal", "dashboard", "isometric", "editorial"], default="browser")
+    p.add_argument("--brand", default="Studio")
+    p.add_argument("--out", help="optional output path (default: print stdout)")
+    p = grsub.add_parser("audit", help="audit project images for bounds, weight, and luminance")
+    p.add_argument("project")
+    p = grsub.add_parser("optimize", help="normalize project image luminance and file weight")
+    p.add_argument("project")
+    p = grsub.add_parser("imagine", help="AI multi-slot image generation (hero, gallery)")
+    p.add_argument("project")
+    p.add_argument("--slots", default="hero", help="comma-separated slots, e.g. hero,gallery-1")
+    p.add_argument("--provider", choices=["xai", "openrouter"], default="xai")
+    p.add_argument("--model", default="")
+    grp.set_defaults(fn=cmd_graphics)
 
     libp = sub.add_parser("library", help="vault, molds, and the live-use ledger")
     libp.add_argument("--vault", help="private vendor vault (default SPIDERCASTER_VAULT)")
