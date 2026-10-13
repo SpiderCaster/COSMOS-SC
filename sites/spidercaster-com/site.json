@@ -10,37 +10,33 @@
   "theme": {
     "template": "modern",
     "dark": true,
-    "accent": "#1f6f5b",
-    "accent2": "#2e9a7e"
+    "accent": null,
+    "accent2": null
   },
   "nav": [
+    {
+      "label": "What you get",
+      "href": "#features"
+    },
+    {
+      "label": "Questions",
+      "href": "#faq"
+    },
     {
       "label": "How it goes",
       "href": "#how-it-goes"
     },
     {
-      "label": "What you get",
-      "href": "#what-you-get"
+      "label": "One click to install",
+      "href": "#features-2"
     },
     {
-      "label": "Numbers",
+      "label": "The cost, in plain numbers",
       "href": "#the-cost-in-plain-numbers"
     },
     {
-      "label": "Old machines",
+      "label": "Old machines, same job",
       "href": "#old-machines-same-job"
-    },
-    {
-      "label": "Rules",
-      "href": "#the-rules-it-runs-on"
-    },
-    {
-      "label": "Install",
-      "href": "#one-click-install"
-    },
-    {
-      "label": "Questions",
-      "href": "#faq"
     }
   ],
   "pages": [
@@ -52,17 +48,14 @@
           "id": "hero",
           "type": "hero",
           "data": {
-            "eyebrow": "Websites from real copy, on free tokens",
+            "eyebrow": "",
             "headline": "SpiderCaster turns words into websites.",
             "subhead": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again.",
             "primary": {
-              "label": "Download SpiderCaster",
-              "href": "#one-click-install"
-            },
-            "secondary": {
               "label": "What you get",
-              "href": "#what-you-get"
+              "href": "#features"
             },
+            "secondary": null,
             "bullets": [
               "Download SpiderCaster to start.",
               "Run one command and get a site.",
@@ -70,37 +63,14 @@
               "Keep every file. The site is yours."
             ],
             "image": "assets/hero-reading-room.jpg",
-            "image_alt": "A room built to hold what people wrote",
-            "image_w": 1600,
-            "image_h": 900
+            "image_alt": "SpiderCaster turns words into websites. hero",
+            "image_w": null,
+            "image_h": null
           },
           "_source": "overview.md"
         },
         {
-          "id": "how-it-goes",
-          "type": "steps",
-          "data": {
-            "title": "How it goes",
-            "subhead": "Three moves. Write, build, check.",
-            "items": [
-              {
-                "title": "Write the words",
-                "body": "Say what the page is for and what it should say. A plain file is fine."
-              },
-              {
-                "title": "Build the draft",
-                "body": "One command turns the words into a site, and the offline draft costs nothing."
-              },
-              {
-                "title": "Check the result",
-                "body": "The checker reads every page and fails the job on the first problem. Nothing goes live with a failure on it."
-              }
-            ]
-          },
-          "_source": "how.md"
-        },
-        {
-          "id": "what-you-get",
+          "id": "features",
           "type": "features",
           "data": {
             "title": "What you get",
@@ -112,202 +82,33 @@
                 "body": "one command builds a site from your words. The draft costs nothing and needs no keys."
               },
               {
-                "icon": "sparkles",
+                "icon": "mail",
                 "title": "Free help from models",
                 "body": "the free chain can plan the shape of the site. Each try is written down with its token count."
               },
               {
-                "icon": "sliders",
+                "icon": "rocket",
                 "title": "Small edits",
                 "body": "change one section at a time instead of rebuilding the whole site."
               },
               {
-                "icon": "shield",
+                "icon": "sparkles",
                 "title": "A strict checker",
                 "body": "every page must pass every check with zero failures. One failure stops the job."
               },
               {
-                "icon": "browser",
+                "icon": "database",
                 "title": "Plain files out",
                 "body": "the site is ordinary HTML and CSS with the style baked in. No database, no login, no upkeep."
               },
               {
-                "icon": "users",
+                "icon": "rocket",
                 "title": "Room for seven seats",
                 "body": "architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. None of them publish."
               }
             ]
           },
           "_source": "commands.md"
-        },
-        {
-          "id": "the-cost-in-plain-numbers",
-          "type": "stats",
-          "data": {
-            "title": "The cost, in plain numbers",
-            "items": [
-              {
-                "value": "0",
-                "label": "tokens to build the offline draft"
-              },
-              {
-                "value": "1",
-                "label": "click to install: open installer icon"
-              },
-              {
-                "value": "7",
-                "label": "seats in the crew, none publish"
-              },
-              {
-                "value": "1",
-                "label": "planning call when AI helps"
-              },
-              {
-                "value": "14",
-                "label": "section frames to start from"
-              },
-              {
-                "value": "0",
-                "label": "failures allowed past check gate"
-              }
-            ]
-          },
-          "_source": "numbers.md"
-        },
-        {
-          "id": "old-machines-same-job",
-          "type": "gallery",
-          "data": {
-            "title": "Old machines, same job",
-            "subhead": "Words in, pages out. That is the trade, and it is older than computers. The tools change, and the job stays.",
-            "items": [
-              {
-                "label": "A press from 1819",
-                "caption": "A press from 1819",
-                "src": "assets/press-1819.jpg",
-                "alt": "A press from 1819",
-                "hue": null
-              },
-              {
-                "label": "The ENIAC, wired by hand",
-                "caption": "The ENIAC, wired by hand",
-                "src": "assets/build-eniac.jpg",
-                "alt": "The ENIAC, wired by hand",
-                "hue": null
-              },
-              {
-                "label": "Two women programming it in 1946",
-                "caption": "Two women programming it in 1946",
-                "src": "assets/crew-eniac-programmers.jpg",
-                "alt": "Two women programming it in 1946",
-                "hue": null
-              },
-              {
-                "label": "A room built to hold what people wrote",
-                "caption": "A room built to hold what people wrote",
-                "src": "assets/hero-reading-room.jpg",
-                "alt": "A room built to hold what people wrote",
-                "hue": null
-              }
-            ]
-          },
-          "_source": "photos.md"
-        },
-        {
-          "id": "the-rules-it-runs-on",
-          "type": "features",
-          "data": {
-            "title": "The rules it runs on",
-            "subhead": "Six rules. They hold unless Keith changes them.",
-            "items": [
-              {
-                "icon": "lock",
-                "title": "Nothing invented",
-                "body": "the builder only uses words it was given. A missing fact stays missing."
-              },
-              {
-                "icon": "search",
-                "title": "Hidden first",
-                "body": "pages stay out of search results until a person signs off on the words."
-              },
-              {
-                "icon": "camera",
-                "title": "Local photos only",
-                "body": "a photo must sit in the project folder. Web addresses for photos are dropped."
-              },
-              {
-                "icon": "shield",
-                "title": "Keys stay out",
-                "body": "the engine reads key names from the environment. The values never touch the disk."
-              },
-              {
-                "icon": "database",
-                "title": "Every run counted",
-                "body": "each attempt lands in a ledger with its token count, pass or fail."
-              },
-              {
-                "icon": "terminal",
-                "title": "Plain Python",
-                "body": "version 3.11 or newer, standard library only, nothing to install."
-              }
-            ]
-          },
-          "_source": "rails.md"
-        },
-        {
-          "id": "the-check-gate",
-          "type": "about",
-          "data": {
-            "title": "The check gate",
-            "body": [
-              "The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, noindex. One failure stops the job. Zero is the only passing score."
-            ],
-            "points": []
-          },
-          "_source": "rails.md"
-        },
-        {
-          "id": "seven-seats-no-publish",
-          "type": "about",
-          "data": {
-            "title": "Seven seats, no publish",
-            "body": [
-              "One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person typing a command, and only Keith types that one."
-            ],
-            "points": []
-          },
-          "_source": "rails.md"
-        },
-        {
-          "id": "one-click-install",
-          "type": "about",
-          "data": {
-            "title": "One click to install",
-            "body": [
-              "Download SpiderCaster and click the installer icon to launch.",
-              "The app starts immediately and opens the studio desk in your browser.",
-              "Windows, macOS, and Linux ready."
-            ],
-            "points": [
-              {
-                "title": "Download for Windows: click the SpiderCaster installer to start.",
-                "body": ""
-              },
-              {
-                "title": "Download for macOS: open the package to start.",
-                "body": ""
-              },
-              {
-                "title": "The desk opens in your browser with rooms for the plan, the paint, the check, and the preview.",
-                "body": ""
-              },
-              {
-                "title": "Nothing publishes from here. Publish stays a command a person runs.",
-                "body": ""
-              }
-            ]
-          },
-          "_source": "install.md"
         },
         {
           "id": "faq",
@@ -345,6 +146,219 @@
           "_source": "faq.md"
         },
         {
+          "id": "how-it-goes",
+          "type": "steps",
+          "data": {
+            "title": "How it goes",
+            "subhead": "Three moves. Write, build, check.",
+            "items": [
+              {
+                "title": "Write the words",
+                "body": "Say what the page is for and what it should say. A plain file is fine."
+              },
+              {
+                "title": "Build the draft",
+                "body": "One command turns the words into a site, and the offline draft costs nothing."
+              },
+              {
+                "title": "Check the result",
+                "body": "The checker reads every page and fails the job on the first problem. Nothing goes live with a failure on it."
+              }
+            ]
+          },
+          "_source": "how.md"
+        },
+        {
+          "id": "features-2",
+          "type": "features",
+          "data": {
+            "title": "One click to install",
+            "subhead": "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready.",
+            "items": [
+              {
+                "icon": "rocket",
+                "title": "Download for Windows",
+                "body": "click the SpiderCaster installer to start."
+              },
+              {
+                "icon": "rocket",
+                "title": "Download for macOS",
+                "body": "open the package to start."
+              },
+              {
+                "icon": "rocket",
+                "title": "The desk opens in your browser with rooms for the plan, the",
+                "body": ""
+              },
+              {
+                "icon": "rocket",
+                "title": "Nothing publishes from here. Publish stays a command a perso",
+                "body": ""
+              }
+            ]
+          },
+          "_source": "install.md"
+        },
+        {
+          "id": "the-cost-in-plain-numbers",
+          "type": "stats",
+          "data": {
+            "title": "The cost, in plain numbers",
+            "items": [
+              {
+                "value": "0",
+                "label": "tokens to build the offline draft"
+              },
+              {
+                "value": "1",
+                "label": "click to install: open the downloaded installer icon"
+              },
+              {
+                "value": "7",
+                "label": "seats in the crew"
+              },
+              {
+                "value": "1",
+                "label": "planning call when AI helps"
+              },
+              {
+                "value": "14",
+                "label": "section frames to start from"
+              },
+              {
+                "value": "0",
+                "label": "failures allowed past the check gate"
+              }
+            ]
+          },
+          "_source": "numbers.md"
+        },
+        {
+          "id": "old-machines-same-job",
+          "type": "gallery",
+          "data": {
+            "title": "Old machines, same job",
+            "subhead": "Words in, pages out. That is the trade, and it is older than computers. A press from 1819. The ENIAC, wired by hand. Two women programming it in 1946. A room built to hold what people wrote.",
+            "items": [
+              {
+                "label": "Build eniac",
+                "caption": "Build eniac",
+                "src": "assets/build-eniac.jpg",
+                "alt": "build-eniac",
+                "hue": null
+              },
+              {
+                "label": "Crew eniac programmers",
+                "caption": "Crew eniac programmers",
+                "src": "assets/crew-eniac-programmers.jpg",
+                "alt": "crew-eniac-programmers",
+                "hue": null
+              },
+              {
+                "label": "Press 1819",
+                "caption": "Press 1819",
+                "src": "assets/press-1819.jpg",
+                "alt": "press-1819",
+                "hue": null
+              },
+              {
+                "label": "Reading room",
+                "caption": "Reading room",
+                "src": "assets/hero-reading-room.jpg",
+                "alt": "reading-room",
+                "hue": null
+              },
+              {
+                "label": "Press",
+                "caption": "Press",
+                "src": "assets/press-1819.jpg",
+                "alt": "press",
+                "hue": null
+              },
+              {
+                "label": "Eniac",
+                "caption": "Eniac",
+                "src": "assets/build-eniac.jpg",
+                "alt": "eniac",
+                "hue": null
+              },
+              {
+                "label": "Programmers",
+                "caption": "Programmers",
+                "src": "assets/crew-eniac-programmers.jpg",
+                "alt": "programmers",
+                "hue": null
+              }
+            ]
+          },
+          "_source": "photos.md"
+        },
+        {
+          "id": "features-3",
+          "type": "features",
+          "data": {
+            "title": "The rules it runs on",
+            "subhead": "Six rules. They hold unless Keith changes them.",
+            "items": [
+              {
+                "icon": "rocket",
+                "title": "Nothing invented",
+                "body": "the builder only uses words it was given. A missing fact stays missing."
+              },
+              {
+                "icon": "search",
+                "title": "Hidden first",
+                "body": "pages stay out of search results until a person signs off on the words."
+              },
+              {
+                "icon": "browser",
+                "title": "Local photos only",
+                "body": "a photo must sit in the project folder. Web addresses for photos are dropped."
+              },
+              {
+                "icon": "cpu",
+                "title": "Keys stay out",
+                "body": "the engine reads key names from the environment. The values never touch the disk."
+              },
+              {
+                "icon": "sparkles",
+                "title": "Every run counted",
+                "body": "each attempt lands in a ledger with its token count, pass or fail."
+              },
+              {
+                "icon": "rocket",
+                "title": "Plain Python",
+                "body": "version 3.11 or newer, standard library only, nothing to install."
+              }
+            ]
+          },
+          "_source": "rails.md"
+        },
+        {
+          "id": "the-check-gate",
+          "type": "about",
+          "data": {
+            "title": "The check gate",
+            "body": [
+              "The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, noindex. One failure stops the job. Zero is the only passing score."
+            ],
+            "points": []
+          },
+          "_source": "rails.md"
+        },
+        {
+          "id": "seven-seats-no-publish",
+          "type": "about",
+          "data": {
+            "title": "Seven seats, no publish",
+            "body": [
+              "One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person typing a command, and only Keith types that one."
+            ],
+            "points": []
+          },
+          "_source": "rails.md"
+        },
+        {
           "id": "start-with-words",
           "type": "cta",
           "data": {
@@ -362,5 +376,89 @@
     "text": "(c) 2026 SpiderCaster turns words into websites.",
     "links": [],
     "credit": true
+  },
+  "citations": {
+    "hero": {
+      "file": "overview.md",
+      "texts": [
+        "SpiderCaster turns words into websites.",
+        "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again."
+      ]
+    },
+    "features": {
+      "file": "commands.md",
+      "texts": [
+        "What you get",
+        "Everything on this list ships with the engine."
+      ]
+    },
+    "faq": {
+      "file": "faq.md",
+      "texts": [
+        "Questions"
+      ]
+    },
+    "how-it-goes": {
+      "file": "how.md",
+      "texts": [
+        "How it goes",
+        "Three moves. Write, build, check."
+      ]
+    },
+    "features-2": {
+      "file": "install.md",
+      "texts": [
+        "One click to install",
+        "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready."
+      ]
+    },
+    "the-cost-in-plain-numbers": {
+      "file": "numbers.md",
+      "texts": [
+        "The cost, in plain numbers"
+      ]
+    },
+    "old-machines-same-job": {
+      "file": "photos.md",
+      "texts": [
+        "Old machines, same job",
+        "Words in, pages out. That is the trade, and it is older than computers. A press from 1819. The ENIAC, wired by hand. Two women programming it in 1946. A room built to hold what people wrote."
+      ]
+    },
+    "features-3": {
+      "file": "rails.md",
+      "texts": [
+        "The rules it runs on",
+        "Six rules. They hold unless Keith changes them."
+      ]
+    },
+    "the-check-gate": {
+      "file": "rails.md",
+      "texts": [
+        "The check gate"
+      ]
+    },
+    "seven-seats-no-publish": {
+      "file": "rails.md",
+      "texts": [
+        "Seven seats, no publish"
+      ]
+    },
+    "start-with-words": {
+      "file": "closing.md",
+      "texts": [
+        "Start with words."
+      ]
+    }
+  },
+  "presentation": {
+    "frame_id": "",
+    "mold_id": "",
+    "slots": [
+      {
+        "section": "hero",
+        "required": true
+      }
+    ]
   }
 }

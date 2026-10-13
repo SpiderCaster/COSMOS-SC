@@ -47,7 +47,9 @@ FAQ_TITLE_RE = re.compile(r"\bfaq\b|frequently asked", re.IGNORECASE)
 PRICING_TITLE_RE = re.compile(r"\bpric(e|ing|es|plans)\b", re.IGNORECASE)
 MENU_TITLE_RE = re.compile(r"\bmenu\b", re.IGNORECASE)
 TEAM_TITLE_RE = re.compile(r"\bteam\b|\bstaff\b|\babout us\b|\bour story\b", re.IGNORECASE)
-GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b", re.IGNORECASE)
+GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b|\bmachines?\b", re.IGNORECASE)
+STATS_TITLE_RE = re.compile(r"\bnumbers?\b|\bstats?\b|\bmetrics?\b|\bby the numbers\b|\bthe cost\b", re.IGNORECASE)
+CTA_TITLE_RE = re.compile(r"\bstart\b|\bget started\b|\bready to\b|\bclosing\b", re.IGNORECASE)
 
 
 def guess_icon(text: str) -> str:
@@ -156,6 +158,14 @@ def plan_offline(copy, opts: dict) -> dict:
 
     sections: list[dict] = []
     hero_sub = _first_paragraph(hero_block)
+    hero_img = ""
+    if getattr(copy, "assets", None):
+        hero_img = copy.assets.get("hero") or copy.assets.get("reading-room") or ""
+        if not hero_img:
+            for k, v in copy.assets.items():
+                if "hero" in k.lower():
+                    hero_img = v
+                    break
     sections.append({
         "id": "hero", "type": "hero",
         "data": {
@@ -165,6 +175,8 @@ def plan_offline(copy, opts: dict) -> dict:
             "primary": None,
             "secondary": None,
             "bullets": hero_block.bullets[:4],
+            "image": hero_img,
+            "image_alt": f"{brand} hero" if hero_img else "",
         },
         "_source": hero_block.file,
     })
@@ -251,6 +263,33 @@ def plan_offline(copy, opts: dict) -> dict:
                     "_source": b.file,
                 })
             continue
+        if STATS_TITLE_RE.search(title):
+            stat_items = []
+            full_text = " ".join(b.paragraphs + b.bullets)
+            for m in re.finditer(r"(\d+[\w%+-]*)\s+([a-zA-Z][^,.;\n]+(?=[.,;]|\s+\d|$))", full_text):
+                val, lab = m.group(1).strip(), m.group(2).strip()
+                if lab and len(lab) < 70:
+                    stat_items.append({"value": val, "label": lab})
+            if len(stat_items) >= 2:
+                sections.append({
+                    "id": ir.slugify(title) or "stats", "type": "stats",
+                    "data": {"title": title, "items": stat_items[:6]},
+                    "_source": b.file,
+                })
+                continue
+        if len(b.numbered) >= 2:
+            step_items = []
+            for num_text in b.numbered[:6]:
+                parts = num_text.split(":", 1) if ":" in num_text else (num_text.split(". ", 1) if ". " in num_text else [num_text, ""])
+                item_title = parts[0].strip()[:60]
+                item_body = parts[1].strip() if len(parts) > 1 else ""
+                step_items.append({"title": item_title, "body": item_body})
+            sections.append({
+                "id": ir.slugify(title) or "steps", "type": "steps",
+                "data": {"title": title, "subhead": " ".join(b.paragraphs[:1]), "items": step_items},
+                "_source": b.file,
+            })
+            continue
         if has_bullets and not GALLERY_TITLE_RE.search(title):
             sections.append({
                 "id": "features", "type": "features",
@@ -261,13 +300,26 @@ def plan_offline(copy, opts: dict) -> dict:
                 "_source": b.file,
             })
             continue
-        if has_images and (GALLERY_TITLE_RE.search(title) or copy.assets):
-            imgs = b.images or [{"src": rel, "alt": name} for name, rel in list(copy.assets.items())[:12]]
+        if GALLERY_TITLE_RE.search(title) or (bool(b.images) and not has_bullets):
+            gallery_assets = [
+                {"src": rel, "alt": name, "label": name.replace("-", " ").capitalize(), "caption": name.replace("-", " ").capitalize()}
+                for name, rel in copy.assets.items()
+                if "hero" not in name.lower()
+            ]
+            imgs = b.images or gallery_assets or [{"src": rel, "alt": name} for name, rel in list(copy.assets.items())[:12]]
+            if imgs:
+                sections.append({
+                    "id": ir.slugify(title) or "gallery", "type": "gallery",
+                    "data": {"title": title or "Gallery", "subhead": " ".join(b.paragraphs[:1]) if b.paragraphs else "",
+                             "items": [{"label": im.get("label") or im.get("alt") or "", "caption": im.get("caption") or im.get("label") or "", "src": im.get("src", ""),
+                                        "alt": im.get("alt") or im.get("label") or "", "hue": None} for im in imgs[:12]]},
+                    "_source": b.file,
+                })
+                continue
+        if CTA_TITLE_RE.search(title) and not b.bullets and not b.numbered:
             sections.append({
-                "id": "gallery", "type": "gallery",
-                "data": {"title": title or "Gallery", "subhead": "",
-                         "items": [{"label": im.get("alt") or "", "caption": "", "src": im.get("src", ""),
-                                    "alt": im.get("alt") or "", "hue": None} for im in imgs[:12]]},
+                "id": ir.slugify(title) or "cta", "type": "cta",
+                "data": {"title": title, "body": " ".join(b.paragraphs[:2]), "primary": None},
                 "_source": b.file,
             })
             continue
@@ -304,10 +356,10 @@ def plan_offline(copy, opts: dict) -> dict:
             n += 1
         seen.add(sec["id"])
 
-    # Contact is the last stop on a phone. Hours and menu stay above it.
-    # The hero button is chosen after this move, so it names that earlier title.
+    # Ask sections (cta and contact) close the case and always come last (offer -> proof -> ask).
     sections[:] = (
-        [sec for sec in sections if sec["type"] != "contact"]
+        [sec for sec in sections if sec["type"] not in ("contact", "cta")]
+        + [sec for sec in sections if sec["type"] == "cta"]
         + [sec for sec in sections if sec["type"] == "contact"]
     )
 
