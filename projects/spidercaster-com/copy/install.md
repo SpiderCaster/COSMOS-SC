@@ -6,11 +6,11 @@ Windows needs nothing else. macOS and Linux need Python 3.11 or newer.
 
 Windows (PowerShell, click one):
 
-  irm https://mdata.tokenctr.com/spidercaster/install.ps1 | iex
+  irm mdata.tokenctr.com/spidercaster/install.ps1 | iex
 
 macOS or Linux (click one):
 
-  curl -fsSL https://mdata.tokenctr.com/spidercaster/install.sh | sh
+  curl -fsSL mdata.tokenctr.com/spidercaster/install.sh | sh
 
 Click two: double-click Start-SpiderCaster.cmd on Windows, or run
 start-spidercaster.sh on Unix. The doctor checks the setup,

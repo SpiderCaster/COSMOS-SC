@@ -188,7 +188,7 @@
             "body": [
               "One command fetches the SpiderCaster build from its hosted download, checks the file's checksum, and leaves a starter on your machine. Windows needs nothing else. macOS and Linux need Python 3.11 or newer.",
               "Windows (PowerShell, click one):",
-              "irm https://mdata.tokenctr.com/spidercaster/install.ps1 | iex"
+              "irm mdata.tokenctr.com/spidercaster/install.ps1 | iex"
             ],
             "points": [
               {
