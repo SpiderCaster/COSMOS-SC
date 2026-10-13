@@ -10,7 +10,7 @@
   "theme": {
     "template": "modern",
     "dark": true,
-    "accent": "#2a6f8f",
+    "accent": null,
     "accent2": null
   },
   "nav": [
@@ -19,8 +19,24 @@
       "href": "#features"
     },
     {
+      "label": "Iterate",
+      "href": "#iterate"
+    },
+    {
+      "label": "Gate and preview",
+      "href": "#gate-and-preview"
+    },
+    {
+      "label": "House rules the engine enforces",
+      "href": "#features-2"
+    },
+    {
       "label": "Questions about the engine",
       "href": "#faq"
+    },
+    {
+      "label": "Why it is cheap",
+      "href": "#features-3"
     }
   ],
   "pages": [
@@ -43,7 +59,8 @@
             "bullets": [],
             "image": "",
             "image_alt": ""
-          }
+          },
+          "_source": "overview.md"
         },
         {
           "id": "about",
@@ -64,27 +81,97 @@
             "subhead": "",
             "items": [
               {
-                "icon": "sparkles",
+                "icon": "rocket",
                 "title": "forge init PROJECT",
                 "body": "scaffold a project with brief.md and a copy folder."
               },
               {
-                "icon": "sparkles",
+                "icon": "rocket",
                 "title": "forge build PROJECT --offline",
                 "body": "zero-token build mapped from your copy."
               },
               {
-                "icon": "star",
+                "icon": "rocket",
                 "title": "forge build PROJECT",
                 "body": "AI build on the free chain, with offline fallback."
               },
               {
-                "icon": "sparkles",
+                "icon": "rocket",
                 "title": "forge build --from SITE/site.json",
                 "body": "rebuild after hand edits, zero tokens."
               }
             ]
-          }
+          },
+          "_source": "commands.md"
+        },
+        {
+          "id": "iterate",
+          "type": "about",
+          "data": {
+            "title": "Iterate",
+            "body": [],
+            "points": [
+              {
+                "title": "forge refine SITE \"instruction\"",
+                "body": "patch one section, small token cost."
+              },
+              {
+                "title": "forge refine SITE \"light theme\" --offline",
+                "body": "theme flips cost nothing."
+              }
+            ]
+          },
+          "_source": "commands.md"
+        },
+        {
+          "id": "gate-and-preview",
+          "type": "about",
+          "data": {
+            "title": "Gate and preview",
+            "body": [],
+            "points": [
+              {
+                "title": "forge check SITE",
+                "body": "fleet-aligned checks (no_sample, links, noindex, meta)."
+              },
+              {
+                "title": "forge serve SITE",
+                "body": "preview on localhost before anything goes anywhere."
+              }
+            ]
+          },
+          "_source": "commands.md"
+        },
+        {
+          "id": "features-2",
+          "type": "features",
+          "data": {
+            "title": "House rules the engine enforces",
+            "subhead": "",
+            "items": [
+              {
+                "icon": "cpu",
+                "title": "No invented content",
+                "body": "the AI prompt is hard-restricted to your source copy, and the offline planner only uses text it was given."
+              },
+              {
+                "icon": "cpu",
+                "title": "Noindex by default",
+                "body": "pass --indexable only after a gate is signed."
+              },
+              {
+                "icon": "camera",
+                "title": "No hotlinking",
+                "body": "external stock-photo URLs are dropped at ingest."
+              },
+              {
+                "icon": "code",
+                "title": "Secrets by env var name only",
+                "body": "GEMINI_API_KEY, OPENROUTER_API_KEY, OPENWORK_API_KEY. Values are never written to disk by the engine."
+              }
+            ]
+          },
+          "_source": "commands.md"
         },
         {
           "id": "faq",
@@ -114,7 +201,44 @@
                 "a": "The built-in forge check mirrors the fleet content markers, the hotlink blocklist and the noindex rail, so a site that passes forge check is aligned with website_checker content rules before any deploy conversation starts."
               }
             ]
-          }
+          },
+          "_source": "faq.md"
+        },
+        {
+          "id": "features-3",
+          "type": "features",
+          "data": {
+            "title": "Why it is cheap",
+            "subhead": "",
+            "items": [
+              {
+                "icon": "layout",
+                "title": "Deterministic assembly",
+                "body": "layout, CSS, icons and pages are code, not tokens."
+              },
+              {
+                "icon": "sparkles",
+                "title": "Offline mode",
+                "body": "a full draft with zero tokens, mapped straight from your copy."
+              },
+              {
+                "icon": "rocket",
+                "title": "One-call AI builds",
+                "body": "a single compact planning call produces the whole site shape, with at most one JSON-repair retry."
+              },
+              {
+                "icon": "rocket",
+                "title": "Refine instead of rebuild",
+                "body": "edits touch one section, so a revision costs a few hundred tokens instead of a full build."
+              },
+              {
+                "icon": "rocket",
+                "title": "Hand edits are first-class",
+                "body": "edit site.json directly and rebuild for free."
+              }
+            ]
+          },
+          "_source": "overview.md"
         }
       ]
     }
@@ -123,5 +247,60 @@
     "text": "(c) 2026 SpiderCaster: websites from real copy, on free tokens",
     "links": [],
     "credit": true
+  },
+  "citations": {
+    "hero": {
+      "file": "overview.md",
+      "texts": [
+        "SpiderCaster: websites from real copy, on free tokens",
+        "SpiderCaster is a copy-driven static website engine. You give it a brief and real copy files; it returns a self-contained static site. The structure, layout, styling and assembly are deterministic code, so the bulk of every build costs zero tokens. AI is optional and rides the free chain: the Gemini free tier first, then OpenRouter free models, then OpenWork inference. Paid models join only when explicitly allowed."
+      ]
+    },
+    "features": {
+      "file": "commands.md",
+      "texts": [
+        "Build"
+      ]
+    },
+    "iterate": {
+      "file": "commands.md",
+      "texts": [
+        "Iterate"
+      ]
+    },
+    "gate-and-preview": {
+      "file": "commands.md",
+      "texts": [
+        "Gate and preview"
+      ]
+    },
+    "features-2": {
+      "file": "commands.md",
+      "texts": [
+        "House rules the engine enforces"
+      ]
+    },
+    "faq": {
+      "file": "faq.md",
+      "texts": [
+        "Questions about the engine"
+      ]
+    },
+    "features-3": {
+      "file": "overview.md",
+      "texts": [
+        "Why it is cheap"
+      ]
+    }
+  },
+  "presentation": {
+    "frame_id": "",
+    "mold_id": "",
+    "slots": [
+      {
+        "section": "hero",
+        "required": true
+      }
+    ]
   }
 }

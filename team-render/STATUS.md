@@ -1,3 +1,48 @@
+# HERO Visuals & Graphics Upgrade (GF38 Full Packs) — 2026-10-13 (UTC)
+
+Lane: Modern visual design, procedural vector hero art, markdown image ingestion, WebP measurement, and Imagine integration
+Tree: `V:/A/Ai/spidercaster/working` (live tree only; no toy dirs)
+Changed files: `lib/render.py`, `lib/ingest.py`, `lib/ir.py`, `lib/offline.py`, `lib/compose.py`, `lib/ui_render.py`, `spidercaster.py`, `.gitignore` (+ this STATUS file)
+
+## Result: DONE — all gates pass, 18/18 shipcheck steps green, boundaries ok, secret scan clean
+
+### 1. Ingestion & Auto-Asset Discovery (`lib/ingest.py`, `spidercaster.py`)
+- Fixed markdown image ingestion: `parse_markdown` extracts `MD_IMAGE_RE` links into `cur.images` before text stripping.
+- Auto-discovery of local project assets: `load_project` scans `project/assets/` (`.png`, `.jpg`, `.jpeg`, `.webp`, `.svg`, `.gif`) into `assets` without requiring manual `assets.json` entries.
+- Hero asset copying: `copy_assets` now copies referenced hero images from `project/assets/` into `site/assets/`.
+
+### 2. Modern Design System & CSS Lighting (`lib/render.py`)
+- Ambient lighting: subtle radial mesh backdrop (`radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft), transparent 70%)`).
+- Card elevation: modern glassmorphism depth, semi-translucent borders (`var(--line)`), soft drop-shadows, and smooth `-3px` hover elevation with accent glow.
+- Polished chips & badges: enhanced `.chip` with border, soft accent background, and subtle shadow.
+- Interactive styling: smooth transitions on cards, details/summary accordions, and buttons.
+
+### 3. Procedural Vector Mockups & Expanded Icons (`lib/render.py`, `lib/ir.py`, `lib/offline.py`)
+- Replaced the single-letter monogram fallback with `vector_hero_svg()`: a crisp 16:9 responsive vector mockup featuring a glassmorphic window, code/content blocks, metric cards, sparkline chart, and ambient glow.
+- 100% vector geometry with 0 text nodes (fully compliant with fleet `cited_text` and `no_hotlink` rules).
+- Expanded `ICONS` from 25 to 40+ curated SVGs (`terminal`, `browser`, `database`, `server`, `palette`, `layout`, `rocket`, `box`, `search`, etc.), synced with `lib/ir.py::ICON_NAMES` and `FEATURE_ICON_HINTS`.
+- Upgraded gallery fallback tiles with styled vector geometric motifs instead of plain flat gradient rectangles.
+- Added WebP header dimensions parsing in `image_box` for layout stability.
+
+### 4. AI Imagine Pipeline (`spidercaster.py`, `lib/imagine.py`)
+- Added `--imagine` build flag to `spidercaster.py build`: generates a prompt-tailored local `assets/hero.png` via xAI/OpenRouter and automatically links it to the site hero.
+
+### 5. Modular Component Bridge & Windows Lock Reliability (`lib/compose.py`, `lib/ui_render.py`)
+- Preserved `data-cta="primary"` on composed hero parts in `lib/compose.py`.
+- Windows process query fix in `lib/ui_render.py`: safe `OpenProcess` check prevents WinError 87 kernel locks during UI selftests.
+
+### 6. Verification (all PASS)
+- `python spidercaster.py shipcheck` — 18/18 steps green (`shipcheck ok`).
+- `python scripts/enforce_boundaries.py` — `boundaries ok`.
+- `python scripts/secret_scan.py --all` — 0 findings (exit 0).
+- `python -m unittest tests.test_secret_scan -v` — 17/17 tests green.
+- `python spidercaster.py crew selftest` — ok.
+- `python spidercaster.py ui --selftest` — ok.
+- `python spidercaster.py check sites/demo-local` — 59 pass / 0 fail / 1 warn / 4 skip.
+- `python spidercaster.py check sites/demo-local-compose` — 59 pass / 0 fail / 1 warn / 4 skip.
+
+---
+
 # HERO render lane — STATUS
 
 Date: 2026-10-11 (UTC)

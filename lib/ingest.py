@@ -237,6 +237,16 @@ def parse_markdown(text: str, file: str) -> list[Block]:
         close_item()
         if cur is None:
             ensure(1, "")
+
+        # Check for markdown image tags in this line
+        img_matches = list(MD_IMAGE_RE.finditer(stripped))
+        if img_matches:
+            for m in img_matches:
+                cur.images.append({"src": m.group(2).strip(), "alt": (m.group(1) or Path(m.group(2)).stem).strip()})
+            if not MD_IMAGE_RE.sub("", stripped).strip():
+                # Line was purely an image reference
+                continue
+
         para = strip_md_inline(stripped)
         if not para:
             continue
@@ -324,6 +334,16 @@ def load_project(project_dir: Path, max_assets: int = 24) -> Copy:
     else:
         c.warnings.append("no copy/ directory; site will be structure only")
 
+    # Auto-discover project assets/ directory if it exists
+    assets_dir = project_dir / "assets"
+    if assets_dir.is_dir():
+        for p in sorted(assets_dir.iterdir()):
+            if p.is_file() and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif"}:
+                rel = f"assets/{p.name}"
+                stem = p.stem.lower()
+                if stem not in c.assets and len(c.assets) < max_assets:
+                    c.assets[stem] = rel
+
     # assets.json: {"images": {"name": "relative/path.jpg"}} - local files only
     assets_path = project_dir / "assets.json"
     if assets_path.exists():
@@ -347,16 +367,33 @@ def load_project(project_dir: Path, max_assets: int = 24) -> Copy:
         except (OSError, ValueError) as exc:
             c.warnings.append(f"assets.json unreadable ({exc})")
 
-    # markdown images referencing local files get wired to assets
-    if c.assets:
-        for b in c.blocks:
-            for para in list(b.paragraphs):
-                m = MD_IMAGE_RE.search(para)
-                if m:
-                    key = Path(m.group(2)).stem
-                    if key in c.assets:
-                        b.images.append({"src": c.assets[key], "alt": m.group(1) or key})
-                        b.paragraphs.remove(para)
+    # Wire and validate block images against local assets
+    for b in c.blocks:
+        resolved = []
+        for im in b.images:
+            src = im.get("src", "")
+            if src.startswith(("http://", "https://")):
+                c.warnings.append(f"{b.file}: dropped external image '{src}' (download-only rule)")
+                continue
+            if HOTLINK_RE.search(src):
+                c.warnings.append(f"{b.file}: dropped hotlinked image '{src}'")
+                continue
+            stem = Path(src).stem.lower()
+            if src in c.assets.values():
+                resolved.append(im)
+            elif stem in c.assets:
+                resolved.append({"src": c.assets[stem], "alt": im.get("alt") or stem})
+            elif (project_dir / src).is_file():
+                resolved.append(im)
+                if stem not in c.assets and len(c.assets) < max_assets:
+                    c.assets[stem] = src
+            else:
+                c.warnings.append(f"{b.file}: image '{src}' not found on disk; skipped")
+        b.images = resolved
+        b.paragraphs = [
+            p for p in b.paragraphs
+            if not (p.startswith("[image: ") and p.endswith("]"))
+        ]
     return c
 
 

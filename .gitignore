@@ -17,6 +17,9 @@ Thumbs.db
 
 # generated / local-only
 _delme/
+_attempts/
+build/
+dist/
 backups*/
 bench/results/
 stage/

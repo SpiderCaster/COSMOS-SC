@@ -108,24 +108,44 @@ def copy_assets(site: dict, project_dir: Path, site_dir: Path) -> list[str]:
     copied = []
     for page in site.get("pages", []):
         for sec in page.get("sections", []):
-            if sec["type"] != "gallery":
-                continue
-            for item in sec["data"].get("items", []):
-                src = item.get("src") or ""
-                if not src or src.startswith(("http://", "https://")):
-                    continue
-                origin = (project_dir / src).resolve()
-                if not origin.exists():
-                    continue
-                dest_dir = site_dir / "assets"
-                dest_dir.mkdir(exist_ok=True)
-                dest = dest_dir / origin.name
-                if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
-                    shutil.copy2(origin, dest)
-                new_ref = f"assets/{origin.name}"
-                if item["src"] != new_ref:
-                    item["src"] = new_ref
-                    copied.append(new_ref)
+            if sec.get("type") == "hero":
+                d = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+                src = d.get("image") or ""
+                if not src:
+                    for ext in (".png", ".jpg", ".jpeg", ".webp"):
+                        cand = project_dir / f"assets/hero{ext}"
+                        if cand.is_file():
+                            src = f"assets/hero{ext}"
+                            d["image"] = src
+                            break
+                if src and not src.startswith(("http://", "https://", "//")):
+                    origin = (project_dir / src).resolve()
+                    if origin.is_file():
+                        dest_dir = site_dir / "assets"
+                        dest_dir.mkdir(parents=True, exist_ok=True)
+                        dest = dest_dir / origin.name
+                        if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
+                            shutil.copy2(origin, dest)
+                        new_ref = f"assets/{origin.name}"
+                        d["image"] = new_ref
+                        copied.append(new_ref)
+            elif sec.get("type") == "gallery":
+                for item in sec.get("data", {}).get("items", []):
+                    src = item.get("src") or ""
+                    if not src or src.startswith(("http://", "https://")):
+                        continue
+                    origin = (project_dir / src).resolve()
+                    if not origin.exists():
+                        continue
+                    dest_dir = site_dir / "assets"
+                    dest_dir.mkdir(parents=True, exist_ok=True)
+                    dest = dest_dir / origin.name
+                    if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
+                        shutil.copy2(origin, dest)
+                    new_ref = f"assets/{origin.name}"
+                    if item["src"] != new_ref:
+                        item["src"] = new_ref
+                        copied.append(new_ref)
     return copied
 
 
@@ -305,6 +325,21 @@ def cmd_build(args) -> int:
             return 1
     else:
         project_dir = Path(args.project)
+        if getattr(args, "imagine", False):
+            hero_target = project_dir / "assets" / "hero.png"
+            if not hero_target.exists():
+                from lib.imagine import ImagineError, generate
+                prompt = (
+                    f"Editorial still life photograph for {project_dir.name}, no text, no logo, no watermark, "
+                    "warm natural lighting, subject on right third, quiet space on left, "
+                    "calm craftsmanship. Not a product ad."
+                )
+                try:
+                    print(f"  [imagine] generating local hero image for {project_dir.name}...")
+                    generate(prompt, hero_target, aspect_ratio="16:9", quality="low")
+                    print(f"  [imagine] saved {hero_target}")
+                except (ImagineError, OSError, ValueError) as exc:
+                    print(f"  [imagine] skipped ({exc})")
         copy = ingest.load_project(project_dir)
         warnings.extend(copy.warnings)
         brief = copy.brief
@@ -1077,6 +1112,8 @@ def main(argv=None) -> int:
     p.add_argument("--light", dest="dark", action="store_false")
     p.add_argument("--pages", type=int, default=1, help="page count hint for the AI planner")
     p.add_argument("--brand", help="brand/title override")
+    p.add_argument("--imagine", action="store_true",
+                   help="prompt image provider and generate local assets/hero.png if missing")
     p.add_argument("--indexable", action="store_true",
                    help="omit robots noindex (default is noindex until approved)")
     p.add_argument("--host", default="", help="origin for sitemap.xml, used only with --indexable")

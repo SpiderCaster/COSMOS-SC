@@ -1,7 +1,7 @@
 {
   "schema": "spidercaster-structure/1",
-  "frame_id": "welcome-scroll",
-  "mold_id": "discover-grid",
+  "frame_id": "",
+  "mold_id": "",
   "pages": [
     {
       "slug": "index",
@@ -22,9 +22,29 @@
           "part_id": "card-compact-row-089"
         },
         {
+          "id": "iterate",
+          "type": "about",
+          "part_id": "card-download-resource-088"
+        },
+        {
+          "id": "gate-and-preview",
+          "type": "about",
+          "part_id": "card-header-body-footer-card-183"
+        },
+        {
+          "id": "features-2",
+          "type": "features",
+          "part_id": "card-horizontal-083"
+        },
+        {
           "id": "faq",
           "type": "faq",
           "part_id": "faq-bootstrap-accordion-flush-195"
+        },
+        {
+          "id": "features-3",
+          "type": "features",
+          "part_id": "card-link-list-087"
         }
       ]
     }

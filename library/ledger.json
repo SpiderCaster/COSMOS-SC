@@ -24,6 +24,12 @@
       "mold": "discover-grid",
       "vendor_frame": null,
       "live": false
+    },
+    {
+      "site": "spidercaster.com",
+      "mold": "spidercaster-com",
+      "vendor_frame": null,
+      "live": false
     }
   ]
 }

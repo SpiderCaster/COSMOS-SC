@@ -18,7 +18,9 @@ SECTION_TYPES = [
 ICON_NAMES = [
     "zap", "shield", "heart", "star", "check", "code", "cloud", "lock", "pulse",
     "globe", "sparkles", "layers", "cpu", "camera", "mail", "map", "users",
-    "clock", "trending", "phone", "pin",
+    "clock", "trending", "phone", "pin", "terminal", "browser", "database",
+    "server", "palette", "layout", "feather", "compass", "award", "rocket",
+    "box", "arrow_right", "refresh", "search", "sliders",
 ]
 
 TEMPLATES = ["modern", "editorial", "bold"]

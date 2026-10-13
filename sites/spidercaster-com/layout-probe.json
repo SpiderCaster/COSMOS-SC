@@ -1,8 +1,8 @@
 {
   "generator": "tools/layout_probe.py",
   "version": 1,
-  "html_hash": "f2dd98206e25de1a",
-  "hash": "f2dd98206e25de1a",
+  "html_hash": "c88afd4fed61eaaf",
+  "hash": "c88afd4fed61eaaf",
   "pages": [
     "index.html"
   ],
@@ -24,8 +24,8 @@
     },
     {
       "name": "no_remote_assets",
-      "status": "PASS",
-      "detail": "1 page(s), local only"
+      "status": "FAIL",
+      "detail": "index.html: remote URL in output: https://mdata.tokenctr.com/spidercaster/install.ps1"
     }
   ]
 }

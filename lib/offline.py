@@ -14,11 +14,19 @@ from pathlib import Path
 from . import ir
 
 FEATURE_ICON_HINTS = [
+    ("build|install|setup|deploy|launch", "rocket"),
+    ("terminal|command|cli|bash|shell", "terminal"),
+    ("browser|preview|view|web", "browser"),
+    ("database|storage|persist|sql", "database"),
+    ("server|host|network", "server"),
+    ("design|art|creative|style|color|theme", "palette"),
+    ("layout|wireframe|frame|structure", "layout"),
+    ("module|package|tool|part|box", "box"),
     ("fast|speed|quick|instant", "zap"),
     ("secur|privac|encrypt|safe", "lock"),
     ("cloud|sync|online|remote", "cloud"),
     ("code|api|developer|sdk", "code"),
-    ("search|find|discover", "pin"),
+    ("search|find|discover|inspect|probe", "search"),
     ("team|people|crew|staff", "users"),
     ("time|schedule|hour|deadline", "clock"),
     ("report|metric|analytic|track", "trending"),
@@ -30,6 +38,8 @@ FEATURE_ICON_HINTS = [
     ("globe|world|region|local", "globe"),
     ("layer|module|component", "layers"),
     ("cpu|engine|model|compute", "cpu"),
+    ("setting|config|knob|tune", "sliders"),
+    ("refresh|sync|reload|rebuild|again", "refresh"),
 ]
 
 CONTACT_TITLE_RE = re.compile(r"\bcontact\b|\bget in touch\b|\breach us\b", re.IGNORECASE)

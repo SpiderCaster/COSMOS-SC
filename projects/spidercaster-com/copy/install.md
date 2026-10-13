@@ -1,12 +1,20 @@
 # Two clicks to install
 
-You need Python 3.11 or newer. Nothing else.
+One command fetches the SpiderCaster build from its hosted download,
+checks the file's checksum, and leaves a starter on your machine.
+Windows needs nothing else. macOS and Linux need Python 3.11 or newer.
 
-1. Get the folder from GitHub: SpiderCaster/COSMOS-SC
-   (click one: download or clone).
-2. Double-click Start-SpiderCaster.cmd on Windows, or run
-   ./start-spidercaster.sh on Unix (click two). The doctor checks the setup,
-   the demo builds at zero tokens, and the studio desk opens in your browser.
+Windows (PowerShell, click one):
+
+  irm https://mdata.tokenctr.com/spidercaster/install.ps1 | iex
+
+macOS or Linux (click one):
+
+  curl -fsSL https://mdata.tokenctr.com/spidercaster/install.sh | sh
+
+Click two: double-click Start-SpiderCaster.cmd on Windows, or run
+start-spidercaster.sh on Unix. The doctor checks the setup,
+the demo builds at zero tokens, and the studio desk opens in your browser.
 
 The desk has rooms for the plan, the paint, the check, and the preview. Nothing publishes from here. Publish stays a command a person runs.
 

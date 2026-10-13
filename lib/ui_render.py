@@ -377,6 +377,24 @@ def cdeck_status() -> dict:
     }
 
 
+def _pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.OpenProcess(0x1000, False, pid)
+        if not handle:
+            return False
+        kernel32.CloseHandle(handle)
+        return True
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
 def acquire_lock(project: str) -> tuple[bool, str]:
     """Exclusive session lock: project/.sc_ui_lock (pid inside)."""
     lock = Path(project) / ".sc_ui_lock"
@@ -387,9 +405,7 @@ def acquire_lock(project: str) -> tuple[bool, str]:
             pid = int(lock.read_text(encoding="utf-8").strip().split()[0])
         except (OSError, ValueError, IndexError):
             return False, f"locked by unreadable {lock} (remove it if stale)"
-        try:
-            os.kill(pid, 0)
-        except OSError:
+        if not _pid_alive(pid):
             return False, f"stale lock from pid {pid} (remove {lock} to proceed)"
         return False, f"locked by live pid {pid}"
     except OSError as exc:
