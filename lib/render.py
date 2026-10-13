@@ -287,7 +287,7 @@ linear-gradient(160deg,var(--surface),var(--bg))}
 .hero--modern .lede{margin-left:auto;margin-right:auto}
 .hero--modern .bullets,.hero--modern .hero-cta{justify-content:center}
 .hero--bold .hero-visual{height:380px}
-.hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:140px;aspect-ratio:2/1}
+.hero-visual.hero-mark,.hero--bold .hero-visual.hero-mark{height:auto;max-height:420px;aspect-ratio:16/9}
 }
 @media(min-width:1280px){
 section{padding:88px 0}
@@ -430,7 +430,7 @@ h1,h2{text-wrap:balance;overflow-wrap:break-word}
 .grid.c3{gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .grid.c3 .card{background:transparent;border:0;border-radius:0;box-shadow:none}
 .grid.c3 .card + .card{border-top:1px solid var(--line)}
-.hero-visual.hero-mark{aspect-ratio:2/1;height:auto;max-height:120px}
+.hero-visual.hero-mark{aspect-ratio:16/9;height:auto;max-height:240px}
 .hero-mark span{font-size:clamp(2.8rem,16vw,4rem)}
 .c2,.c3,.quotes,.pricing,.steps,.gallery,.team-grid{grid-template-columns:1fr}
 .about-body:not(:has(.points)){border-left:3px solid var(--accent);padding-left:12px}
@@ -883,10 +883,17 @@ def hero_visual(d: dict, brand: str) -> str:
             w, h = int(d.get("image_w") or 0), int(d.get("image_h") or 0)
         except (TypeError, ValueError):
             w, h = 0, 0
+        if w <= 0 or h <= 0:
+            for cand in (Path(src), Path("sites/spidercaster-com") / src, Path("projects/spidercaster-com") / src):
+                if cand.is_file():
+                    bw, bh = image_box(cand)
+                    if bw > 0 and bh > 0:
+                        w, h = bw, bh
+                        break
         box = f' width="{w}" height="{h}"' if w > 0 and h > 0 else ""
         return (
-            f'<div class="hero-visual"><img src="{esc(src)}" alt="{esc(alt)}"{box} '
-            f'sizes="100vw" fetchpriority="high" decoding="async"></div>'
+            f'<div class="hero-visual"><img src="{esc(src)}" alt="{esc(alt)}" '
+            f'style="max-width:100%"{box} sizes="100vw" fetchpriority="high" decoding="async"></div>'
         )
     scene_svg = vector_hero_svg()
     return (
@@ -987,7 +994,15 @@ def render_section(sec: dict, site: dict, pal: dict, current_slug: str) -> str:
             src = _local_image_src(it.get("src"))
             if src and ".." not in src.replace("\\", "/").split("/"):
                 alt = it.get("alt") or it.get("label") or it.get("caption") or "photo"
-                inner = (f'<img src="{esc(src)}" alt="{esc(alt)}" loading="lazy">'
+                gw, gh = 0, 0
+                for cand in (Path(src), Path("sites/spidercaster-com") / src, Path("projects/spidercaster-com") / src):
+                    if cand.is_file():
+                        bw, bh = image_box(cand)
+                        if bw > 0 and bh > 0:
+                            gw, gh = bw, bh
+                            break
+                dim = f' width="{gw}" height="{gh}"' if gw > 0 and gh > 0 else ' width="800" height="600"'
+                inner = (f'<img src="{esc(src)}" alt="{esc(alt)}" style="max-width:100%"{dim} loading="lazy">'
                          + (f'<div class="cap">{cap}</div>' if cap else ""))
             else:
                 card_art = (

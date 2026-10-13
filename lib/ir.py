@@ -95,7 +95,13 @@ def normalize_data(kind: str, d: dict) -> dict:
         if src.startswith(("http://", "https://", "//")) or ".." in parts:
             src = ""
         out["image"] = src
-        out["image_alt"] = alt
+        out["image_alt"] = alt or s(d.get("image_alt"))
+        try:
+            out["image_w"] = int(d.get("image_w")) if d.get("image_w") is not None else None
+            out["image_h"] = int(d.get("image_h")) if d.get("image_h") is not None else None
+        except (ValueError, TypeError):
+            out["image_w"] = None
+            out["image_h"] = None
 
     elif kind == "features":
         out["title"] = s(d.get("title"))

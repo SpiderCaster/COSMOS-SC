@@ -1,0 +1,9 @@
+{
+  "images": {
+    "hero": "assets/hero-reading-room.jpg",
+    "reading-room": "assets/hero-reading-room.jpg",
+    "press": "assets/press-1819.jpg",
+    "eniac": "assets/build-eniac.jpg",
+    "programmers": "assets/crew-eniac-programmers.jpg"
+  }
+}
