@@ -4,7 +4,7 @@
   "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 1-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
   "meta": {
     "title": "SpiderCaster turns words into websites.",
-    "description": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log int",
+    "description": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database.",
     "lang": "en"
   },
   "theme": {
@@ -50,17 +50,17 @@
           "data": {
             "eyebrow": "",
             "headline": "SpiderCaster turns words into websites.",
-            "subhead": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again.",
+            "subhead": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again.",
             "primary": {
               "label": "What you get",
               "href": "#features"
             },
             "secondary": null,
             "bullets": [
-              "Download SpiderCaster to start.",
-              "Run one command and get a site.",
-              "Change the words and build again.",
-              "Keep every file. The site is yours."
+              "Download SpiderCaster to start with one click.",
+              "Automatic free agent seated in your browser studio.",
+              "Instant local preview and one-click free staging.",
+              "Keep every file. The site is yours forever."
             ],
             "image": "assets/hero-reading-room.jpg",
             "image_alt": "SpiderCaster turns words into websites. hero",
@@ -82,9 +82,14 @@
                 "body": "one command builds a site from your words. The draft costs nothing and needs no keys."
               },
               {
-                "icon": "mail",
-                "title": "Free help from models",
-                "body": "the free chain can plan the shape of the site. Each try is written down with its token count."
+                "icon": "rocket",
+                "title": "Free agent seated in studio",
+                "body": "the free model chain plans the site in the background with zero setup."
+              },
+              {
+                "icon": "terminal",
+                "title": "One-click free staging",
+                "body": "test on your port or share live online even before you own a domain."
               },
               {
                 "icon": "rocket",
@@ -130,6 +135,14 @@
                 "a": "No. It works only from the words in your files. It can reorder and shorten, but it cannot add facts, prices, or names."
               },
               {
+                "q": "What if I do not have a domain or webhost yet?",
+                "a": "You can preview locally on port 4173. You can also deploy to free cloud staging with a single click, or download the self-contained static files to host anywhere for free."
+              },
+              {
+                "q": "How does the free agent work without an account?",
+                "a": "SpiderCaster automatically provisions a free background model chain so you can chat and plan immediately. No API keys, credit cards, or accounts are needed."
+              },
+              {
                 "q": "How do I change one thing?",
                 "a": "Edit the site.json file and rebuild from it with build --from. The rebuild costs nothing. Small fixes beat full rebuilds."
               },
@@ -150,7 +163,7 @@
           "type": "steps",
           "data": {
             "title": "How it goes",
-            "subhead": "Three moves. Write, build, check.",
+            "subhead": "Three moves. Write, build, preview.",
             "items": [
               {
                 "title": "Write the words",
@@ -161,8 +174,8 @@
                 "body": "One command turns the words into a site, and the offline draft costs nothing."
               },
               {
-                "title": "Check the result",
-                "body": "The checker reads every page and fails the job on the first problem. Nothing goes live with a failure on it."
+                "title": "Preview and share",
+                "body": "The checker reads every page, and you can preview locally or share live online for free."
               }
             ]
           },
@@ -187,12 +200,22 @@
               },
               {
                 "icon": "rocket",
+                "title": "Free agent seated in studio",
+                "body": "starts chatting and planning with zero account setup."
+              },
+              {
+                "icon": "rocket",
                 "title": "The desk opens in your browser with rooms for the plan, the",
                 "body": ""
               },
               {
                 "icon": "rocket",
-                "title": "Nothing publishes from here. Publish stays a command a perso",
+                "title": "Free cloud staging",
+                "body": "share your site live online even if you do not have a domain yet."
+              },
+              {
+                "icon": "rocket",
+                "title": "Nothing publishes from here without your explicit click.",
                 "body": ""
               }
             ]
@@ -382,7 +405,7 @@
       "file": "overview.md",
       "texts": [
         "SpiderCaster turns words into websites.",
-        "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again."
+        "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again."
       ]
     },
     "features": {
@@ -402,7 +425,7 @@
       "file": "how.md",
       "texts": [
         "How it goes",
-        "Three moves. Write, build, check."
+        "Three moves. Write, build, preview."
       ]
     },
     "features-2": {

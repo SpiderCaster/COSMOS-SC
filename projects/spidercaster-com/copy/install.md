@@ -6,5 +6,7 @@ Windows, macOS, and Linux ready.
 
 - Download for Windows: click the SpiderCaster installer to start.
 - Download for macOS: open the package to start.
+- Free agent seated in studio: starts chatting and planning with zero account setup.
 - The desk opens in your browser with rooms for the plan, the paint, the check, and the preview.
-- Nothing publishes from here. Publish stays a command a person runs.
+- Free cloud staging: share your site live online even if you do not have a domain yet.
+- Nothing publishes from here without your explicit click.
