@@ -4,11 +4,16 @@ r"""Parts integration bench (stdlib). For every part under tools\parts\<family>\
   manifest sanity (targets, files exist, install_seat), and a theme-target verdict:
   a part integrates with OceanWP/GeneratePress only if targets lists it AND a snippet.php/hook is shipped.
 Usage: python bench\parts_integration.py --fleet-check PATH --webcheck PATH [--out-dir DIR]
-Nothing is installed; read-only on the parts."""
+Nothing is installed; read-only on the parts.
+Paths (2026-10-18, path-independent): --parts-dir, else env SPIDERCASTER_PARTS / SPIDERCASTER_PARTS_DIR, else
+bench/bench_paths.json, else repo-relative tools/parts or library/parts, else the old KC-PC default only if it exists.
+If the parts tree or a checker script is absent: prints SKIP with the reason, exits 3 (never a pass, never a crash)."""
 import argparse, datetime, json, subprocess, sys, time
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sc_paths import EXIT_SKIP, resolve
 
-PARTS = Path(r"V:\streams\webdev\tools\parts")
+PARTS = None  # resolved in main()
 
 def run(cmd, cwd, timeout=120):
     t = time.perf_counter()
@@ -23,7 +28,21 @@ def main():
     ap.add_argument("--fleet-check", required=True)
     ap.add_argument("--webcheck", required=True)
     ap.add_argument("--out-dir")
+    ap.add_argument("--parts-dir")
     a = ap.parse_args()
+    global PARTS
+    PARTS, psrc = resolve("parts", a.parts_dir)
+    why = [] if PARTS else [psrc]
+    for label, val in (("--fleet-check", a.fleet_check), ("--webcheck", a.webcheck)):
+        if not Path(val).is_file():
+            why.append(f"{label} script absent: {val}")
+    if why:
+        stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+        text = f"# PARTS {stamp} - SKIP\n\nSKIP: " + "; ".join(why) + "\n"
+        print(text)
+        if a.out_dir:
+            Path(a.out_dir).mkdir(parents=True, exist_ok=True); (Path(a.out_dir) / f"PARTS_{stamp}.md").write_text(text, encoding="utf-8")
+        return EXIT_SKIP
     rows = []
     for fam in sorted(d for d in PARTS.iterdir() if d.is_dir()):
         for part in sorted(d for d in fam.iterdir() if d.is_dir() and not d.name.startswith(("_", "."))):
@@ -60,7 +79,7 @@ def main():
     for r in rows:
         for n, (st, _, s) in r["steps"].items():
             tot[n][st] += 1; secs[n] += s
-    md = [f"# PARTS {stamp} - integration test", "", f"Parts found: {len(rows)} (" + ", ".join(f"{f}: {sum(1 for r in rows if r['family']==f)}" for f in sorted({r['family'] for r in rows})) + ")", "",
+    md = [f"# PARTS {stamp} - integration test", "", f"Parts root: `{PARTS}` [{psrc}]", "", f"Parts found: {len(rows)} (" + ", ".join(f"{f}: {sum(1 for r in rows if r['family']==f)}" for f in sorted({r['family'] for r in rows})) + ")", "",
           "| Step | PASS | FAIL | NOT-RUN | Seconds total |", "|---|---|---|---|---|"]
     for n in names:
         md.append(f"| {n} | {tot[n]['PASS']} | {tot[n]['FAIL']} | {tot[n]['NOT-RUN']} | {secs[n]:.1f} |")

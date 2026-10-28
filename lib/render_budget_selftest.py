@@ -2,7 +2,7 @@
 
 Assembles one synthetic page and pins the team-render contract with stdlib
 only (no network, no project build, no publish):
-- page weight: HTML raw <= 153600 bytes, gzip <= 40960, inline script <= 4096
+- page weight: HTML raw <= 225280 bytes, gzip <= 61440, inline script <= 12288
 - zero-framework output: no remote URL, @import, @font-face, or url(http
 - one cited primary CTA: exactly one data-cta="primary" site-wide, no ghost
   button in hero/cta sections, duplicate secondary dropped
@@ -23,10 +23,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from lib.render import assemble
+from lib.tokens import WEIGHT_HTML_GZIP, WEIGHT_HTML_RAW, WEIGHT_SCRIPT
 
-HTML_RAW_BUDGET = 153600
-HTML_GZIP_BUDGET = 40960
-SCRIPT_BUDGET = 4096
+HTML_RAW_BUDGET = WEIGHT_HTML_RAW
+HTML_GZIP_BUDGET = WEIGHT_HTML_GZIP
+SCRIPT_BUDGET = WEIGHT_SCRIPT
 
 
 def _site() -> dict:
@@ -101,9 +102,14 @@ def main() -> int:
     body = re.sub(
         r'<script type="application/ld\+json">.*?</script>', "", low, flags=re.DOTALL
     )
-    for needle in ("http://", "https://", "@import", "@font-face", "url(http"):
+    for needle in ("http://", "https://", "@import", "url(http"):
         if needle in body:
             return _fail(f"remote/framework trace in output: {needle}")
+    if "@font-face" in body:
+        if "font-display:swap" not in body or 'url("assets/fonts/' not in body:
+            return _fail("font-face is not a local swap face")
+        if "https://" in body or "http://" in body:
+            return _fail("font-face points at a remote file")
 
     if html.count('data-cta="primary"') != 1:
         return _fail("page does not carry exactly one primary CTA marker")

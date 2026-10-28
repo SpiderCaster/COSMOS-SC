@@ -158,6 +158,34 @@ def pick_part(section_type: str, used: set[str] | None = None, override: str = "
     )
 
 
+# Fixed variant map. The same mold always reuses the same hero and card.
+# This is the un-collapsed set: four heroes, three cards, chosen by mold id.
+HERO_VARIANTS = ("screenshot", "split", "full-bleed", "collage")
+CARD_VARIANTS = ("plain", "raised", "band")
+_MOLD_HERO = {
+    "warmth-authority": "split",
+    "discover-grid": "screenshot",
+    "clarify-mix": "full-bleed",
+    "spidercaster-com": "collage",
+}
+_MOLD_CARD = {
+    "warmth-authority": "plain",
+    "discover-grid": "raised",
+    "clarify-mix": "band",
+    "spidercaster-com": "raised",
+}
+
+
+def variant_for(kind: str, mold_id: str = "") -> str:
+    """Deterministic hero or card variant for a mold. Unknown molds use the default."""
+    mold = str(mold_id or "").strip() or "discover-grid"
+    if kind == "hero":
+        return _MOLD_HERO.get(mold, "screenshot")
+    if kind == "card":
+        return _MOLD_CARD.get(mold, "raised")
+    return ""
+
+
 def pick_chrome(slot: str, used: set[str] | None = None, override: str = "") -> dict:
     return _pick(
         slot,

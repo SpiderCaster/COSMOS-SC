@@ -1,9 +1,0 @@
-{
-  "provider": "xai",
-  "model": "grok-imagine-image-2.0",
-  "prompt": "Editorial photograph, no text, no logo, no watermark. A person walking at an easy pace on a quiet dusk street, warm low light, deep plum shadows and cream highlights. Mood of calm authority about everyday movement. Not a product ad and not a supplement bottle.",
-  "file": "movelixir-hero.png",
-  "bytes": 252790,
-  "aspect_ratio": "16:9",
-  "quality": "low"
-}

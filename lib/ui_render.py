@@ -29,9 +29,13 @@ if str(_ROOT) not in sys.path:
 
 from lib import ui_hands as _hands  # noqa: E402
 from lib import ui_orchestrator as _orc  # noqa: E402
+from lib.tokens import WEIGHT_HERO_IMG, WEIGHT_HTML_GZIP, WEIGHT_HTML_RAW, WEIGHT_SCRIPT  # noqa: E402
 
 _MARK = {"PASS": "[pass]", "FAIL": "[FAIL]", "WARN": "[warn]", "SKIP": "[skip]"}
-_BUDGETS = "page <=150KB raw (153600B) / <=40KB gzip (40960B); hero <=100KB; script <=4KB"
+_BUDGETS = (
+    f"page <=220KB raw ({WEIGHT_HTML_RAW}B) / <=60KB gzip ({WEIGHT_HTML_GZIP}B); "
+    f"hero <={WEIGHT_HERO_IMG // 1024}KB; script <={WEIGHT_SCRIPT // 1024}KB"
+)
 
 # Exact credit string (BOARD-locked; the URL is set by BOARD only, never invented).
 CREDIT_EXACT = '<a class="sc-credit" href="[URL TBD]">Built with SpiderCaster</a>'
@@ -377,6 +381,24 @@ def cdeck_status() -> dict:
     }
 
 
+def _pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.OpenProcess(0x1000, False, pid)
+        if not handle:
+            return False
+        kernel32.CloseHandle(handle)
+        return True
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
 def acquire_lock(project: str) -> tuple[bool, str]:
     """Exclusive session lock: project/.sc_ui_lock (pid inside)."""
     lock = Path(project) / ".sc_ui_lock"
@@ -387,9 +409,7 @@ def acquire_lock(project: str) -> tuple[bool, str]:
             pid = int(lock.read_text(encoding="utf-8").strip().split()[0])
         except (OSError, ValueError, IndexError):
             return False, f"locked by unreadable {lock} (remove it if stale)"
-        try:
-            os.kill(pid, 0)
-        except OSError:
+        if not _pid_alive(pid):
             return False, f"stale lock from pid {pid} (remove {lock} to proceed)"
         return False, f"locked by live pid {pid}"
     except OSError as exc:
@@ -556,7 +576,8 @@ class UI:
             raw = index.read_bytes()
             gz = len(gzip.compress(raw))
             self.say(f"  index.html: {len(raw)}B raw / {gz}B gzip "
-                     + f"(budgets 153600 / 40960): {'OVER' if len(raw) > 153600 else 'ok'}")
+                     + f"(budgets {WEIGHT_HTML_RAW} / {WEIGHT_HTML_GZIP}): "
+                     + f"{'OVER' if len(raw) > WEIGHT_HTML_RAW else 'ok'}")
             html = raw.decode("utf-8", errors="replace")
             title = re.search(r"<title>([^<]+)</title>", html)
             desc = re.search(r'<meta name="description" content="([^"]+)"', html)

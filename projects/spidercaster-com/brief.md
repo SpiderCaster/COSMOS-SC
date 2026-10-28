@@ -10,7 +10,7 @@ the cost in plain numbers, old machines with the same job, the rules, the
 check gate, the crew, install in two clicks, questions, and a closing panel.
 
 Voice: human. Short sentences. Concrete nouns. No hype. Every number on the
-page is a fact about the engine: 0-token drafts, 2-click install, 7 seats,
+page is a fact about the engine: 0-token drafts, 1-click install, 7 seats,
 1 planning call, 14 frames, 0 failures allowed. No metrics, prices,
 testimonials, or brand names. None exist in the sources, so none appear here.
 This build stays noindex until a content gate is signed.

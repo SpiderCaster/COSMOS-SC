@@ -2,7 +2,7 @@
 
 Read-only, 2026-10-01. Not applied. Not published. Stage HTML, Python, and `lib/` were not edited.
 
-Read: `<repo-root>\stage\demo\out\index.html`. It contains `h1,h2{text-wrap:balance;overflow-wrap:break-word}` inside `@media(max-width:860px)`, so this pass did not stop. A 390px width is inside that block. `.wrap{padding:0 16px}` leaves a 358px column. `box-sizing` is `border-box`. A full-width `.card` is 358px, with 14px padding and a 1px border, so the content box is 328px. `html` is 18px. `h3` is 1.12rem (20.16px) at line-height 1.15. Body line-height is 1.6. This is not a browser capture.
+Read: `V:\a\Ai\spidercaster\working\stage\demo\out\index.html`. It contains `h1,h2{text-wrap:balance;overflow-wrap:break-word}` inside `@media(max-width:860px)`, so this pass did not stop. A 390px width is inside that block. `.wrap{padding:0 16px}` leaves a 358px column. `box-sizing` is `border-box`. A full-width `.card` is 358px, with 14px padding and a 1px border, so the content box is 328px. `html` is 18px. `h3` is 1.12rem (20.16px) at line-height 1.15. Body line-height is 1.6. This is not a browser capture.
 
 Thirteen `.card` blocks are one `h3` and one `p`, each already wrapped by a `.chip` that holds an inline `svg.icon`. Build has 4, House rules the engine enforces has 4, Why it is cheap has 5. Phone rules already set `.card{padding:14px}`, `.card:hover{transform:none;box-shadow:none}`, `.chip{width:32px;height:32px;margin-bottom:8px}`, `.grid{gap:8px}`, `.card h3{margin-bottom:4px}`, and `.c3{grid-template-columns:1fr}`. `--radius` is 22px. `.card p` is already `color:var(--muted);margin:0`. No new sentence, no new icon, and no photo.
 

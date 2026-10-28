@@ -2,7 +2,7 @@
 
 Read-only, 2026-10-01. Not published. Stage HTML, Python, and `lib/` were not edited.
 
-Read: `<repo-root>\stage\harbor\out\index.html` and `stage\demo\out\index.html`. Both are the sheet rebuilt after the phone CSS pass. A 390px width is inside `@media(max-width:860px)`. From that sheet, `.wrap{padding:0 16px}` leaves a 358px column. `html` is 18px and `body` line-height is 1.6. That is stylesheet arithmetic, not a browser capture.
+Read: `V:\a\Ai\spidercaster\working\stage\harbor\out\index.html` and `stage\demo\out\index.html`. Both are the sheet rebuilt after the phone CSS pass. A 390px width is inside `@media(max-width:860px)`. From that sheet, `.wrap{padding:0 16px}` leaves a 358px column. `html` is 18px and `body` line-height is 1.6. That is stylesheet arithmetic, not a browser capture.
 
 No new copy, prices, or reviews are proposed below. Words in quotes are already on the page.
 

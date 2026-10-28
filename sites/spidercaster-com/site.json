@@ -1,10 +1,10 @@
 {
   "version": 1,
   "generator": "spidercaster/0.1",
-  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 2-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
+  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 1-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
   "meta": {
     "title": "SpiderCaster turns words into websites.",
-    "description": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files.",
+    "description": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database.",
     "lang": "en"
   },
   "theme": {
@@ -15,24 +15,28 @@
   },
   "nav": [
     {
-      "label": "How it goes",
-      "href": "#how"
-    },
-    {
       "label": "What you get",
       "href": "#features"
     },
     {
-      "label": "The cost, in plain numbers",
-      "href": "#numbers"
-    },
-    {
-      "label": "Two clicks to install",
-      "href": "#two-clicks-to-install"
-    },
-    {
       "label": "Questions",
       "href": "#faq"
+    },
+    {
+      "label": "How it goes",
+      "href": "#how-it-goes"
+    },
+    {
+      "label": "One click to install",
+      "href": "#features-2"
+    },
+    {
+      "label": "The cost, in plain numbers",
+      "href": "#the-cost-in-plain-numbers"
+    },
+    {
+      "label": "Old machines, same job",
+      "href": "#old-machines-same-job"
     }
   ],
   "pages": [
@@ -46,34 +50,120 @@
           "data": {
             "eyebrow": "",
             "headline": "SpiderCaster turns words into websites.",
-            "subhead": "You write what the page should say. SpiderCaster builds the page from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again.",
+            "subhead": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again.",
             "primary": {
-              "label": "Build a site like this",
-              "href": "#start"
+              "label": "What you get",
+              "href": "#features"
             },
-            "secondary": {
-              "label": "How it goes",
-              "href": "#how"
-            },
+            "secondary": null,
             "bullets": [
-              "Start with a page of plain writing.",
-              "Run one command and get a site.",
-              "Change the words and build again.",
-              "Keep every file. The site is yours."
+              "Download SpiderCaster to start with one click.",
+              "Automatic free agent seated in your browser studio.",
+              "Instant local preview and one-click free staging.",
+              "Keep every file. The site is yours forever."
             ],
-            "image": "assets/hero-reading-room.jpg",
-            "image_alt": "A room built to hold what people wrote.",
-            "image_w": 800,
-            "image_h": 533
+            "image": "",
+            "image_alt": "",
+            "image_w": null,
+            "image_h": null
           },
           "_source": "overview.md"
         },
         {
-          "id": "how",
+          "id": "features",
+          "type": "features",
+          "data": {
+            "title": "What you get",
+            "subhead": "Everything on this list ships with the engine.",
+            "items": [
+              {
+                "icon": "rocket",
+                "title": "Offline drafts",
+                "body": "one command builds a site from your words. The draft costs nothing and needs no keys."
+              },
+              {
+                "icon": "rocket",
+                "title": "Free agent seated in studio",
+                "body": "the free model chain plans the site in the background with zero setup."
+              },
+              {
+                "icon": "terminal",
+                "title": "One-click free staging",
+                "body": "test on your port or share live online even before you own a domain."
+              },
+              {
+                "icon": "rocket",
+                "title": "Small edits",
+                "body": "change one section at a time instead of rebuilding the whole site."
+              },
+              {
+                "icon": "sparkles",
+                "title": "A strict checker",
+                "body": "every page must pass every check with zero failures. One failure stops the job."
+              },
+              {
+                "icon": "database",
+                "title": "Plain files out",
+                "body": "the site is ordinary HTML and CSS with the style baked in. No database, no login, no upkeep."
+              },
+              {
+                "icon": "rocket",
+                "title": "Room for seven seats",
+                "body": "architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. None of them publish."
+              }
+            ]
+          },
+          "_source": "commands.md"
+        },
+        {
+          "id": "faq",
+          "type": "faq",
+          "data": {
+            "title": "Questions",
+            "subhead": "",
+            "items": [
+              {
+                "q": "Does the offline draft really cost nothing?",
+                "a": "Yes. No model runs. The words are sorted into sections by fixed rules, and the page is assembled from code. The ledger records the run at zero tokens."
+              },
+              {
+                "q": "What does the AI pass cost?",
+                "a": "One planning call, with one retry if the answer comes back broken. On the free tier the cost is zero dollars. The ledger writes down the exact count either way."
+              },
+              {
+                "q": "Can the AI make things up?",
+                "a": "No. It works only from the words in your files. It can reorder and shorten, but it cannot add facts, prices, or names."
+              },
+              {
+                "q": "What if I do not have a domain or webhost yet?",
+                "a": "You can preview locally on port 4173. You can also deploy to free cloud staging with a single click, or download the self-contained static files to host anywhere for free."
+              },
+              {
+                "q": "How does the free agent work without an account?",
+                "a": "SpiderCaster automatically provisions a free background model chain so you can chat and plan immediately. No API keys, credit cards, or accounts are needed."
+              },
+              {
+                "q": "How do I change one thing?",
+                "a": "Edit the site.json file and rebuild from it with build --from. The rebuild costs nothing. Small fixes beat full rebuilds."
+              },
+              {
+                "q": "How does a site go live?",
+                "a": "A person runs the bind command for the site and the mold. There is no publish button. A mold that is already live somewhere else is refused."
+              },
+              {
+                "q": "What do I need on my machine?",
+                "a": "Python 3.11 or newer. That is all. The offline path needs no keys and no accounts."
+              }
+            ]
+          },
+          "_source": "faq.md"
+        },
+        {
+          "id": "how-it-goes",
           "type": "steps",
           "data": {
             "title": "How it goes",
-            "subhead": "Three moves. Write, build, check.",
+            "subhead": "Three moves. Write, build, preview.",
             "items": [
               {
                 "title": "Write the words",
@@ -84,56 +174,56 @@
                 "body": "One command turns the words into a site, and the offline draft costs nothing."
               },
               {
-                "title": "Check the result",
-                "body": "The checker reads every page and fails the job on the first problem. Nothing goes live with a failure on it."
+                "title": "Preview and share",
+                "body": "The checker reads every page, and you can preview locally or share live online for free."
               }
             ]
           },
           "_source": "how.md"
         },
         {
-          "id": "features",
+          "id": "features-2",
           "type": "features",
           "data": {
-            "title": "What you get",
-            "subhead": "Everything on this list ships with the engine.",
+            "title": "One click to install",
+            "subhead": "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready.",
             "items": [
               {
-                "icon": "star",
-                "title": "Offline drafts",
-                "body": "one command builds a site from your words. The draft costs nothing and needs no keys."
+                "icon": "rocket",
+                "title": "Download for Windows",
+                "body": "click the SpiderCaster installer to start."
               },
               {
-                "icon": "mail",
-                "title": "Free help from models",
-                "body": "the free chain can plan the shape of the site. Each try is written down with its token count."
+                "icon": "rocket",
+                "title": "Download for macOS",
+                "body": "open the package to start."
               },
               {
-                "icon": "clock",
-                "title": "Small edits",
-                "body": "change one section at a time instead of rebuilding the whole site."
+                "icon": "rocket",
+                "title": "Free agent seated in studio",
+                "body": "starts chatting and planning with zero account setup."
               },
               {
-                "icon": "sparkles",
-                "title": "A strict checker",
-                "body": "every page must pass every check with zero failures. One failure stops the job."
+                "icon": "rocket",
+                "title": "The desk opens in your browser with rooms for the plan, the",
+                "body": ""
               },
               {
-                "icon": "sparkles",
-                "title": "Plain files out",
-                "body": "the site is ordinary HTML and CSS with the style baked in. No database, no login, no upkeep."
+                "icon": "rocket",
+                "title": "Free cloud staging",
+                "body": "share your site live online even if you do not have a domain yet."
               },
               {
-                "icon": "sparkles",
-                "title": "Room for seven seats",
-                "body": "architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. None of them publish."
+                "icon": "rocket",
+                "title": "Nothing publishes from here without your explicit click.",
+                "body": ""
               }
             ]
           },
-          "_source": "commands.md"
+          "_source": "install.md"
         },
         {
-          "id": "numbers",
+          "id": "the-cost-in-plain-numbers",
           "type": "stats",
           "data": {
             "title": "The cost, in plain numbers",
@@ -143,8 +233,8 @@
                 "label": "tokens to build the offline draft"
               },
               {
-                "value": "2",
-                "label": "clicks to install"
+                "value": "1",
+                "label": "click to install: open the downloaded installer icon"
               },
               {
                 "value": "7",
@@ -168,65 +258,62 @@
         },
         {
           "id": "old-machines-same-job",
-          "type": "about",
-          "data": {
-            "title": "Old machines, same job",
-            "body": [
-              "Words in, pages out. That is the trade, and it is older than computers. A press from 1819. The ENIAC, wired by hand. Two women programming it in 1946. A room built to hold what people wrote.",
-              "The photos are public record. They are here to make one point: the tools change, and the job stays."
-            ],
-            "points": []
-          },
-          "_source": "photos.md"
-        },
-        {
-          "id": "photos",
           "type": "gallery",
           "data": {
-            "title": "Words in, pages out.",
-            "subhead": "",
+            "title": "Old machines, same job",
+            "subhead": "Words in, pages out. That is the trade, and it is older than computers. The photos are public record. They are here to make one point: the tools change, and the job stays.",
             "items": [
               {
-                "label": "A press from 1819.",
-                "caption": "A press from 1819.",
+                "label": "A press from 1819",
+                "caption": "A press from 1819",
                 "src": "assets/press-1819.jpg",
-                "alt": "A press from 1819."
+                "alt": "A press from 1819",
+                "hue": null
               },
               {
-                "label": "The ENIAC, wired by hand.",
-                "caption": "The ENIAC, wired by hand.",
+                "label": "The ENIAC, wired by hand",
+                "caption": "The ENIAC, wired by hand",
                 "src": "assets/build-eniac.jpg",
-                "alt": "The ENIAC, wired by hand."
+                "alt": "The ENIAC, wired by hand",
+                "hue": null
               },
               {
-                "label": "Two women programming it in 1946.",
-                "caption": "Two women programming it in 1946.",
+                "label": "Two women programming it in 1946",
+                "caption": "Two women programming it in 1946",
                 "src": "assets/crew-eniac-programmers.jpg",
-                "alt": "Two women programming it in 1946."
+                "alt": "Two women programming it in 1946",
+                "hue": null
+              },
+              {
+                "label": "A room built to hold what people wrote",
+                "caption": "A room built to hold what people wrote",
+                "src": "assets/hero-reading-room.jpg",
+                "alt": "A room built to hold what people wrote",
+                "hue": null
               }
             ]
           },
           "_source": "photos.md"
         },
         {
-          "id": "features-2",
+          "id": "features-3",
           "type": "features",
           "data": {
             "title": "The rules it runs on",
             "subhead": "Six rules. They hold unless Keith changes them.",
             "items": [
               {
-                "icon": "sparkles",
+                "icon": "rocket",
                 "title": "Nothing invented",
                 "body": "the builder only uses words it was given. A missing fact stays missing."
               },
               {
-                "icon": "pin",
+                "icon": "search",
                 "title": "Hidden first",
                 "body": "pages stay out of search results until a person signs off on the words."
               },
               {
-                "icon": "camera",
+                "icon": "browser",
                 "title": "Local photos only",
                 "body": "a photo must sit in the project folder. Web addresses for photos are dropped."
               },
@@ -241,7 +328,7 @@
                 "body": "each attempt lands in a ledger with its token count, pass or fail."
               },
               {
-                "icon": "sparkles",
+                "icon": "rocket",
                 "title": "Plain Python",
                 "body": "version 3.11 or newer, standard library only, nothing to install."
               }
@@ -274,73 +361,7 @@
           "_source": "rails.md"
         },
         {
-          "id": "two-clicks-to-install",
-          "type": "about",
-          "data": {
-            "title": "Two clicks to install",
-            "body": [
-              "You need Python 3.11 or newer. Nothing else.",
-              "The desk has rooms for the plan, the paint, the check, and the preview. Nothing publishes from here. Publish stays a command a person runs.",
-              "To rehearse with no side effects first:"
-            ],
-            "points": [
-              {
-                "title": "python spidercaster.py start --dry-run runs doctor only. No",
-                "body": ""
-              },
-              {
-                "title": "python spidercaster.py doctor prints a JSON report. \"ok\"",
-                "body": "true means the molds, frames, seats, and hands line up."
-              },
-              {
-                "title": "Get the folder from GitHub",
-                "body": "SpiderCaster/COSMOS-SC (click one: download or clone)."
-              },
-              {
-                "title": "Double-click Start-SpiderCaster.cmd on Windows, or run ./sta",
-                "body": ""
-              }
-            ]
-          },
-          "_source": "install.md"
-        },
-        {
-          "id": "faq",
-          "type": "faq",
-          "data": {
-            "title": "Questions",
-            "subhead": "",
-            "items": [
-              {
-                "q": "Does the offline draft really cost nothing?",
-                "a": "Yes. No model runs. The words are sorted into sections by fixed rules, and the page is assembled from code. The ledger records the run at zero tokens."
-              },
-              {
-                "q": "What does the AI pass cost?",
-                "a": "One planning call, with one retry if the answer comes back broken. On the free tier the cost is zero dollars. The ledger writes down the exact count either way."
-              },
-              {
-                "q": "Can the AI make things up?",
-                "a": "No. It works only from the words in your files. It can reorder and shorten, but it cannot add facts, prices, or names."
-              },
-              {
-                "q": "How do I change one thing?",
-                "a": "Edit the site.json file and rebuild from it with build --from. The rebuild costs nothing. Small fixes beat full rebuilds."
-              },
-              {
-                "q": "How does a site go live?",
-                "a": "A person runs the bind command for the site and the mold. There is no publish button. A mold that is already live somewhere else is refused."
-              },
-              {
-                "q": "What do I need on my machine?",
-                "a": "Python 3.11 or newer. That is all. The offline path needs no keys and no accounts."
-              }
-            ]
-          },
-          "_source": "faq.md"
-        },
-        {
-          "id": "start",
+          "id": "start-with-words",
           "type": "cta",
           "data": {
             "title": "Start with words.",
@@ -363,23 +384,37 @@
       "file": "overview.md",
       "texts": [
         "SpiderCaster turns words into websites.",
-        "You write what the page should say. SpiderCaster builds the page from your words and hands you the files."
-      ]
-    },
-    "how": {
-      "file": "how.md",
-      "texts": [
-        "How it goes",
-        "Three moves. Write, build, check."
+        "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again."
       ]
     },
     "features": {
       "file": "commands.md",
       "texts": [
-        "What you get"
+        "What you get",
+        "Everything on this list ships with the engine."
       ]
     },
-    "numbers": {
+    "faq": {
+      "file": "faq.md",
+      "texts": [
+        "Questions"
+      ]
+    },
+    "how-it-goes": {
+      "file": "how.md",
+      "texts": [
+        "How it goes",
+        "Three moves. Write, build, preview."
+      ]
+    },
+    "features-2": {
+      "file": "install.md",
+      "texts": [
+        "One click to install",
+        "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready."
+      ]
+    },
+    "the-cost-in-plain-numbers": {
       "file": "numbers.md",
       "texts": [
         "The cost, in plain numbers"
@@ -388,19 +423,15 @@
     "old-machines-same-job": {
       "file": "photos.md",
       "texts": [
-        "Old machines, same job"
+        "Old machines, same job",
+        "Words in, pages out. That is the trade, and it is older than computers. The photos are public record. They are here to make one point: the tools change, and the job stays."
       ]
     },
-    "photos": {
-      "file": "photos.md",
-      "texts": [
-        "Words in, pages out."
-      ]
-    },
-    "features-2": {
+    "features-3": {
       "file": "rails.md",
       "texts": [
-        "The rules it runs on"
+        "The rules it runs on",
+        "Six rules. They hold unless Keith changes them."
       ]
     },
     "the-check-gate": {
@@ -415,23 +446,10 @@
         "Seven seats, no publish"
       ]
     },
-    "two-clicks-to-install": {
-      "file": "install.md",
-      "texts": [
-        "Two clicks to install"
-      ]
-    },
-    "faq": {
-      "file": "faq.md",
-      "texts": [
-        "Questions"
-      ]
-    },
-    "start": {
+    "start-with-words": {
       "file": "closing.md",
       "texts": [
-        "Start with words.",
-        "Build a site like this."
+        "Start with words."
       ]
     }
   },

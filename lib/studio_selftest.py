@@ -16,7 +16,7 @@ if str(ROOT) not in sys.path:
 
 from lib.compose import compose_project
 from lib.structure import load_structure, save_structure
-from lib.studio import Desk, act, serve_studio
+from lib.studio import RENDER, Desk, act, serve_studio
 
 PROJECT = ROOT / "projects" / "demo-local"
 
@@ -125,7 +125,6 @@ def _refuse_fleet() -> int:
 
 
 def _selected() -> int:
-    from lib.studio import RENDER
     for project in ("demo-local", "bench-harbor-tearoom"):
         desk = Desk(ROOT)
         act(desk, {"action": "select", "project": project})
@@ -134,7 +133,7 @@ def _selected() -> int:
         for path, render in RENDER.items():
             try:
                 html = render(desk)
-            except Exception as exc:  # noqa: BLE001 -- report, do not crash
+            except Exception as exc:
                 return _fail(f"{path} raised after selecting {project}: {exc}")
             if html.count("<h1>") != 1:
                 return _fail(f"{path} does not have one h1 after selecting {project}")

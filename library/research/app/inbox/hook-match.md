@@ -6,7 +6,7 @@ Offline `lib/hook_match.py` only. Not a site. No publish. The function does not 
 
 `hook_match(event, tool_name, hooks)` returns `ok`, `error`, `matched`, `ran`. `ran` is always false. An empty or missing matcher matches every `tool_name`. Any other matcher splits on `|` or comma, strips tokens, and compares case-sensitively. `matched` is `{group, type}` rows; `group` is the matcher-group index. Tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`) use `tool_name`. Every other known event ignores `tool_name` and matches every group. Unknown event: `unknown_event`. Wrong shape: `bad_hooks`. Both failures return `matched` `[]` and `ran` false.
 
-From `<repo-root>`:
+From `V:\a\Ai\spidercaster\working`:
 
 - `py -3.14 -m lib.hook_match` exit 0: `hook_match selftest ok`
 

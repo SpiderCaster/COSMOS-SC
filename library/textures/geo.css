@@ -1,0 +1,8 @@
+/* Procedural geometry. No image, no remote URL. */
+body.texture-geo{
+  background-image:
+    repeating-linear-gradient(135deg, rgba(127,127,127,.14) 0 1px, transparent 1px 14px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft), transparent 70%);
+  background-size: auto, auto;
+  background-attachment: scroll;
+}

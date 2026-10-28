@@ -12,11 +12,11 @@ Case-sensitive text checks:
 - `phone_hidden` — html contains `.reveal{opacity:0` and no `max-width:860px` media rule sets `.reveal{opacity:1`. Fix `none`. A `prefers-reduced-motion` rule does not clear it.
 - `empty_panel` — html contains `about-panel`. Fix `none`.
 - `missing_skip` — html does not contain `href="#main"`. Fix `none`.
-- `remote_img` — an `img` `src` starts with `htt<local-path>`, `https://`, or `//`. Fix `none`.
+- `remote_img` — an `img` `src` starts with `http://`, `https://`, or `//`. Fix `none`.
 
 No hits means `ok` true and `hits` `[]`. The module does not fetch a URL and does not write a file.
 
-From `<repo-root>`:
+From `V:\a\Ai\spidercaster\working`:
 
 - `py -3.14 -m lib.triggers` exit 0: `triggers selftest ok`
 

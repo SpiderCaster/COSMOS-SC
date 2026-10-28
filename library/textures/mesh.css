@@ -1,0 +1,9 @@
+/* Procedural mesh. No image, no remote URL. */
+body.texture-mesh{
+  background-image:
+    linear-gradient(rgba(127,127,127,.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127,127,127,.16) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft), transparent 70%);
+  background-size: 22px 22px, 22px 22px, auto;
+  background-attachment: scroll;
+}

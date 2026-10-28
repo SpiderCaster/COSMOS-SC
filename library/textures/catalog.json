@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "tier1": [
+    {
+      "id": "mesh",
+      "file": "mesh.css",
+      "kind": "procedural",
+      "bytes": 393
+    },
+    {
+      "id": "dots",
+      "file": "dots.css",
+      "kind": "procedural",
+      "bytes": 312
+    },
+    {
+      "id": "noise",
+      "file": "noise.css",
+      "kind": "procedural",
+      "bytes": 553
+    },
+    {
+      "id": "geo",
+      "file": "geo.css",
+      "kind": "procedural",
+      "bytes": 333
+    }
+  ],
+  "tier2": [
+    {
+      "id": "forest",
+      "file": "photos/forest.jpg",
+      "kind": "photo",
+      "bytes": 51120,
+      "cap": 81920
+    },
+    {
+      "id": "ice",
+      "file": "photos/ice.jpg",
+      "kind": "photo",
+      "bytes": 81185,
+      "cap": 81920
+    },
+    {
+      "id": "snow",
+      "file": "photos/snow.jpg",
+      "kind": "photo",
+      "bytes": 75485,
+      "cap": 81920
+    },
+    {
+      "id": "gravel",
+      "file": "photos/gravel.jpg",
+      "kind": "photo",
+      "bytes": 75780,
+      "cap": 81920
+    },
+    {
+      "id": "stone",
+      "file": "photos/stone.jpg",
+      "kind": "photo",
+      "bytes": 40261,
+      "cap": 81920
+    },
+    {
+      "id": "wood",
+      "file": "photos/wood.jpg",
+      "kind": "photo",
+      "bytes": 74016,
+      "cap": 81920
+    },
+    {
+      "id": "fabric",
+      "file": "photos/fabric.jpg",
+      "kind": "photo",
+      "bytes": 80194,
+      "cap": 81920
+    },
+    {
+      "id": "water",
+      "file": "photos/water.jpg",
+      "kind": "photo",
+      "bytes": 69530,
+      "cap": 81920
+    },
+    {
+      "id": "paper",
+      "file": "photos/paper.jpg",
+      "kind": "photo",
+      "bytes": 17984,
+      "cap": 81920
+    },
+    {
+      "id": "concrete",
+      "file": "photos/concrete.jpg",
+      "kind": "photo",
+      "bytes": 74733,
+      "cap": 81920
+    },
+    {
+      "id": "sky",
+      "file": "photos/sky.jpg",
+      "kind": "photo",
+      "bytes": 80581,
+      "cap": 81920
+    },
+    {
+      "id": "sand",
+      "file": "photos/sand.jpg",
+      "kind": "photo",
+      "bytes": 32777,
+      "cap": 81920
+    },
+    {
+      "id": "rain",
+      "file": "photos/rain.jpg",
+      "kind": "photo",
+      "bytes": 80748,
+      "cap": 81920
+    },
+    {
+      "id": "moss",
+      "file": "photos/moss.jpg",
+      "kind": "photo",
+      "bytes": 73160,
+      "cap": 81920
+    },
+    {
+      "id": "bark",
+      "file": "photos/bark.jpg",
+      "kind": "photo",
+      "bytes": 78065,
+      "cap": 81920
+    },
+    {
+      "id": "clay",
+      "file": "photos/clay.jpg",
+      "kind": "photo",
+      "bytes": 80913,
+      "cap": 81920
+    }
+  ],
+  "scrim": "text on a photo sits on .scrim",
+  "note": "Frozen local Imagine stills. build --offline does not call a model."
+}

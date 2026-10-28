@@ -11,7 +11,7 @@ Commands:
   serve    preview a built site on localhost
   start    first run: doctor + demo site + studio desk in browser (0 tokens)
   studio   localhost desk for plan, paint, check, and preview (does not publish)
-  models   show the provider chain (free tiers first); --probe queries live
+  models   show the provider chain + no-key routes (free first); --probe queries live
   sections list the section types and their data fields
   library  vendor vault index, molds we made, live-use ledger
   crew     run the seven hands on one project (does not publish)
@@ -23,8 +23,17 @@ Commands:
   tools    list catalog rows; apply one built part onto a page
 
 Token rules: offline/rebuild = 0 tokens; AI build = 1-2 calls on the free
-chain (Gemini free tier -> OpenRouter :free -> OpenWork inference); paid
-models join only with --allow-paid. Every run writes a token ledger.
+chain (Gemini free tier -> OpenRouter :free -> OpenWork inference -> no-key
+chain); paid models join only with --allow-paid. Every run writes a token
+ledger (tier free/paid; a cost the engine cannot know is "unknown", not $0).
+
+No-key free chain (no account, no key): set SC_AI=on. Routes: local Ollama,
+LLM7, ch.at, Pollinations, then the template fallback (lib/ai_chain/). It sends
+brief text to anonymous public endpoints; best for short copy, not whole-site
+JSON. `spidercaster models` lists the routes; force it with --provider nokey.
+
+TokenCTR (purchased credits, opt-in only): TOKENCTR_API_KEY + SC_TOKENCTR_PAID=1,
+then --provider tokenctr or --allow-paid. Price: SC_TOKENCTR_PRICE_PER_TOKEN.
 """
 from __future__ import annotations
 
@@ -108,24 +117,44 @@ def copy_assets(site: dict, project_dir: Path, site_dir: Path) -> list[str]:
     copied = []
     for page in site.get("pages", []):
         for sec in page.get("sections", []):
-            if sec["type"] != "gallery":
-                continue
-            for item in sec["data"].get("items", []):
-                src = item.get("src") or ""
-                if not src or src.startswith(("http://", "https://")):
-                    continue
-                origin = (project_dir / src).resolve()
-                if not origin.exists():
-                    continue
-                dest_dir = site_dir / "assets"
-                dest_dir.mkdir(exist_ok=True)
-                dest = dest_dir / origin.name
-                if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
-                    shutil.copy2(origin, dest)
-                new_ref = f"assets/{origin.name}"
-                if item["src"] != new_ref:
-                    item["src"] = new_ref
-                    copied.append(new_ref)
+            if sec.get("type") == "hero":
+                d = sec.get("data") if isinstance(sec.get("data"), dict) else {}
+                src = d.get("image") or ""
+                if not src:
+                    for ext in (".png", ".jpg", ".jpeg", ".webp"):
+                        cand = project_dir / f"assets/hero{ext}"
+                        if cand.is_file():
+                            src = f"assets/hero{ext}"
+                            d["image"] = src
+                            break
+                if src and not src.startswith(("http://", "https://", "//")):
+                    origin = (project_dir / src).resolve()
+                    if origin.is_file():
+                        dest_dir = site_dir / "assets"
+                        dest_dir.mkdir(parents=True, exist_ok=True)
+                        dest = dest_dir / origin.name
+                        if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
+                            shutil.copy2(origin, dest)
+                        new_ref = f"assets/{origin.name}"
+                        d["image"] = new_ref
+                        copied.append(new_ref)
+            elif sec.get("type") == "gallery":
+                for item in sec.get("data", {}).get("items", []):
+                    src = item.get("src") or ""
+                    if not src or src.startswith(("http://", "https://")):
+                        continue
+                    origin = (project_dir / src).resolve()
+                    if not origin.exists():
+                        continue
+                    dest_dir = site_dir / "assets"
+                    dest_dir.mkdir(parents=True, exist_ok=True)
+                    dest = dest_dir / origin.name
+                    if not dest.exists() or dest.stat().st_size != origin.stat().st_size:
+                        shutil.copy2(origin, dest)
+                    new_ref = f"assets/{origin.name}"
+                    if item["src"] != new_ref:
+                        item["src"] = new_ref
+                        copied.append(new_ref)
     return copied
 
 
@@ -305,6 +334,21 @@ def cmd_build(args) -> int:
             return 1
     else:
         project_dir = Path(args.project)
+        if getattr(args, "imagine", False):
+            hero_target = project_dir / "assets" / "hero.png"
+            if not hero_target.exists():
+                from lib.imagine import ImagineError, generate
+                prompt = (
+                    f"Editorial still life photograph for {project_dir.name}, no text, no logo, no watermark, "
+                    "warm natural lighting, subject on right third, quiet space on left, "
+                    "calm craftsmanship. Not a product ad."
+                )
+                try:
+                    print(f"  [imagine] generating local hero image for {project_dir.name}...")
+                    generate(prompt, hero_target, aspect_ratio="16:9", quality="low")
+                    print(f"  [imagine] saved {hero_target}")
+                except (ImagineError, OSError, ValueError) as exc:
+                    print(f"  [imagine] skipped ({exc})")
         copy = ingest.load_project(project_dir)
         warnings.extend(copy.warnings)
         brief = copy.brief
@@ -376,6 +420,7 @@ def cmd_build(args) -> int:
     pages = render.assemble(site, noindex=noindex)
     for p in pages:
         (out / p["file"]).write_text(p["html"], encoding="utf-8")
+    render.copy_fonts(out)
     (out / "site.json").write_text(json.dumps(site, indent=2), encoding="utf-8")
     write_report(out, mode=mode, brief=brief, ledger=ledger, provider=provider, model=model,
                  files=[p["file"] for p in pages], noindex=noindex, warnings=warnings)
@@ -700,22 +745,40 @@ def cmd_serve(args) -> int:
 
 
 def cmd_models(args) -> int:
-    print("provider chain (free tiers first; paid only with --allow-paid):")
-    for pid in ["gemini", "openrouter", "openwork"]:
+    print("provider chain (free/no-key first; paid only with --allow-paid or an explicit opt-in):")
+    for pid in providers.DEFAULT_ORDER:
         p = providers.PROVIDERS[pid]
         status = "configured" if p.configured() else "not configured"
         models = ", ".join(p.models) or "(no models set)"
         print(f"  {pid:11s} {status:15s} {p.label}")
         print(f"              models: {models}")
+        if pid == "nokey":
+            print("              turn on: SC_AI=on (no key). Off by default; sends brief text to "
+                  "anonymous public endpoints.")
+            try:
+                for r in providers.NoKey._module().describe_routes():
+                    print(f"                route {r['id']:13s} {r['host']:24s} {r['state']}")
+                print("                then: template fallback (always last)")
+            except Exception as exc:
+                print(f"                (routes unavailable: {type(exc).__name__})")
+        if pid == "tokenctr":
+            tc = providers.TokenCtr
+            print(f"              turn on: {tc.KEY_ENV} (present: {'yes' if tc.key_present() else 'no'}) + "
+                  f"{tc.OPT_IN_ENV}=1 (set: {'yes' if tc.opted_in() else 'no'}); "
+                  "then --provider tokenctr or --allow-paid")
+            price = tc.price_per_token()
+            print(f"              price/token: {price if price is not None else 'unset -> cost logged as unknown'}"
+                  " (SC_TOKENCTR_PRICE_PER_TOKEN)")
     if args.probe:
-        for pid in ["gemini", "openrouter"]:
+        for pid in ["gemini", "openrouter", "tokenctr"]:
             p = providers.PROVIDERS[pid]
-            if not p.configured():
+            if pid != "tokenctr" and not p.configured():
                 continue
             print(f"probing {pid} ...")
             try:
                 names = p.probe()
-                print(f"  {len(names)} models reachable; first few: {', '.join(names[:6])}")
+                print(f"  {len(names)} models reachable; first few: {', '.join(names[:6])}"
+                      if pid != "tokenctr" else f"  {names[0]}")
             except Exception as exc:
                 print(f"  probe failed: {exc}")
     return 0
@@ -749,7 +812,7 @@ def cmd_wallets(args) -> int:
         print(f"(no wallet dir at {secrets_dir}; pass --secrets-dir)")
         return 0
     print(f"recorded wallets in {secrets_dir}:")
-    for p in sorted(list(secrets_dir.glob("vertex_*_key.txt")) + list(secrets_dir.glob("vertex_key.txt"))):
+    for p in sorted(list(secrets_dir.glob("vertex_*_key.txt")) + list(secrets_dir.glob("gemini_key5.txt"))):
         try:
             m = meta(p.read_text(encoding="utf-8"))
         except OSError as exc:
@@ -875,6 +938,71 @@ def cmd_image(args) -> int:
     print(f"  {receipt['provider']}/{receipt['model']}  {receipt['bytes']} bytes")
     print("  provider URL was not stored")
     return 0
+
+
+def cmd_graphics(args) -> int:
+    from lib import graphics_engine as ge
+
+    subcmd = getattr(args, "graphics_cmd", None)
+    if subcmd == "selftest":
+        return ge.selftest()
+
+    if subcmd == "vector":
+        kind = getattr(args, "kind", "browser")
+        brand = getattr(args, "brand", "Studio")
+        svg = ge.generate_vector_scene(kind=kind, brand=brand)
+        out_path = getattr(args, "out", None)
+        if out_path:
+            p = Path(out_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(svg, encoding="utf-8")
+            print(f"saved vector scene ({kind}): {p}")
+        else:
+            print(svg)
+        return 0
+
+    if subcmd == "audit":
+        project_dir = Path(args.project)
+        report = ge.audit_project_assets(project_dir)
+        print(f"assets audit for {project_dir}: {report['count']} file(s)")
+        for a in report["assets"]:
+            status = "PASS" if a["ok"] else "FAIL"
+            print(f"  [{status}] {a['file']}: {a['width']}x{a['height']}, {a['bytes']}B, luma={a['luma']}")
+        return 0 if report["ok"] else 1
+
+    if subcmd == "optimize":
+        project_dir = Path(args.project)
+        assets_dir = project_dir / "assets"
+        if not assets_dir.is_dir():
+            print(f"no assets/ directory under {project_dir}")
+            return 1
+        count = 0
+        for p in assets_dir.iterdir():
+            if p.is_file() and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}:
+                if ge.normalize_image_luma_and_weight(p):
+                    count += 1
+        print(f"optimized {count} asset(s) under {assets_dir}")
+        return 0
+
+    if subcmd == "imagine":
+        project_dir = Path(args.project)
+        slots = [s.strip() for s in getattr(args, "slots", "hero").split(",") if s.strip()]
+        receipts = ge.imagine_project_slots(
+            project_dir,
+            slots=slots,
+            provider=getattr(args, "provider", "xai"),
+            model=getattr(args, "model", "") or "",
+        )
+        print(f"imagine for {project_dir}: {len(receipts)} slot(s)")
+        for rc in receipts:
+            if "error" in rc:
+                print(f"  [FAIL] {rc['slot']}: {rc['error']}")
+            else:
+                print(f"  [PASS] {rc['file']}: {rc['provider']}/{rc['model']} ({rc['bytes']} bytes)")
+        return 0
+
+    print("graphics subcommand required: vector | audit | optimize | imagine | selftest")
+    return 2
 
 
 def cmd_crew(args) -> int:
@@ -1044,9 +1172,12 @@ def cmd_ui(args) -> int:
 
 
 def add_provider_opts(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--provider", choices=list(providers.PROVIDERS), help="force one provider")
+    p.add_argument("--provider", choices=list(providers.PROVIDERS),
+                   help="force one provider (nokey = free no-key chain, needs SC_AI=on; "
+                        "tokenctr = purchased credits, needs TOKENCTR_API_KEY + SC_TOKENCTR_PAID=1)")
     p.add_argument("--model", help="force one model id")
-    p.add_argument("--allow-paid", action="store_true", help="allow paid OpenRouter models")
+    p.add_argument("--allow-paid", action="store_true",
+                   help="allow paid OpenRouter models and opted-in TokenCTR credits")
     p.add_argument("--max-tokens", type=int, default=8192, help="max output tokens per call")
 
 
@@ -1077,6 +1208,8 @@ def main(argv=None) -> int:
     p.add_argument("--light", dest="dark", action="store_false")
     p.add_argument("--pages", type=int, default=1, help="page count hint for the AI planner")
     p.add_argument("--brand", help="brand/title override")
+    p.add_argument("--imagine", action="store_true",
+                   help="prompt image provider and generate local assets/hero.png if missing")
     p.add_argument("--indexable", action="store_true",
                    help="omit robots noindex (default is noindex until approved)")
     p.add_argument("--host", default="", help="origin for sitemap.xml, used only with --indexable")
@@ -1141,12 +1274,12 @@ def main(argv=None) -> int:
     p.add_argument("--port", type=int, default=4173)
     p.set_defaults(fn=cmd_serve)
 
-    p = sub.add_parser("models", help="show provider chain")
+    p = sub.add_parser("models", help="show provider chain, no-key routes (SC_AI=on) and how to enable each")
     p.add_argument("--probe", action="store_true", help="query live model lists")
     p.set_defaults(fn=cmd_models)
 
     p = sub.add_parser("wallets", help="fingerprint map of recorded Google wallets (last4 only)")
-    p.add_argument("--secrets-dir", default=r"V:\Research4\.secrets")
+    p.add_argument("--secrets-dir", default=r"<your-key-file-dir>")
     p.set_defaults(fn=cmd_wallets)
 
     p = sub.add_parser("sections", help="list section types")
@@ -1160,6 +1293,25 @@ def main(argv=None) -> int:
     p.add_argument("--aspect", default="16:9")
     p.add_argument("--quality", default="low", choices=["low", "medium", "auto"])
     p.set_defaults(fn=cmd_image)
+
+    grp = sub.add_parser("graphics", help="multi-level graphics generator: vector, imagine, audit, optimize")
+    grsub = grp.add_subparsers(dest="graphics_cmd", required=True)
+    p = grsub.add_parser("selftest", help="run graphics engine unit selftest")
+    p = grsub.add_parser("vector", help="generate procedural 16:9 vector scene (0 tokens)")
+    p.add_argument("name", nargs="?", default="scene")
+    p.add_argument("--kind", choices=["browser", "terminal", "dashboard", "isometric", "editorial"], default="browser")
+    p.add_argument("--brand", default="Studio")
+    p.add_argument("--out", help="optional output path (default: print stdout)")
+    p = grsub.add_parser("audit", help="audit project images for bounds, weight, and luminance")
+    p.add_argument("project")
+    p = grsub.add_parser("optimize", help="normalize project image luminance and file weight")
+    p.add_argument("project")
+    p = grsub.add_parser("imagine", help="AI multi-slot image generation (hero, gallery)")
+    p.add_argument("project")
+    p.add_argument("--slots", default="hero", help="comma-separated slots, e.g. hero,gallery-1")
+    p.add_argument("--provider", choices=["xai", "openrouter"], default="xai")
+    p.add_argument("--model", default="")
+    grp.set_defaults(fn=cmd_graphics)
 
     libp = sub.add_parser("library", help="vault, molds, and the live-use ledger")
     libp.add_argument("--vault", help="private vendor vault (default SPIDERCASTER_VAULT)")

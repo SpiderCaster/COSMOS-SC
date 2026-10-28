@@ -10,7 +10,7 @@
 | `hero_visual` | index has no class token `hero-visual` (CSS `.hero-visual` alone does not pass) |
 | `favicon_link` | no single `<link>` with `rel="icon"` and `href="favicon.svg"` |
 | `favicon_svg` | `favicon.svg` is missing beside `index.html`, or the file has no `<svg` |
-| `relative_img` | index has an `img` whose src is `htt<local-path>`, `https://`, `//`, empty, or missing. No `img` passes. |
+| `relative_img` | index has an `img` whose src is `http://`, `https://`, `//`, empty, or missing. No `img` passes. |
 
 A missing `favicon.svg` also fails the existing `internal_links` row (`index.html: favicon.svg`), because that href does not resolve. That overlap was left in place.
 
@@ -27,7 +27,7 @@ Local probe (temp dir, not a publish): letter-mark page passed all five new rows
 
 ## Commands and output (quote the ok lines or the error)
 
-After `Start-Sleep -Seconds 90`, from `<repo-root>`:
+After `Start-Sleep -Seconds 90`, from `V:\a\Ai\spidercaster\working`:
 
 ```
 hands selftest ok

@@ -1,6 +1,6 @@
 # SpiderCaster app tree
 
-Working tree: `<repo-root>`. This is the app (modules, CLI verbs, seats, molds, frames, resources). Not a site map. No crew run. No site build. No key file opened. `credentials.env` was not read. Vendor-vault photos were not walked. No secret values and no Cloudflare ids are recorded here.
+Working tree: `V:\a\Ai\spidercaster\working`. This is the app (modules, CLI verbs, seats, molds, frames, resources). Not a site map. No crew run. No site build. No key file opened. `credentials.env` was not read. Vendor-vault photos were not walked. No secret values and no Cloudflare ids are recorded here.
 
 `lib/*.py` was listed, then refreshed after a 90-second wait on 2026-10-01. The second list is the one below.
 

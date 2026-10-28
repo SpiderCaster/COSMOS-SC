@@ -1,0 +1,8 @@
+/* Procedural dots. No image, no remote URL. */
+body.texture-dots{
+  background-image:
+    radial-gradient(rgba(127,127,127,.28) 1px, transparent 1.4px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft), transparent 70%);
+  background-size: 16px 16px, auto;
+  background-attachment: scroll;
+}

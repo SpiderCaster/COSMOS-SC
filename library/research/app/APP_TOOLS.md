@@ -1,6 +1,6 @@
 # SpiderCaster app tools
 
-Catalog of what is in `<repo-root>` after the builders landed. Sources: `spidercaster.py` argparse, `mcp_server.py` `TOOLS`, and the `def` lines in `lib/doctor.py`, `lib/seatpack.py`, `lib/sandbox.py`, and `lib/check.py`. All four library files are present. Nothing below is inferred from a missing file. No secrets are quoted.
+Catalog of what is in `V:\a\Ai\spidercaster\working` after the builders landed. Sources: `spidercaster.py` argparse, `mcp_server.py` `TOOLS`, and the `def` lines in `lib/doctor.py`, `lib/seatpack.py`, `lib/sandbox.py`, and `lib/check.py`. All four library files are present. Nothing below is inferred from a missing file. No secrets are quoted.
 
 Publishes means a host deploy. Local files, a localhost preview, or a ledger row are not a publish. Where the code says it does not publish, the answer is no.
 

@@ -4,4 +4,4 @@ Task: change make_public.py so the public snapshot is copied to a temp tree, lea
 
 DONE
 2026-10-01
-make_public.py copies into a temp tree, runs the leak check there, and replaces cosmos-sc-public only when the check is clean. A failed check exits 2 and does not touch the existing public tree. Ran py -3.14 make_public.py from <repo-root>. Exit 0. files copied: 220 | excluded: 417. staged: <local-path> leak check: CLEAN (no internal emails, wallet names, project numbers, or key material). Working tree still present. No publish. No --live.
+make_public.py copies into a temp tree, runs the leak check there, and replaces cosmos-sc-public only when the check is clean. A failed check exits 2 and does not touch the existing public tree. Ran py -3.14 make_public.py from V:\a\Ai\spidercaster\working. Exit 0. files copied: 220 | excluded: 417. staged: V:\A\Ai\spidercaster\cosmos-sc-public. leak check: CLEAN (no internal emails, wallet names, project numbers, or key material). Working tree still present. No publish. No --live.

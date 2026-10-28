@@ -4,6 +4,21 @@ from __future__ import annotations
 from lib.ir import SECTION_TYPES
 
 _CODE_KINDS = frozenset({"liquid", "velo", "javascript", "css", "custom_element"})
+# Reviewed once. The renderer reuses these. Arbitrary css/js stays refused.
+_ALLOW = frozenset({
+    "motion",
+    "hero-screenshot",
+    "hero-split",
+    "hero-full-bleed",
+    "hero-collage",
+    "card-plain",
+    "card-raised",
+    "card-band",
+    "texture-mesh",
+    "texture-dots",
+    "texture-noise",
+    "texture-geo",
+})
 _CATALOG = "the type stays in the catalog and no code file is emitted"
 _KEYS = ("ok", "kind", "refused", "reason", "error")
 
@@ -24,6 +39,8 @@ def code_refuse(kind) -> dict:
         shown = kind if isinstance(kind, str) else ""
         return _row(False, shown, True, "kind is empty", "empty_kind")
     text = kind.strip()
+    if text in _ALLOW:
+        return _row(True, text, False, "reviewed allowlist; reused, not emitted", "")
     if text in _CODE_KINDS or "http://" in text or "https://" in text:
         return _row(False, text, True, "no code file is emitted", "forbidden")
     if text in SECTION_TYPES:
@@ -54,6 +71,11 @@ def main() -> int:
     other = code_refuse("not-a-section")
     assert other["ok"] is False and other["refused"] is True
     assert other["error"] == "unknown_kind"
+    motion = code_refuse("motion")
+    assert motion["ok"] is True and motion["refused"] is False
+    assert "allowlist" in motion["reason"]
+    hero_var = code_refuse("hero-split")
+    assert hero_var["ok"] is True and hero_var["refused"] is False
     for row in (liquid, empty, other, code_refuse("hero")):
         assert tuple(row) == _KEYS
     print("code_refuse selftest ok")

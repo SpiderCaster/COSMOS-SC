@@ -22,7 +22,7 @@ One stdlib page on `127.0.0.1`. No React, Tailwind, shadcn, chat, or new package
 
 7. Scorecard says SKIP blocks a group word of PASS. Check Board says SKIP does not stop Next. Both stand. A group word is FAIL, then WARN, then SKIP, then PASS. Next is about fails only. `grey_tile` stays skip. The card is not a new scale and not a rank.
 
-8. Preview and Mobile both serve the built folder. Decision: one preview process, bound to `127.0.0.1`, started at port 4300 so it does not take the studio port. The address shown is `htt<local-path>` plus the port actually bound. Serve is refused when the page is not noindex, when `sitemap.xml` is present, or when `robots.txt` exists and does not disallow `/`. A missing `robots.txt` is shown and does not refuse. The 1280 frame sits in a slot that scrolls. The studio page does not grow to 1280.
+8. Preview and Mobile both serve the built folder. Decision: one preview process, bound to `127.0.0.1`, started at port 4300 so it does not take the studio port. The address shown is `http://127.0.0.1:` plus the port actually bound. Serve is refused when the page is not noindex, when `sitemap.xml` is present, or when `robots.txt` exists and does not disallow `/`. A missing `robots.txt` is shown and does not refuse. The 1280 frame sits in a slot that scrolls. The studio page does not grow to 1280.
 
 9. Copy Desk is read-only. A missing frame type is the word missing and "not in copy". The brief is context. It is not written into a section.
 

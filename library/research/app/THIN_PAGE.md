@@ -2,7 +2,7 @@
 
 Read-only, 2026-10-01. Not published. No crew. No `--live`. HTML, Python, stage, and lib were not edited.
 
-Paths are under `<repo-root>`.
+Paths are under `V:\a\Ai\spidercaster\working`.
 
 Read: `stage/harbor/out/index.html` (present), `stage/demo/out/index.html` (present), and the phone CSS in `lib/render.py` (`CSS_TEMPLATE`, `@media(max-width:860px)` plus `.hero-visual`, `.reveal`, `.about-panel`, `.nav-here`).
 
@@ -144,7 +144,7 @@ Harbor’s only `img`:
 
 Demo has no `img` and no `src=` attribute. The only `https://` in either file is `"@context": "https://schema.org"` inside JSON-LD, not an image.
 
-Hero and about images go through `_local_image_src`, which returns empty for `htt<local-path>`, `https://`, and `//`. Gallery does not:
+Hero and about images go through `_local_image_src`, which returns empty for `http://`, `https://`, and `//`. Gallery does not:
 
 `<img src="{esc(it["src"])}" alt="…" loading="lazy">`
 

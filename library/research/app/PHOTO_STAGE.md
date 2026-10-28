@@ -2,7 +2,7 @@
 
 Review only, 2026-10-01. Not published. No image generated. HTML and lib were not edited. No menu was written.
 
-Paths are under `<repo-root>`.
+Paths are under `V:\a\Ai\spidercaster\working`.
 
 ## What is on disk
 

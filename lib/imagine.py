@@ -47,7 +47,7 @@ def _read_key(env_name: str, file_env: str, default_file: str) -> str:
 
 
 def xai_key() -> str:
-    return _read_key("XAI_API_KEY", "XAI_API_KEY_FILE", r"V:\Research4\.secrets\Grok_API_Token-Key.txt")
+    return _read_key("XAI_API_KEY", "XAI_API_KEY_FILE", r"<your-key-file-dir>\Grok_API_Token-Key.txt")
 
 
 def openrouter_key() -> str:

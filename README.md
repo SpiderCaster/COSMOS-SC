@@ -18,25 +18,7 @@ and a token ledger on every run.
 
 ## Install
 
-Python 3.11+, stdlib only (no runtime pip deps). Two ways in:
-
-```
-pip install git+https://github.com/SpiderCaster/COSMOS-SC.git
-spidercaster doctor          # "ok": true means molds, frames, seats, hands line up
-```
-
-The pip install ships the `spidercaster` command and the `lib` engine package.
-The data tree (`library/`, `projects/`, `sites/`) stays in the clone; point at
-it with `SPIDERCASTER_HOME` when it is not the current directory:
-
-```
-git clone https://github.com/SpiderCaster/COSMOS-SC.git
-cd COSMOS-SC
-pip install .
-SPIDERCASTER_HOME=%CD% spidercaster doctor   # Windows; Unix: SPIDERCASTER_HOME=$PWD
-```
-
-Classic no-install run still works (nothing to install):
+None. Python 3.11+ with stdlib only.
 
 ```
 cd SpiderCaster
@@ -105,7 +87,7 @@ Run lib selftests as modules (`-m lib.x`) or by path as listed; importing `lib.*
 
 ### Secrets: names only, never values
 
-- No secret value belongs in this repo. Code reads secrets from environment variables by NAME: `GEMINI_API_KEY`, `GOOGLE_API_KEY`, `FORGE_GEMINI_KEY_FILE` (a path), `OPENROUTER_API_KEY`, `OPENWORK_API_KEY`, `OPENWORK_INFERENCE_BASE_URL`.
+- No secret value belongs in this repo. Code reads secrets from environment variables by NAME: `GEMINI_API_KEY`, `GOOGLE_API_KEY`, `FORGE_GEMINI_KEY_FILE` (a path), `OPENROUTER_API_KEY`, `OPENWORK_API_KEY`, `OPENWORK_INFERENCE_BASE_URL`, `TOKENCTR_API_KEY`.
 - On the WebDev box the canonical secrets file is `V:\streams\webdev\keys\.env` (NAME=value lines, outside the repo). Never open, paste or commit it. Local tools that need it load it by NAME; `SC_KEYS_ENV` overrides its path for the local DNS helper in `V:\streams\webdev\spidercaster_local\`. `credentials.env` there holds only `${NAME}` references that resolve from the environment first, then from the keys file.
 - `.gitignore` blocks `.env*` (except `.env.example` and `.env.sample`), `credentials*.env`, `keys/`, `secrets*`, key and certificate files (`*.key`, `*.pem`, `*.pfx`, `*.p12`, `*.jks`, `*.kdbx`, `id_rsa*`, `id_ed25519*`) and `*.bak`. If you need to share a config shape, commit a `.env.example` with names and empty values.
 - `scripts/secret_scan.py` runs on every commit through `scripts/hooks/pre-commit` (install with `scripts\install_hooks.ps1`). It checks file names (env, credentials, key files), token shapes (OpenAI-style, GitHub, AWS, Slack, Google, Stripe, JWT, private key blocks, URLs with credentials), secret-looking assignments, and, if the keys file is readable, any literal value from it (reported as `known-value:NAME`). It prints `file:line  rule` and never the matched text.
@@ -131,10 +113,13 @@ Run lib selftests as modules (`-m lib.x`) or by path as listed; importing `lib.*
 | `refine "..."` (AI) | 1 small call | one section patched, not the whole site |
 
 Provider chain (cost order): Gemini free tier (AI Studio, then Vertex express
-with the same key) -> OpenRouter `:free` models -> OpenWork org inference.
-`--allow-paid` unlocks paid OpenRouter models; the ledger prices them from a
-small list-price table. Every attempt (ok or failed) lands in `report.json`
-with token counts - never key values.
+with the same key) -> OpenRouter `:free` models -> OpenWork org inference ->
+no-key free chain (`SC_AI=on`) -> TokenCTR purchased credits (opt-in only).
+`--allow-paid` unlocks paid OpenRouter models and opted-in TokenCTR; the ledger
+prices them from a small list-price table or a configured per-token price.
+Every attempt (ok or failed) lands in `report.json` with token counts and a
+`tier` (free/paid/unknown) - never key values. A cost the engine cannot know
+is recorded as `null` with `"cost": "unknown"`, never as $0.
 
 ## Quickstart
 
@@ -201,7 +186,7 @@ build     project dir -> static site        [--offline | AI chain | --from site.
 refine    patch one section of a built site [--offline for theme flips]
 check     run the built-in checks
 serve     preview on localhost (default port 4173, auto-increments)
-models    show the provider chain           [--probe queries live]
+models    show the provider chain, no-key routes, how to enable each [--probe]
 sections  list section types and data fields
 library   vault index, molds we made, live-use ledger
 crew      seven hands on one project; does not publish
@@ -209,7 +194,7 @@ crew      seven hands on one project; does not publish
 
 Build flags: `--out DIR`, `--template modern|editorial|bold`, `--dark/--light`,
 `--pages N`, `--brand NAME`, `--indexable`, `--max-copy-chars N`,
-`--provider gemini|openrouter|openwork`, `--model ID`, `--allow-paid`,
+`--provider gemini|openrouter|openwork|nokey|tokenctr`, `--model ID`, `--allow-paid`,
 `--max-tokens N`, `--no-fallback`.
 
 ## Output layout
@@ -244,9 +229,13 @@ Add a section type in three steps:
 
 | provider | env vars | notes |
 |---|---|---|
-| Gemini | `FORGE_GEMINI_KEY_FILE` (path to a key file; wins over env vars, fails closed if unreadable), else `GEMINI_API_KEY` / `GOOGLE_API_KEY` | free tier; tries AI Studio then Vertex express. Recorded fleet keys live in `V:\Research4\.secrets\` (e.g. `vertex_medicineman_key.txt`, `vertex_fruitaholics_key.txt`, `vertex_patriotfuelstop_key.txt`). Point the engine at one without pasting values: `$env:FORGE_GEMINI_KEY_FILE = 'V:\Research4\.secrets\vertex_medicineman_key.txt'`. If you get `Agent Platform API has not been used in project ...`, enable the API in the Google console for that project. |
+| Gemini | `FORGE_GEMINI_KEY_FILE` (path to a key file; wins over env vars, fails closed if unreadable), else `GEMINI_API_KEY` / `GOOGLE_API_KEY` | free tier; tries AI Studio then Vertex express. Recorded fleet keys live in `<your-key-file-dir>\` (e.g. `gemini_key.txt`, `gemini_key2.txt`, `gemini_key3.txt`). Point the engine at one without pasting values: `$env:FORGE_GEMINI_KEY_FILE = '<your-key-file-dir>\gemini_key.txt'`. If you get `Agent Platform API has not been used in project ...`, enable the API in the Google console for that project. |
 | OpenRouter | `OPENROUTER_API_KEY` | `:free` models by default; `--allow-paid` for paid |
-| OpenWork | `OPENWORK_API_KEY` + `OPENWORK_INFERENCE_BASE_URL` + `FORGE_OPENWORK_MODEL` | org-provided inference |
+| OpenWork | `OPENWORK_API_KEY` + `OPENWORK_INFERENCE_BASE_URL` + `FORGE_OPENWORK_MODEL` | org-provided inference; cost from the reply's `usage.cost` if present, else `SC_OPENWORK_PRICE_PER_TOKEN`, else logged as unknown |
+| No-key chain | `SC_AI=on` (no key) | free anonymous routes: local Ollama, LLM7, ch.at, Pollinations, then the template. Off by default. Sends brief text to anonymous public endpoints (one stderr notice per run). Per-call cap 45 s, per-build cap `SC_AI_BUILD_CAP` (90 s). Good for short copy; whole-site JSON usually falls back. Code: `lib/ai_chain/` (vendored; canonical copy `V:\streams\webdev\tools\ai_chain\`). Other names: `SC_AI_ROUTES`, `SC_AI_URL_<ID>`, `SC_AI_TIMEOUT`, `SC_AI_BUDGET`, `SC_AI_CACHE_DIR`, `SC_AI_CONFIG`, `SC_AI_OLLAMA_MODEL`, `SC_AI_CHAIN_DIR` |
+| TokenCTR | `TOKENCTR_API_KEY` + `SC_TOKENCTR_PAID=1` (both required), then `--provider tokenctr` or `--allow-paid` | purchased credits only; builds never mint anonymous keys. Base `TOKENCTR_BASE_URL` (default `https://api.tokenctr.com/v1`), model `SC_TOKENCTR_MODEL` (default `mistralai/ministral-3b-2512`, checked against the public catalog unless `SC_TOKENCTR_VALIDATE=0`), cost = usage tokens x `SC_TOKENCTR_PRICE_PER_TOKEN` (else unknown). 429 `quota_exhausted` -> `no_credit`, 402 -> `no_balance`; both fall back to the no-key chain (if `SC_AI=on`) or the offline template. |
+
+TokenCTR proxies to OpenRouter upstream through TokenCTR's own gateway, so it is opt-in paid only; the free no-key chain stays the default.
 
 Model lists are overridable: `FORGE_GEMINI_MODELS`, `FORGE_OPENROUTER_MODELS`,
 `FORGE_OPENWORK_MODEL` (comma-separated).

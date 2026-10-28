@@ -2,7 +2,7 @@
 
 Score only, 2026-10-01. Not published. HTML and lib were not edited.
 
-Paths are under `<repo-root>`.
+Paths are under `V:\a\Ai\spidercaster\working`.
 
 `inbox/harbor-mobile.md` and `inbox/demo-mobile.md` were polled every 30 seconds from 16:07:01 through 16:16:31 (20 cycles). At the 16:17:01 timeout read, neither file had a DONE line. Both said STOPPED. A later read of each file contained `STATUS: DONE` after a parent-rebuild note. The pages scored here are `stage/harbor/out/index.html` and `stage/demo/out/index.html`, both last written 2026-10-01 16:20:55. Both are `noindex, nofollow`.
 

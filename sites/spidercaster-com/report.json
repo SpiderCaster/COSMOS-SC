@@ -1,0 +1,21 @@
+{
+  "generator": "spidercaster/0.1",
+  "mode": "offline",
+  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the sam",
+  "provider": null,
+  "model": null,
+  "noindex": true,
+  "files": [
+    "index.html",
+    "favicon.svg"
+  ],
+  "warnings": [],
+  "tokens": {
+    "requests": 0,
+    "ok": 0,
+    "in_tokens": 0,
+    "out_tokens": 0,
+    "est_cost_usd": 0
+  },
+  "attempts": []
+}

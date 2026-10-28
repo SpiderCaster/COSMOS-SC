@@ -6,7 +6,7 @@ Windows paths use forward slashes (Python accepts them natively).
 
 Server: `V:/a/ai/spidercaster/working/mcp_server.py`
 Surface root (optional env): `SPIDERCASTER_SURFACE_ROOT` (default: `SpiderCaster/sites`)
-Secrets dir (optional env): `SPIDERCASTER_SECRETS_DIR` (default: `V:\Research4\.secrets`)
+Secrets dir (optional env): `SPIDERCASTER_SECRETS_DIR` (default: `<your-key-file-dir>`)
 
 ## Claude Code
 

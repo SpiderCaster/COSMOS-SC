@@ -20,7 +20,7 @@ Claude Code and Cowork win by giving an agent a short allowlist and making it ve
 
 ## Templates
 
-* Vendor frames (OceanWP, GeneratePress) and their photos live in the vault (`SPIDERCASTER_VAULT`, default `<local-path>`). They are not in this package.
+* Vendor frames (OceanWP, GeneratePress) and their photos live in the vault (`SPIDERCASTER_VAULT`, default `V:\streams\webdev\vendor-vault`). They are not in this package.
 * A site wears at most one vendor frame, and only as the parent of a mutation. A mix cites two or more parents and is not an as-is frame.
 * The package ships molds we made: `scratch`, `mutate`, or `mix`. A mutation records a new palette, type-lead, and nav.
 * A mold or frame that is live on one site is refused on a second live site.

@@ -11,22 +11,22 @@
     {
       "role": "content",
       "status": "PASS",
-      "detail": "11 block(s) from copy/closing.md, copy/commands.md, copy/faq.md, copy/how.md, copy/install.md, copy/numbers.md, copy/overview.md, copy/photos.md, copy/rails.md; 11 block(s) from copy/closing.md, copy/commands.md, copy/faq.md, copy/how.md, copy/install.md, copy/numbers.md, copy/overview.md, copy/photos.md, copy/rails.md"
+      "detail": "11 block(s) from copy/closing.md, copy/commands.md, copy/faq.md, copy/how.md, copy/install.md, copy/numbers.md, copy/overview.md, copy/photos.md, copy/rails.md; 11 block(s) from copy/closing.md, copy/commands.md, copy/faq.md, copy/how.md, copy/install.md, copy/numbers.md, copy/overview.md, copy/photos.md, copy/rails.md; copy check fallback (SC_AI is off); mechanical: exclamation point"
     },
     {
       "role": "frontend",
       "status": "PASS",
-      "detail": "planned 1 page(s); 2 page(s) written; attempt a20261012T175755730975Z_9e5a63b1 (hand-run, 8 files) | seat pass: hero CTA + image, steps how, stats numbers, gallery photos, closing cta start, nav/footer/meta; index.html reassembled via render.assemble (noindex), img dims+max-width guard patch, hero CTA separator"
+      "detail": "planned 1 page(s); 2 page(s) written; attempt a20261015T032141059017Z_5a349387 (hand-run, 11 files)"
     },
     {
       "role": "graphics",
       "status": "PASS",
-      "detail": "4 local asset(s) in assets/ (public-domain, vendored, no stock CDN): hero-reading-room.jpg (LOC Highsmith reading room, 800x533), press-1819.jpg (1819 Farey/Lowry press engraving, 800x592), build-eniac.jpg (U.S. Army ENIAC classic, 960x694), crew-eniac-programmers.jpg (U.S. Army ENIAC programmers 1946, 960x659); dims verified from file headers; hero wired + gallery photos + max-width guard via seat pass"
+      "detail": "4 local asset(s); no stock CDN; no parent frames"
     },
     {
       "role": "visual",
       "status": "PASS",
-      "detail": "checker 60 pass / 0 fail / 0 warn / 4 skip (--project: cited_text PASS, every visible string cited), noindex on; sideways clean 360/390/412, wide_fixed clean, single h1, tap 44px; layout-probe 4/4 PASS"
+      "detail": "checker 61 pass / 0 fail / 1 warn / 3 skip (--project: cited_text PASS), noindex on; type_floor and contrast at 360/390/412/1280; layout-probe 4/4 PASS bound 887de3739f04d22b"
     },
     {
       "role": "deployer",
@@ -36,38 +36,17 @@
   ],
   "ok": true,
   "sha256": {
+    "assets/build-eniac.jpg": "70b512ff1492f519af8d4a0e02e72033e45b41ca4997b4360262849cf5509cc2",
+    "assets/crew-eniac-programmers.jpg": "73e2855065777a877e36bbd4979151e87e5d92ccdbea11586f9407c5df51352c",
+    "assets/fonts/sc-body.woff2": "bb1c1430eb5594c8388535052eb850a2f2b0e1d5dd6efe33c64aaa008c261ba7",
+    "assets/fonts/sc-display.woff2": "5ee40e2291960f8b5ff7494a9d1e1ec5d0a9eae813de216dbcd893d1b4a75c9e",
+    "assets/hero-reading-room.jpg": "529d2c81879db40717b135aec9b0d7246cc1e25a60bd566ecac5c169ebad11d6",
+    "assets/press-1819.jpg": "6e3d39f1dbad92dde74e10a182e8ee08a3535f626a55bb49b0837e04e77bf864",
     "favicon.svg": "21489f6b635d7cb2c62ca29b54de3332dfead3b2b01c46f4ce1318754e743efe",
-    "index.html": "72646edc94de1f3e8fd7876bac4ae23a436463b05bf9286fbc5a62007c903395",
-    "site.json": "b69d986a1cfdb0230fd5007a635640c2acc593a82c1283095b00004dcaaea6c7"
-  },
-  "graphics_pass": {
-    "assets": [
-      {
-        "file": "assets/hero-reading-room.jpg",
-        "license": "Public domain",
-        "credit": "Carol M. Highsmith, via Library of Congress / Wikimedia Commons",
-        "source_page": "https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg"
-      },
-      {
-        "file": "assets/press-1819.jpg",
-        "license": "Public domain",
-        "credit": "Engraving by W. Lowry after J. Farey, 1819",
-        "source_page": "https://commons.wikimedia.org/wiki/File:Printing_press.jpg"
-      },
-      {
-        "file": "assets/build-eniac.jpg",
-        "license": "Public domain (U.S. Army work)",
-        "credit": "Unidentified U.S. Army photographer, via Historic Computer Images",
-        "source_page": "https://commons.wikimedia.org/wiki/File:Classic_shot_of_the_ENIAC_(full_resolution).jpg"
-      },
-      {
-        "file": "assets/crew-eniac-programmers.jpg",
-        "license": "Public domain (U.S. Army work)",
-        "credit": "U.S. Army photo, ARL Technical Library: Betty Jennings and Frances Bilas, Feb 1946",
-        "source_page": "https://commons.wikimedia.org/wiki/File:Two_women_operating_ENIAC_(full_resolution).jpg"
-      }
-    ],
-    "check": "60 pass / 0 fail / 0 warn / 4 skip (spidercaster.py check --expect-noindex --project projects/spidercaster-com) + layout-probe 4/4 PASS",
-    "live": "https://spidercaster.com/ 200 (content-identical to local index.html), 12/12 sections, single h1, 4/4 assets 200 image/jpeg (byte-identical, pre-existing live files)"
+    "index.html": "887de3739f04d22b05790244febc67ba5db3c0d5b5c717e578426863c9c20bd2",
+    "layout-probe.json": "74161291c0ca21822e46b8c1ae874331544721ccf1c7d43b083684039eb5d001",
+    "report.json": "474c18e78a7119b8ab3a0bf21601f95e1f528fb8823074958f329ae880da0949",
+    "robots.txt": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+    "site.json": "29d5b88da179f21ec657961ce0937baaa79391d1af6474250f3a80258527d182"
   }
 }

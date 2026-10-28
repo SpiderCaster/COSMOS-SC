@@ -84,7 +84,7 @@ class AIResult:
     ms: int = 0
     cached: bool = False
     attempts: list = field(default_factory=list)   # [(provider, outcome)] for the log
-    usage: dict = field(default_factory=dict)  # OR token counts only
+    usage: dict = field(default_factory=dict)      # {"in_tokens": n, "out_tokens": n} (OpenRouter only)
 
 
 # ----------------------------------------------------------------------------- config
@@ -260,7 +260,7 @@ def _call_get_q(p: dict, system: str, user: str, max_tokens: int, temperature: f
     return (m.group(1) if m else raw), p.get("model", "chat-at")
 
 
-# ------------------------------------------------------------------------- opt-in OpenRouter route
+# ----------------------------------------------------------------------------- opt-in OpenRouter route
 # Appended AFTER the free chain, built only when SC_AI=on and a key is present.
 # The key travels one Authorization header and is never logged, cached, or
 # stored on the route dict (resolved at call time in Chain._try_route).
@@ -300,7 +300,7 @@ def _openrouter_model(env=None) -> str:
     return str(env.get("SC_AI_OR_MODEL") or "").strip() or OR_MODEL_PIN
 
 
-def _openrouter_route(env=None) -> dict | None:
+def _openrouter_route(env=None) -> Optional[dict]:
     """Code-built route dict (no key on it), or None when it must not run."""
     env = os.environ if env is None else env
     if not mode_enabled(env):
@@ -326,10 +326,9 @@ def _call_openrouter(p: dict, system: str, user: str, max_tokens: int, temperatu
     if not key:
         raise RouteError("no_key", "OPENROUTER_API_KEY is not set")
     model = p.get("model") or OR_MODEL_PIN
-    msgs = ([{"role": "system", "content": system}] if system else [])
-    msgs.append({"role": "user", "content": user})
     body = {"model": model, "max_tokens": max_tokens, "temperature": temperature,
-            "messages": msgs}
+            "messages": ([{"role": "system", "content": system}] if system else []) +
+                        [{"role": "user", "content": user}]}
     headers = {"Content-Type": "application/json", "User-Agent": USER_AGENT,
                "Authorization": "Bearer " + key, "HTTP-Referer": "https://spidercaster.local",
                "X-Title": "SpiderCaster copy"}
@@ -348,7 +347,7 @@ def _call_openrouter(p: dict, system: str, user: str, max_tokens: int, temperatu
         text = data["choices"][0]["message"]["content"]
         used = data.get("model") or model
         raw_usage = data.get("usage") or {}
-    except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+    except Exception:
         raise RouteError("bad_json", "not an OpenRouter reply") from None
     p["usage"] = {"in_tokens": int(raw_usage.get("prompt_tokens") or 0),
                   "out_tokens": int(raw_usage.get("completion_tokens") or 0)}
@@ -400,8 +399,8 @@ class Chain:
             if left <= 1:
                 raise RouteError("budget_exhausted")
             try:
-                return fn(p, system, user, max_tokens, temperature,
-                          min(float(p.get("timeout", 20)), left), **extra)
+                return fn(p, system, user, max_tokens, temperature, min(float(p.get("timeout", 20)), left),
+                          **extra)
             except RouteError as exc:
                 last = exc
                 if not exc.retry or i == tries - 1:
@@ -410,16 +409,20 @@ class Chain:
         raise last  # pragma: no cover
 
     def run(self, system, user, *, purpose="", max_tokens=700, temperature=0.7, min_chars=20,
-            max_chars=6000, style_check=False, use_cache=True) -> AIResult:
+            max_chars=6000, style_check=False, use_cache=True,
+            budget_seconds: Optional[float] = None) -> AIResult:
         cfg = load_config(self.env)
         t0 = self.clock()
-        deadline = t0 + cfg["budget_seconds"]
+        budget = cfg["budget_seconds"]
+        if budget_seconds is not None:                          # engine timeout / per-build cap (never raises it)
+            budget = max(1.0, min(budget, float(budget_seconds)))
+        deadline = t0 + budget
         attempts: list = []
         safe_user, safe_sys = redact(user), redact(system)      # public text only; strip secret shapes
         settings = {"mt": max_tokens, "t": temperature, "sc": style_check}
         cache_dir = Path(cfg["cache_dir"])
         providers = list(cfg["providers"])
-        or_route = _openrouter_route(self.env)  # free chain first; keyed route last
+        or_route = _openrouter_route(self.env)                  # free chain first; opt-in keyed route last
         if or_route is not None:
             providers.append(or_route)
         for p in providers:
@@ -437,8 +440,8 @@ class Chain:
                     if not sanity(c["text"], system=safe_sys, min_chars=min_chars, max_chars=max_chars,
                                   style_check=style_check):
                         attempts.append((pid, "cache hit"))
-                        return AIResult(c["text"], "ai", pid, c.get("model", ""), "", 0, True,
-                                        attempts, dict(c.get("usage") or {}))
+                        return AIResult(c["text"], "ai", pid, c.get("model", ""), "", 0, True, attempts,
+                                        dict(c.get("usage") or {}))
                 except Exception:
                     pass
             s = self.clock()
@@ -464,7 +467,7 @@ class Chain:
                 continue
             ms = int((self.clock() - s) * 1000)
             log.info("sc_ai: %s ok %dms purpose=%s", pid, ms, purpose)   # id + duration only, never the prompt
-            usage = dict(p.get("usage") or {})  # OR token counts; never the key
+            usage = dict(p.get("usage") or {})                          # OpenRouter token counts; never the key
             if use_cache:
                 try:
                     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -523,7 +526,7 @@ def complete(*, system: str, user: str, opts: Optional[dict] = None, ledger=None
         try:
             usage = dict(r.usage or {})
             ledger.add(provider=r.provider, model=r.model, purpose=purpose, ok=True, error="", ms=r.ms,
-                       est_cost_usd=_estimate_or_cost(r.provider, r.model, usage) or 0.0,
+                       est_cost_usd=_estimate_or_cost(r.provider, r.model, usage),   # None = unknown, not $0
                        in_tokens=int(usage.get("in_tokens") or 0),
                        out_tokens=int(usage.get("out_tokens") or 0))
         except Exception:
@@ -563,6 +566,31 @@ def fallback_slug(title: str, max_words: int = 4) -> str:
 
 def fallback_alt_text(title: str, caption: str = "") -> str:
     return _clean(caption) or _clean(title)
+
+
+def describe_routes(env=None) -> list[dict]:
+    """Every configured route with its state, for `spidercaster models`. Never reads key values
+    (OpenRouter presence is a name check on OPENROUTER_API_KEY / OPENROUTER_API_KEY_FILE)."""
+    env = os.environ if env is None else env
+    try:
+        raw = json.loads(Path(env.get("SC_AI_CONFIG") or DEFAULT_CONFIG).read_text(encoding="utf-8"))
+        rows = [p for p in raw.get("providers", []) if isinstance(p, dict) and p.get("id")]
+    except Exception:
+        rows = []
+    active = [p["id"] for p in load_config(env)["providers"]]
+    out = []
+    for p in rows:
+        bad = route_problem(p)
+        state = ("refused: " + bad) if bad else ("in order" if p["id"] in active else
+                                                 ("disabled" if not p.get("enabled", True) else "not in SC_AI_ROUTES"))
+        host = urllib.parse.urlparse(str(p.get("url", ""))).netloc
+        out.append({"id": p["id"], "kind": p.get("kind", ""), "host": host, "state": state,
+                    "note": str(p.get("note", ""))})
+    has_or = bool(str(env.get("OPENROUTER_API_KEY") or "").strip() or str(env.get("OPENROUTER_API_KEY_FILE") or "").strip())
+    out.append({"id": "openrouter", "kind": "openrouter", "host": "openrouter.ai",
+                "state": "opt-in: key name present" if has_or else "off (no OPENROUTER_API_KEY)",
+                "note": "code-built keyed route, appended last only when SC_AI=on and a key is present"})
+    return out
 
 
 def detect_ollama(url: str = "http://127.0.0.1:11434", timeout: float = 2.0) -> dict:

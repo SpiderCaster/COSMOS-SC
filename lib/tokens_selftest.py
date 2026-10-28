@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from lib.render import build_palette
 from lib.tokens import (
     BODY_LEAD,
     BODY_SIZE,
@@ -18,11 +19,19 @@ from lib.tokens import (
     PAD_WIDE,
     PAPER,
     SPACING,
+    WEIGHT_CRITICAL_TARGET,
+    WEIGHT_HERO_IMG,
+    WEIGHT_HTML_GZIP,
+    WEIGHT_HTML_RAW,
+    WEIGHT_IMAGE,
+    WEIGHT_SCRIPT,
     TokensError,
     contrast_ratio,
     cta_ink,
     is_token_spacing,
+    mold_tokens,
     nontoken_spacings,
+    resolve_mold_id,
     spacing_values,
     stack_for,
     token_css,
@@ -98,6 +107,41 @@ def main() -> int:
     if DARK_INK not in dark or DARK_PAPER not in dark:
         raise SystemExit("dark swap missing")
     _raises(token_css, {"palette": "#808080", "type_lead": "sans"})
+    # VJ-01: four package molds, seed-independent palette, weight caps.
+    for mold_id, accent in (
+        ("warmth-authority", "#c8923e"),
+        ("discover-grid", "#2a6f8f"),
+        ("clarify-mix", "#6b4c3b"),
+        ("spidercaster-com", "#1f6f5b"),
+    ):
+        row = mold_tokens(mold_id)
+        if row["accent"] != accent or row["id"] != mold_id:
+            raise SystemExit(f"mold tokens drifted: {mold_id}")
+        if "@" in row["display_stack"] or "http" in row["body_stack"]:
+            raise SystemExit(f"mold stack is not local: {mold_id}")
+    _raises(mold_tokens, "not-a-mold")
+    _raises(resolve_mold_id, {"mold": "not-a-mold"})
+    if resolve_mold_id({"template": "editorial"}) != "warmth-authority":
+        raise SystemExit("editorial did not map to warmth-authority")
+    if resolve_mold_id({"template": "bold"}) != "clarify-mix":
+        raise SystemExit("bold did not map to clarify-mix")
+    if resolve_mold_id({}) != "discover-grid":
+        raise SystemExit("default mold is not discover-grid")
+    theme = {"template": "editorial"}
+    if build_palette(theme, "alpha") != build_palette(theme, "beta"):
+        raise SystemExit("palette still depends on seed")
+    painted = build_palette(theme, "ignored")
+    if painted["accent"] != "#c8923e" or painted["mold"] != "warmth-authority":
+        raise SystemExit(f"editorial palette is not the mold accent: {painted['accent']}")
+    overridden = build_palette({"template": "editorial", "accent": "#1f6f5b"}, "seed")
+    if overridden["accent"] != "#1f6f5b":
+        raise SystemExit("theme accent did not override the mold")
+    if (WEIGHT_HTML_RAW, WEIGHT_HTML_GZIP, WEIGHT_SCRIPT, WEIGHT_HERO_IMG, WEIGHT_IMAGE) != (
+        225280, 61440, 12288, 153600, 256000,
+    ):
+        raise SystemExit("weight caps are not the VJ-00 byte values")
+    if WEIGHT_CRITICAL_TARGET != 100352:
+        raise SystemExit("critical target drifted")
     print("tokens selftest ok")
     return 0
 

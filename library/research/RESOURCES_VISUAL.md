@@ -1,6 +1,6 @@
 # Visual resources — 2026-10-01 image tests
 
-Resource finder 3 of 3. Looked at the four PNGs and their sibling receipts under `library/image-tests/2026-10-01/`. Did not call an image API. Did not publish. Did not copy anything into `<local-path>`.
+Resource finder 3 of 3. Looked at the four PNGs and their sibling receipts under `library/image-tests/2026-10-01/`. Did not call an image API. Did not publish. Did not copy anything into `V:\streams\webdev\builds\movelixir.com`.
 
 `library/research/HANDS_CHANGELOG.md` does not exist, so the local proof filename below is `assets/hero.png`.
 
@@ -50,7 +50,7 @@ The mark study is plum and cream because the prompt said so. It is not the warmt
 
 ## How the renderer treats a hero and a favicon
 
-`hero_visual()` in `lib/render.py` prints an `<img>` only when `image` is set and does not start with `htt<local-path>`, `https://`, or `//`. Anything else becomes the letter mark (`hero-mark`), the first alphanumeric of the brand. `normalize_data()` in `lib/ir.py` also clears those remote forms, and any path that contains `..`, before render.
+`hero_visual()` in `lib/render.py` prints an `<img>` only when `image` is set and does not start with `http://`, `https://`, or `//`. Anything else becomes the letter mark (`hero-mark`), the first alphanumeric of the brand. `normalize_data()` in `lib/ir.py` also clears those remote forms, and any path that contains `..`, before render.
 
 `favicon_svg()` writes `favicon.svg` itself: a 32-by-32 SVG, rounded rect filled with the accent (fallback `#c8923e` if the accent is not a 6-digit hex), and one Georgia letter. It does not embed the AI mark.
 
@@ -62,6 +62,6 @@ Do not hotlink `api.x.ai`. Do not point `image` at any remote URL. A remote src 
 2. Set the hero image to the relative path only: `assets/hero.png`. A string or `{ "src": "assets/hero.png", "alt": "..." }` both normalize to that src.
 3. Alt text should describe the visible still life (ceramic cup, steam, open notebook, morning window). Do not add medical claims or brand facts the picture does not show.
 4. Leave `movelixir-mark.png` as a study. The live favicon stays the generated SVG.
-5. Leave the test PNGs where they are. Do not apply them to `<local-path>`. Do not publish.
+5. Leave the test PNGs where they are. Do not apply them to `V:\streams\webdev\builds\movelixir.com`. Do not publish.
 
 Next prompt notes, agreeing with FEEDBACK.md except for the centering nuance above: ask for the subject on the right third and quiet space on the left when the desktop hero is a split; say "no identifiable face" or "seen from behind" unless a real person was supplied; for a short phone hero, ask for a tighter, brighter subject; if the page is a ritual rather than sleep, say "awake, eyes open, sitting."

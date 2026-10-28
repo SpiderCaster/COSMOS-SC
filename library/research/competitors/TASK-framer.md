@@ -2,7 +2,7 @@
 
 Competitor: Framer Agents
 Report file: library/research/competitors/framer.md
-Engine root: <repo-root>
+Engine root: V:\A\Ai\spidercaster\working
 
 Read library/research/competitors/BRIEF.md and follow its outline and contract line. Also read the Framer sections of library/research/HOW_PRO_BUILDERS.md and library/research/app/HOW_CODE_BUILDERS_TOOLS.md before the web. Those notes are from 2026-10-01. A live page wins when they disagree.
 

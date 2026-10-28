@@ -12,7 +12,7 @@ Read 2026-10-01 from `lib/triggers.py` only. This note does not edit Python. It 
 | `phone_hidden` | the html contains `.reveal{opacity:0` and no `@media` rule whose prelude contains `max-width:860px` sets `.reveal{opacity:1` inside that rule. A `prefers-reduced-motion` rule does not clear it | none |
 | `empty_panel` | the html contains `about-panel` | none |
 | `missing_skip` | the html does not contain `href="#main"` | none |
-| `remote_img` | an `img` `src` starts with `htt<local-path>`, `https://`, or `//` | none |
+| `remote_img` | an `img` `src` starts with `http://`, `https://`, or `//` | none |
 
 Fix `none` must not loop. `_rerender_once` returns without another render when no hit has `fix` `rerender`. These five codes must not start a second render.
 

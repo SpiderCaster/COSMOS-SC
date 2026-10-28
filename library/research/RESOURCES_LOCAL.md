@@ -6,11 +6,11 @@ Measured 2026-10-01 13:55:29 from disk. Exists flags below are from directory li
 
 movelixir.com is the only elixir site already built. flo and reco are briefs until a copy pack exists. A crew must not invent copy. The safe project for a proof run is `projects\demo-local`. Live rebuild of movelixir is out of scope. Publish is out of scope.
 
-Crew project path: `<repo-root>\projects\demo-local`
+Crew project path: `V:\a\Ai\spidercaster\working\projects\demo-local`
 
 ## Working tree
 
-`<repo-root>` — exists: yes. Copy-driven static site engine (CLI, library, projects, built output).
+`V:\a\Ai\spidercaster\working` — exists: yes. Copy-driven static site engine (CLI, library, projects, built output).
 
 Top-level names only:
 
@@ -38,7 +38,7 @@ Top-level names only:
 
 ## projects\demo-local
 
-`<repo-root>\projects\demo-local` — exists: yes. Local noindex test project about the engine itself.
+`V:\a\Ai\spidercaster\working\projects\demo-local` — exists: yes. Local noindex test project about the engine itself.
 
 | Path | Exists | What it is |
 |---|---|---|
@@ -49,7 +49,7 @@ Top-level names only:
 
 No other files were in that project listing.
 
-Already-built local output (not the crew input): `<repo-root>\sites\demo-local` contains `index.html`, `site.json`, `site.json.bak`, `report.json`. HTML was not read.
+Already-built local output (not the crew input): `V:\a\Ai\spidercaster\working\sites\demo-local` contains `index.html`, `site.json`, `site.json.bak`, `report.json`. HTML was not read.
 
 ## library\molds
 
@@ -116,18 +116,18 @@ Directory exists: yes. Sizes are file lengths in bytes. These are Grok Imagine t
 
 A filename search under the working tree for floelixir or recovelixir found only these four image-test files. No flo or reco project directory.
 
-## <local-path>
+## V:\streams\webdev
 
 | Path | Exists | What it is |
 |---|---|---|
-| `<local-path>` | yes | Web-fleet handover index. 48554 bytes, last write 2026-09-28 19:45:33. Head only was read. Account and zone identifiers omitted. Not a SpiderCaster copy pack. |
-| `<local-path>` | yes | 5109 bytes. Name only. Not opened. |
-| `<local-path>` | yes | 2680 bytes. Name only. Not opened. |
-| `<local-path>` | yes | 5754 bytes. Name only. Not opened. |
-| `<local-path>` | yes | The only child of `builds`. Static HTML already on disk. Not read. |
-| `<local-path>` | no | No build directory. |
-| `<local-path>` | no | No build directory. |
-| `<local-path>` | yes | Private vault. Top-level listing only: `README.md` (247 bytes) and `frames.json` (23525 bytes). No subdirectories at the vault root. Photo binaries were not recursed and none were at the root. README says OceanWP and GeneratePress frames and photos are private and not part of the package. `frames.json` was not opened. |
+| `V:\streams\webdev\START_HERE.md` | yes | Web-fleet handover index. 48554 bytes, last write 2026-09-28 19:45:33. Head only was read. Account and zone identifiers omitted. Not a SpiderCaster copy pack. |
+| `V:\streams\webdev\spidercaster_local\sites\floelixir.com.md` | yes | 5109 bytes. Name only. Not opened. |
+| `V:\streams\webdev\spidercaster_local\sites\movelixir.com.md` | yes | 2680 bytes. Name only. Not opened. |
+| `V:\streams\webdev\spidercaster_local\sites\recovelixir.com.md` | yes | 5754 bytes. Name only. Not opened. |
+| `V:\streams\webdev\builds\movelixir.com` | yes | The only child of `builds`. Static HTML already on disk. Not read. |
+| `V:\streams\webdev\builds\floelixir.com` | no | No build directory. |
+| `V:\streams\webdev\builds\recovelixir.com` | no | No build directory. |
+| `V:\streams\webdev\vendor-vault` | yes | Private vault. Top-level listing only: `README.md` (247 bytes) and `frames.json` (23525 bytes). No subdirectories at the vault root. Photo binaries were not recursed and none were at the root. README says OceanWP and GeneratePress frames and photos are private and not part of the package. `frames.json` was not opened. |
 
 movelixir.com HTML filenames only (not read): `about.html`, `athletes.html`, `contact.html`, `index.html`, `novices.html`, `nutrition.html`, `recovery.html`, `research.html`, `thesis.html`.
 
@@ -135,15 +135,15 @@ movelixir.com HTML filenames only (not read): `about.html`, `athletes.html`, `co
 
 Paths a builder can use today for a proof run:
 
-- `<repo-root>` — engine (`spidercaster.py`, `lib`, `library`).
-- `<repo-root>\projects\demo-local` — the only project a crew run should use. `brief.md` exists. Copy exists: `copy\overview.md`, `copy\commands.md`, `copy\faq.md`.
-- `<repo-root>\library\molds\` — `warmth-authority`, `discover-grid`, `clarify-mix`.
-- `<repo-root>\library\frames\` — the fourteen frame ids listed above.
-- `<repo-root>\library\seats\` — all seven seats have `SKILL.md` and `WRAPPER.md`.
-- `<repo-root>\sites\demo-local` — existing local output for that project. Not a new publish.
-- `<repo-root>\library\image-tests\2026-10-01\*.png` — local test images only. Not published and not a copy pack.
+- `V:\a\Ai\spidercaster\working` — engine (`spidercaster.py`, `lib`, `library`).
+- `V:\a\Ai\spidercaster\working\projects\demo-local` — the only project a crew run should use. `brief.md` exists. Copy exists: `copy\overview.md`, `copy\commands.md`, `copy\faq.md`.
+- `V:\a\Ai\spidercaster\working\library\molds\` — `warmth-authority`, `discover-grid`, `clarify-mix`.
+- `V:\a\Ai\spidercaster\working\library\frames\` — the fourteen frame ids listed above.
+- `V:\a\Ai\spidercaster\working\library\seats\` — all seven seats have `SKILL.md` and `WRAPPER.md`.
+- `V:\a\Ai\spidercaster\working\sites\demo-local` — existing local output for that project. Not a new publish.
+- `V:\a\Ai\spidercaster\working\library\image-tests\2026-10-01\*.png` — local test images only. Not published and not a copy pack.
 
-Do not use for this proof: live rebuild of `<local-path>`, anything under `vendor-vault`, and publish (`library bind --live`).
+Do not use for this proof: live rebuild of `V:\streams\webdev\builds\movelixir.com`, anything under `vendor-vault`, and publish (`library bind --live`).
 
 ## Missing for flo and reco
 
@@ -151,13 +151,13 @@ flo and reco have briefs and hero image tests. They do not have a copy pack, and
 
 Absent:
 
-- No project directory for either site under `<repo-root>\projects` (no `brief.md`, no `copy\`).
-- No `<local-path>`.
-- No `<local-path>`.
+- No project directory for either site under `V:\a\Ai\spidercaster\working\projects` (no `brief.md`, no `copy\`).
+- No `V:\streams\webdev\builds\floelixir.com`.
+- No `V:\streams\webdev\builds\recovelixir.com`.
 
 Present but not enough to build:
 
-- Unopened briefs: `<local-path>` and `recovelixir.com.md`.
+- Unopened briefs: `V:\streams\webdev\spidercaster_local\sites\floelixir.com.md` and `recovelixir.com.md`.
 - Unapplied test heroes: `library\image-tests\2026-10-01\floelixir-hero.png` and `recovelixir-hero.png`, plus their receipt JSON.
 
 A crew must not invent the missing copy. movelixir.com already has HTML under `builds\movelixir.com`; rebuilding or publishing it is out of scope.

@@ -2,7 +2,7 @@
 
 Score only, 2026-10-01. Not published. No image API. HTML, lib, and the image were not edited.
 
-Paths are under `<repo-root>`.
+Paths are under `V:\a\Ai\spidercaster\working`.
 
 `inbox/harbor-photo.md` was polled every 30 seconds from 15:35:15 through 15:44:45 (20 cycles, 10-minute window). The header stayed `STATUS: STARTED`. The sentence that mentions waiting for another inbox to contain DONE was not treated as completion. The timeout read at 15:45:16 contained a later line, `STATUS: DONE`. The page and the picture were read after that.
 

@@ -2,7 +2,7 @@ STARTED 2026-10-01
 
 Verify the SpiderCaster app wave. No site. No publish. No --live. No image API. No secrets. Do not weaken tests. Never delete. Fixes only after the owner inbox says DONE and a rerun shows a one-line bug. Prefer writing the failure over editing.
 
-Wait 180 seconds, then from <repo-root>:
+Wait 180 seconds, then from V:\a\Ai\spidercaster\working:
 
 py -3.14 -m lib.skill_read
 py -3.14 -m lib.hook_match

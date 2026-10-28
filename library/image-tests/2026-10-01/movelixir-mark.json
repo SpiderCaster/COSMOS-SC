@@ -1,9 +1,0 @@
-{
-  "provider": "xai",
-  "model": "grok-imagine-image-2.0",
-  "prompt": "Flat app icon, rounded square, one cream capital M centered on a deep plum field. No photograph, no extra letters, no slogan, no watermark.",
-  "file": "movelixir-mark.png",
-  "bytes": 116196,
-  "aspect_ratio": "1:1",
-  "quality": "low"
-}

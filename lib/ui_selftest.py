@@ -156,7 +156,7 @@ def engine_room_end_to_end() -> None:
         ui.screen_checks()
         ui.screen_preview()
         text = cap.text()
-        _expect("153600" in text and "40960" in text, "budgets printed on board")
+        _expect("225280" in text and "61440" in text, "budgets printed on board")
         _expect("board: " in text, "board totals printed")
         visual = "PASS" if checked["status"] == "PASS" else "FAIL"
         ticket = _hands.run("ticket_write", {

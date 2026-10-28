@@ -402,6 +402,22 @@ def _apply_page(html: str, header: str, footer: str, sections: list[tuple[str, s
         if not sec_id or not block:
             continue
         html = _replace_section(html, sec_id, block)
+    hero_match = re.search(r'<section\b[^>]*\bid="hero"[^>]*>.*?</section>', html, re.DOTALL | re.IGNORECASE)
+    if hero_match:
+        hero_html = hero_match.group(0)
+        has_primary = any("btn" in k.split() and "primary" in k.split() for k in re.findall(r'<a\b[^>]*\bclass="([^"]*)"', hero_html, re.IGNORECASE))
+        if not has_primary:
+            btn_match = re.search(r'<a\b([^>]*)>', hero_html, re.IGNORECASE)
+            if btn_match:
+                attrs = btn_match.group(1)
+                if 'class="' in attrs:
+                    tagged = re.sub(r'class="([^"]*)"', r'class="\1 btn primary"', attrs)
+                else:
+                    tagged = attrs + ' class="btn primary"'
+                if "data-cta" not in tagged:
+                    tagged = ' data-cta="primary"' + tagged
+                fixed_hero = hero_html[:btn_match.start()] + f'<a{tagged}>' + hero_html[btn_match.end():]
+                html = html[:hero_match.start()] + fixed_hero + html[hero_match.end():]
     if header or footer or any(block for _sec, block in sections):
         body_at = html.lower().rfind("</body>")
         if body_at >= 0:
@@ -610,6 +626,7 @@ def compose_project(
             return plan_only_result(out, structure_path, part_ids)
         for item in pages:
             (out / str(item["file"])).write_text(item["html"], encoding="utf-8", newline="\n")
+        deps["render"].copy_fonts(out)
         (out / "site.json").write_text(
             json.dumps(site, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",

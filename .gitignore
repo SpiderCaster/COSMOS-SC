@@ -17,13 +17,14 @@ Thumbs.db
 
 # generated / local-only
 _delme/
+_attempts/
+build/
+dist/
 backups*/
 bench/results/
 stage/
 preview/
 node_modules/
-build/
-dist/
 
 # secrets - never commit (see scripts/secret_scan.py + scripts/hooks/pre-commit)
 .env
@@ -65,7 +66,3 @@ service-account*.json
 *.egg-info/
 # optional no-key AI path cache (lib/ai_chain)
 .sc_ai_cache/
-
-# GF38 audit hygiene: local-only wallet notes, gate attempt snapshots
-WALLETS.md
-_attempts/

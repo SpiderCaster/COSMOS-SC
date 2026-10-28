@@ -8,7 +8,7 @@ Polled `inbox/chrome.md` every 20 seconds from 15:14:27. The file was missing th
 
 No `--frame` (house-menu drops hours). No `--live`.
 
-Command (cwd `<repo-root>`):
+Command (cwd `V:\a\Ai\spidercaster\working`):
 
 `py -3.14 spidercaster.py crew run stage\harbor\src --site harbor-test.example --out stage\harbor\out --mold discover-grid`
 

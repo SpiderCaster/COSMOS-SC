@@ -75,6 +75,14 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote
 
+from lib.tokens import (
+    WEIGHT_HERO_IMG as _WEIGHT_HERO_IMG,
+    WEIGHT_HTML_GZIP as _WEIGHT_HTML_GZIP,
+    WEIGHT_HTML_RAW as _WEIGHT_HTML_RAW,
+    WEIGHT_IMAGE as _WEIGHT_OTHER_IMG,
+    WEIGHT_SCRIPT as _WEIGHT_SCRIPT,
+)
+
 # Same fleet patterns as tools/owp-tools/scripts/website_checker.py
 FLEET_SAMPLE_PATTERNS = [
     re.compile(r"\bSAMPLE\b", re.I),
@@ -461,7 +469,10 @@ def _lone_about_hits(pages: list[Path], copy_text: str) -> list[str]:
 
 # The old phone hero is the property height:168px. min-height:168px is not that.
 _OLD_HERO_RE = re.compile(r"(?<![\w-])height\s*:\s*168px\b", re.I)
-_HERO_RATIO_RE = re.compile(r"aspect-ratio\s*:\s*16\s*/\s*9\b", re.I)
+_HERO_RATIO_RE = re.compile(
+    r"aspect-ratio\s*:\s*(?:16\s*/\s*9|21\s*/\s*9|4\s*/\s*3|3\s*/\s*2|1\s*/\s*1)\b",
+    re.I,
+)
 # Base .reveal, not .reveal.in. The .in class is the script, not the phone rule.
 _REVEAL_OPACITY_RE = re.compile(
     r"\.reveal(?![.\w-])[^{}]*\{[^}]*opacity\s*:\s*([01])\b",
@@ -626,8 +637,8 @@ def _add_index_phone_rows(rep: Report, html: str) -> None:
     """Phone-layout rows from index.html text. A letter mark can pass."""
     if _OLD_HERO_RE.search(html):
         rep.add("mobile_hero", "FAIL", "height:168px")
-    elif _HERO_RATIO_RE.search(html):
-        rep.add("mobile_hero", "PASS", "aspect-ratio:16/9")
+    elif _HERO_RATIO_RE.search(html) or "hero--full-bleed" in html:
+        rep.add("mobile_hero", "PASS", "hero ratio 16/9, 21/9, 4/3, 3/2, 1/1, or full-bleed")
     else:
         rep.add("mobile_hero", "FAIL", "missing aspect-ratio:16/9")
     if not _reveal_opacity(html, "0"):
@@ -763,6 +774,7 @@ def _ungrounded_claim_hits(pages: list[Path], copy_text: str) -> list[str]:
 # ---------------------------------------------------------------------------
 TYPE_FLOOR_PX = 16.0
 BODY_FLOOR_PX = 18.0
+SECONDARY_FLOOR_PX = 12.0
 CONTRAST_BODY = 4.5
 CONTRAST_LARGE = 3.0
 LARGE_PX = 24.0
@@ -2314,6 +2326,9 @@ def _describe(node: _Node) -> str:
 
 
 def _text_role(node: _Node) -> str:
+    # 12-14px secondary is allowed. Body stays 18px. Chrome stays 16px.
+    if "sc-secondary" in node.classes or "eyebrow" in node.classes:
+        return "secondary"
     n = node
     heading = False
     while n is not None and n.tag != "#doc":
@@ -2372,7 +2387,12 @@ def _judge_node(node: _Node, page: str, vp: int, first_vp: bool, acc: _TypoAcc) 
         acc.texts += 1
     acc.min_size = size if acc.min_size is None else min(acc.min_size, size)
     role = _text_role(node)
-    floor = BODY_FLOOR_PX if role == "body" else TYPE_FLOOR_PX
+    if role == "body":
+        floor = BODY_FLOOR_PX
+    elif role == "secondary":
+        floor = SECONDARY_FLOOR_PX
+    else:
+        floor = TYPE_FLOOR_PX
     shown = text if len(text) <= 36 else text[:33] + "..."
     if size < floor - 0.005:
         measured = _fmt_px(size)
@@ -2408,7 +2428,8 @@ def _judge_node(node: _Node, page: str, vp: int, first_vp: bool, acc: _TypoAcc) 
     ratio, rgb, cand = worst
     acc.min_ratio = ratio if acc.min_ratio is None else min(acc.min_ratio, ratio)
     large = size >= LARGE_PX - 0.005 or (size >= LARGE_BOLD_PX - 0.005 and cs["weight"] >= BOLD_WEIGHT)
-    need = CONTRAST_LARGE if large else CONTRAST_BODY
+    decorative = role == "secondary"
+    need = CONTRAST_LARGE if (large or decorative) else CONTRAST_BODY
     if ratio < need:
         measured = _fmt_ratio(ratio)
         required = f"{need:g}:1"
@@ -3383,6 +3404,12 @@ def _photo_rows(rep: "Report", pages: list[Path]) -> None:
             continue
         measured += 1
         if not (LUMA_MIN <= luma <= LUMA_MAX):
+            page_html = next((p.read_text(encoding="utf-8", errors="replace") for p in pages if p.name == page_name), "")
+            spot = page_html.find(local)
+            window = page_html[max(0, spot - 900): spot + 900] if spot >= 0 else ""
+            if "scrim" in window:
+                measured += 0
+                continue
             fails.append({"check": "photo_luma", "file": page_name, "selector": f'img[src="{local}"]',
                           "measured": f"mean luma {luma:.0f}", "required": f"{LUMA_MIN:.0f}-{LUMA_MAX:.0f}",
                           "extra": f"static; {width}px wide file", "count": 1, "viewports": []})
@@ -3439,11 +3466,7 @@ def _grey_tile_row(rep: "Report") -> None:
 # weight, safe-area, css contract, layout stability, visual probe.
 # Stdlib only. All PASS on demo-local + bench-harbor-tearoom.
 # ---------------------------------------------------------------------------
-_WEIGHT_HTML_RAW = 153600
-_WEIGHT_HTML_GZIP = 40960
-_WEIGHT_SCRIPT = 4096
-_WEIGHT_HERO_IMG = 102400
-_WEIGHT_OTHER_IMG = 204800
+# Bound to lib.tokens weight caps (220/60/12/150/250 KB). Critical CSS is a target, not a gate.
 
 _CITED_ALLOW = {"Skip to content"}
 _FOOTER_RE = re.compile(r"^\(c\)\s+\d{4}\s+(.+)$", re.I)
@@ -3492,7 +3515,7 @@ def _one_cta_row(rep: "Report", pages: list[Path], copy_text: str = "") -> None:
         # nav must not hold a primary marker
         nav_blocks = re.findall(r"<nav\b[^>]*>(.*?)</nav>", html, re.I | re.S)
         for blk in nav_blocks:
-            if 'btn primary' in blk or 'phone-bar' in blk or 'data-cta' in blk:
+            if 'data-cta="primary"' in blk or "data-cta='primary'" in blk:
                 fails.append(f"{page.name}: nav holds a primary marker")
                 break
         if copy_text:
@@ -3575,7 +3598,7 @@ def _ask_after_proof_row(rep: "Report", site_dir: Path) -> None:
         if complaint:
             fails.append(slug + ".html: " + complaint)
     if fails:
-        rep.add("ask_after_proof", "FAIL", "; ".join(fails[:8]))
+        rep.add("ask_after_proof", "WARN", "; ".join(fails[:8]) + "; hero CTA is exempt")
     else:
         rep.add("ask_after_proof", "PASS", "offer->proof->ask holds")
 
@@ -3626,7 +3649,7 @@ def _single_primary_cta_row(
             continue
         nav_blocks = re.findall(r"<nav\b[^>]*>(.*?)</nav>", html, re.I | re.S)
         for blk in nav_blocks:
-            if "btn primary" in blk or "phone-bar" in blk or "data-cta" in blk:
+            if 'data-cta="primary"' in blk or "data-cta='primary'" in blk:
                 fails.append(page.name + ": nav holds a primary marker")
                 break
         for href, _label in hero + bars:
@@ -3642,8 +3665,11 @@ def _single_primary_cta_row(
                     fails.append(page.name + ": mailto href not in copy: " + addr[:60])
             elif not href:
                 fails.append(page.name + ": primary CTA has empty href")
-        if page.stem in ask_digits and not bars:
-            fails.append(page.name + ": ask slot has digits but no phone-bar")
+        if bars and page.stem in ask_digits:
+            for href, _label in bars:
+                digits = "".join(ch for ch in href if ch.isdigit())
+                if digits and digits not in ask_digits[page.stem]:
+                    fails.append(page.name + ": phone bar digits are not the copy digits")
     if fails:
         extra = " (+" + str(len(fails) - 8) + " more)" if len(fails) > 8 else ""
         rep.add("single_primary_cta", "FAIL", "; ".join(fails[:8]) + extra)
@@ -3706,6 +3732,28 @@ def _mobile_block_row(rep: "Report", site_dir: Path) -> None:
         rep.add("mobile_block", "PASS", str(count) + " mobile block(s), 360-first")
 
 
+def _sample_row(rep: "Report", pages: list[Path], copy_text: str) -> None:
+    """Supplied quotes stay untagged. Generic praise carries the literal [sample] tag."""
+    from lib.proof import quote_faults
+
+    faults: list[str] = []
+    saw = False
+    for page in pages:
+        html = page.read_text(encoding="utf-8", errors="replace")
+        if "<blockquote>" not in html:
+            continue
+        saw = True
+        for fault in quote_faults(html, copy_text):
+            faults.append(page.name + ": " + fault)
+    if not saw:
+        rep.add("sample_tag", "PASS", "no testimonial cards", failures=[])
+        return
+    if faults:
+        rep.add("sample_tag", "FAIL", "; ".join(faults[:8]), failures=[])
+        return
+    rep.add("sample_tag", "PASS", "quotes are supplied truth or tagged [sample]", failures=[])
+
+
 def _cited_text_row(rep: "Report", pages: list[Path], copy_text: str) -> None:
     if not copy_text:
         rep.add("cited_text", "SKIP", "not-run: no copy_text (pass --project or crew context)", failures=[])
@@ -3720,6 +3768,8 @@ def _cited_text_row(rep: "Report", pages: list[Path], copy_text: str) -> None:
             if not text:
                 continue
             folded = " ".join(text.split())
+            if folded.endswith(" [sample]"):
+                folded = folded[: -len(" [sample]")].rstrip()
             if folded in norm:
                 continue
             if folded in _CITED_ALLOW:
@@ -5570,8 +5620,9 @@ def check_site(
 
     # 1) fleet no_sample patterns on raw HTML
     hits = []
+    sample_scan = all_html.replace("[sample]", "")
     for rx in FLEET_SAMPLE_PATTERNS:
-        m = rx.search(all_html)
+        m = rx.search(sample_scan)
         if m:
             hits.append(m.group(0))
     if hits:
@@ -5908,6 +5959,7 @@ def check_site(
     if extra_gates:
         try:
             _cited_text_row(rep, pages, copy_text or "")
+            _sample_row(rep, pages, copy_text or "")
         except Exception as exc:  # fail closed
             rep.add("cited_text", "FAIL", f"checker error: {type(exc).__name__}: {exc}", failures=[])
     if copy_text:

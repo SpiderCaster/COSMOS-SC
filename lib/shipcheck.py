@@ -20,6 +20,7 @@ _STEPS: tuple[tuple[str, tuple[str, ...], tuple[str, ...], bool], ...] = (
     ("lib.hands.selftest", ("-m", "lib.hands.selftest"), ("lib", "hands", "selftest.py"), False),
     ("lib.regress", ("-m", "lib.regress"), ("lib", "regress.py"), True),
     ("lib.triggers", ("-m", "lib.triggers"), ("lib", "triggers.py"), False),
+    ("lib.graphics_engine", ("-m", "lib.graphics_engine"), ("lib", "graphics_engine.py"), False),
     ("lib.mobile_selftest", ("-m", "lib.mobile_selftest"), ("lib", "mobile_selftest.py"), False),
     ("lib.attempts_selftest", ("-m", "lib.attempts_selftest"), ("lib", "attempts_selftest.py"), False),
     (

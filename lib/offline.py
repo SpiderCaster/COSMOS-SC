@@ -14,11 +14,19 @@ from pathlib import Path
 from . import ir
 
 FEATURE_ICON_HINTS = [
+    ("build|install|setup|deploy|launch", "rocket"),
+    ("terminal|command|cli|bash|shell", "terminal"),
+    ("browser|preview|view|web", "browser"),
+    ("database|storage|persist|sql", "database"),
+    ("server|host|network", "server"),
+    ("design|art|creative|style|color|theme", "palette"),
+    ("layout|wireframe|frame|structure", "layout"),
+    ("module|package|tool|part|box", "box"),
     ("fast|speed|quick|instant", "zap"),
     ("secur|privac|encrypt|safe", "lock"),
     ("cloud|sync|online|remote", "cloud"),
     ("code|api|developer|sdk", "code"),
-    ("search|find|discover", "pin"),
+    ("search|find|discover|inspect|probe", "search"),
     ("team|people|crew|staff", "users"),
     ("time|schedule|hour|deadline", "clock"),
     ("report|metric|analytic|track", "trending"),
@@ -30,6 +38,8 @@ FEATURE_ICON_HINTS = [
     ("globe|world|region|local", "globe"),
     ("layer|module|component", "layers"),
     ("cpu|engine|model|compute", "cpu"),
+    ("setting|config|knob|tune", "sliders"),
+    ("refresh|sync|reload|rebuild|again", "refresh"),
 ]
 
 CONTACT_TITLE_RE = re.compile(r"\bcontact\b|\bget in touch\b|\breach us\b", re.IGNORECASE)
@@ -37,7 +47,9 @@ FAQ_TITLE_RE = re.compile(r"\bfaq\b|frequently asked", re.IGNORECASE)
 PRICING_TITLE_RE = re.compile(r"\bpric(e|ing|es|plans)\b", re.IGNORECASE)
 MENU_TITLE_RE = re.compile(r"\bmenu\b", re.IGNORECASE)
 TEAM_TITLE_RE = re.compile(r"\bteam\b|\bstaff\b|\babout us\b|\bour story\b", re.IGNORECASE)
-GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b", re.IGNORECASE)
+GALLERY_TITLE_RE = re.compile(r"\bgallery\b|\bphotos\b|\bwork\b|\bportfolio\b|\bmachines?\b", re.IGNORECASE)
+STATS_TITLE_RE = re.compile(r"\bnumbers?\b|\bstats?\b|\bmetrics?\b|\bby the numbers\b|\bthe cost\b", re.IGNORECASE)
+CTA_TITLE_RE = re.compile(r"\bstart\b|\bget started\b|\bready to\b|\bclosing\b", re.IGNORECASE)
 
 
 def guess_icon(text: str) -> str:
@@ -124,6 +136,60 @@ def _span_file(text: str, blocks) -> str | None:
     return None
 
 
+def _hero_raster(copy) -> tuple[str, str]:
+    """A product hero is the asset named exactly ``hero``.
+
+    A filename that merely contains "hero" (a reading room, a press) stays
+    in the gallery. Alt text comes from a markdown image that points at the
+    same file. The planner does not invent a caption from the headline.
+    """
+    assets = getattr(copy, "assets", None) or {}
+    src = str(assets.get("hero") or "")
+    if not src:
+        return "", ""
+    hero_name = Path(src).name
+    for block in getattr(copy, "blocks", []) or []:
+        for im in getattr(block, "images", []) or []:
+            im_src = str(im.get("src") or "")
+            if im_src == src or Path(im_src).name == hero_name:
+                alt = str(im.get("alt") or "").strip()
+                if alt:
+                    return src, alt
+    return src, ""
+
+
+def _gallery_item(im: dict) -> dict:
+    alt = str(im.get("alt") or "").strip()
+    label = str(im.get("label") or "").strip() or alt
+    caption = str(im.get("caption") or "").strip() or label
+    return {
+        "label": label,
+        "caption": caption,
+        "src": str(im.get("src") or ""),
+        "alt": alt or label,
+        "hue": None,
+    }
+
+
+def _asset_gallery_items(copy, hero_src: str) -> list[dict]:
+    """Local photos with no markdown alt stay unlabeled.
+
+    Filename stems are not captions. The hero file is not repeated here.
+    """
+    items = []
+    seen: set[str] = set()
+    hero_name = Path(hero_src).name if hero_src else ""
+    for name, rel in (getattr(copy, "assets", None) or {}).items():
+        rel = str(rel or "")
+        if not rel or rel in seen:
+            continue
+        if str(name).lower() == "hero" or (hero_name and Path(rel).name == hero_name):
+            continue
+        seen.add(rel)
+        items.append({"label": "", "caption": "", "src": rel, "alt": "", "hue": None})
+    return items
+
+
 def plan_offline(copy, opts: dict) -> dict:
     """Build the raw IR dict from ingested copy only. Zero tokens."""
     from .copy_schema import GapError, load_frame_slots
@@ -146,6 +212,7 @@ def plan_offline(copy, opts: dict) -> dict:
 
     sections: list[dict] = []
     hero_sub = _first_paragraph(hero_block)
+    hero_img, hero_alt = _hero_raster(copy)
     sections.append({
         "id": "hero", "type": "hero",
         "data": {
@@ -155,6 +222,8 @@ def plan_offline(copy, opts: dict) -> dict:
             "primary": None,
             "secondary": None,
             "bullets": hero_block.bullets[:4],
+            "image": hero_img,
+            "image_alt": hero_alt,
         },
         "_source": hero_block.file,
     })
@@ -241,6 +310,33 @@ def plan_offline(copy, opts: dict) -> dict:
                     "_source": b.file,
                 })
             continue
+        if STATS_TITLE_RE.search(title):
+            stat_items = []
+            full_text = " ".join(b.paragraphs + b.bullets)
+            for m in re.finditer(r"(\d+[\w%+-]*)\s+([a-zA-Z][^,.;\n]+(?=[.,;]|\s+\d|$))", full_text):
+                val, lab = m.group(1).strip(), m.group(2).strip()
+                if lab and len(lab) < 70:
+                    stat_items.append({"value": val, "label": lab})
+            if len(stat_items) >= 2:
+                sections.append({
+                    "id": ir.slugify(title) or "stats", "type": "stats",
+                    "data": {"title": title, "items": stat_items[:6]},
+                    "_source": b.file,
+                })
+                continue
+        if len(b.numbered) >= 2:
+            step_items = []
+            for num_text in b.numbered[:6]:
+                parts = num_text.split(":", 1) if ":" in num_text else (num_text.split(". ", 1) if ". " in num_text else [num_text, ""])
+                item_title = parts[0].strip()[:60]
+                item_body = parts[1].strip() if len(parts) > 1 else ""
+                step_items.append({"title": item_title, "body": item_body})
+            sections.append({
+                "id": ir.slugify(title) or "steps", "type": "steps",
+                "data": {"title": title, "subhead": " ".join(b.paragraphs[:1]), "items": step_items},
+                "_source": b.file,
+            })
+            continue
         if has_bullets and not GALLERY_TITLE_RE.search(title):
             sections.append({
                 "id": "features", "type": "features",
@@ -251,13 +347,27 @@ def plan_offline(copy, opts: dict) -> dict:
                 "_source": b.file,
             })
             continue
-        if has_images and (GALLERY_TITLE_RE.search(title) or copy.assets):
-            imgs = b.images or [{"src": rel, "alt": name} for name, rel in list(copy.assets.items())[:12]]
+        if GALLERY_TITLE_RE.search(title) or (bool(b.images) and not has_bullets):
+            hero_src = ""
+            if sections and sections[0].get("type") == "hero":
+                hero_src = str((sections[0].get("data") or {}).get("image") or "")
+            if b.images:
+                imgs = [_gallery_item(im) for im in b.images]
+            else:
+                imgs = _asset_gallery_items(copy, hero_src)
+            if imgs:
+                sections.append({
+                    "id": ir.slugify(title) or "gallery", "type": "gallery",
+                    "data": {"title": title or "Gallery",
+                             "subhead": " ".join(b.paragraphs[:3]) if b.paragraphs else "",
+                             "items": imgs[:12]},
+                    "_source": b.file,
+                })
+                continue
+        if CTA_TITLE_RE.search(title) and not b.bullets and not b.numbered:
             sections.append({
-                "id": "gallery", "type": "gallery",
-                "data": {"title": title or "Gallery", "subhead": "",
-                         "items": [{"label": im.get("alt") or "", "caption": "", "src": im.get("src", ""),
-                                    "alt": im.get("alt") or "", "hue": None} for im in imgs[:12]]},
+                "id": ir.slugify(title) or "cta", "type": "cta",
+                "data": {"title": title, "body": " ".join(b.paragraphs[:2]), "primary": None},
                 "_source": b.file,
             })
             continue
@@ -294,10 +404,10 @@ def plan_offline(copy, opts: dict) -> dict:
             n += 1
         seen.add(sec["id"])
 
-    # Contact is the last stop on a phone. Hours and menu stay above it.
-    # The hero button is chosen after this move, so it names that earlier title.
+    # Ask sections (cta and contact) close the case and always come last (offer -> proof -> ask).
     sections[:] = (
-        [sec for sec in sections if sec["type"] != "contact"]
+        [sec for sec in sections if sec["type"] not in ("contact", "cta")]
+        + [sec for sec in sections if sec["type"] == "cta"]
         + [sec for sec in sections if sec["type"] == "contact"]
     )
 

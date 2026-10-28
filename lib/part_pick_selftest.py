@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from lib.ir import SECTION_TYPES
 from lib.part_pick import (
+    variant_for,
     CHROME_KIND_ORDER,
     CHROME_ROUTE,
     SECTION_KIND_ORDER,
@@ -135,6 +136,14 @@ def main() -> int:
         return _fail("unknown override returned ok true")
     if unknown["catalog_id"] or unknown["part_dir"] or unknown["kind"] or unknown["route"]:
         return _fail("unknown override did not return empty ids")
+    if variant_for("hero", "warmth-authority") != "split":
+        return _fail("warmth hero is not split")
+    if variant_for("hero", "spidercaster-com") != "collage":
+        return _fail("flagship hero is not collage")
+    if variant_for("card", "clarify-mix") != "band":
+        return _fail("clarify card is not band")
+    if variant_for("hero", "discover-grid") != variant_for("hero", "discover-grid"):
+        return _fail("hero variant is not stable")
     print("part_pick selftest ok")
     return 0
 

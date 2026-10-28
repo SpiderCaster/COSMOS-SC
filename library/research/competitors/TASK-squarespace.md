@@ -2,7 +2,7 @@
 
 Competitor: Squarespace Blueprint AI
 Report file: library/research/competitors/squarespace.md
-Engine root: <repo-root>
+Engine root: V:\A\Ai\spidercaster\working
 
 Read library/research/competitors/BRIEF.md and follow its outline and contract line. Also read the Squarespace section of library/research/HOW_PRO_BUILDERS.md before the web. Those notes are from 2026-10-01. A live page wins when they disagree.
 

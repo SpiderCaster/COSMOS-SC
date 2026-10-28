@@ -4,7 +4,7 @@ Date: 2026-10-08. Same brief for every UI hero. You are a UX and research expert
 
 ## Who this is for
 
-Keith runs SpiderCaster from Windows. Today the product is a Python 3.11+ standard-library CLI at `<repo-root>`. The command is `python spidercaster.py`. There is no studio screen. `serve` only hosts a finished site folder on 127.0.0.1. That is the gap.
+Keith runs SpiderCaster from Windows. Today the product is a Python 3.11+ standard-library CLI at `V:\A\Ai\spidercaster\working`. The command is `python spidercaster.py`. There is no studio screen. `serve` only hosts a finished site folder on 127.0.0.1. That is the gap.
 
 ## What already works
 

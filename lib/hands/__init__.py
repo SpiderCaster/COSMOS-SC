@@ -401,7 +401,7 @@ def _sc_ai_chain_module():
                       str(Path(__file__).resolve().parent.parent / "ai_chain")):
         if directory and directory not in sys.path and Path(directory).is_dir():
             sys.path.append(directory)
-    import sc_ai_chain
+    import sc_ai_chain  # noqa: E402
     return sc_ai_chain
 
 
@@ -434,7 +434,7 @@ def copy_check(ctx: dict) -> dict:
         source, provider, model = result.source, result.provider, result.model
         reason, ms, verdict = result.reason, result.ms, (result.text or "")[:2000]
         usage = dict(getattr(result, "usage", None) or {})
-    except Exception as exc:  # noqa: BLE001 -- advisory: never break a build
+    except Exception as exc:                                    # advisory: never break a build
         source, provider, model = "template", "", ""
         reason, ms, verdict = f"chain error {type(exc).__name__}", 0, fallback_note
         usage = {}
@@ -591,6 +591,7 @@ def render(ctx: dict) -> dict:
         pages = render_mod.assemble(site_ir, noindex=True)
         for page in pages:
             (dest / page["file"]).write_text(page["html"], encoding="utf-8")
+        render_mod.copy_fonts(dest)
         (dest / "site.json").write_text(json.dumps(site_ir, indent=2), encoding="utf-8")
     except (OSError, KeyError, TypeError) as exc:
         return _ret("FAIL", str(exc))

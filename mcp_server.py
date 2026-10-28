@@ -33,7 +33,7 @@ from lib.frames import FrameError, list_frames, load_frame  # noqa: E402
 from lib.library import Library         # noqa: E402
 
 SURFACE_ROOT = Path(os.environ.get("SPIDERCASTER_SURFACE_ROOT") or (ROOT / "sites"))
-SECRETS_DIR = Path(os.environ.get("SPIDERCASTER_SECRETS_DIR") or r"V:\Research4\.secrets")
+SECRETS_DIR = Path(os.environ.get("SPIDERCASTER_SECRETS_DIR") or r"<your-key-file-dir>")
 SERVER_INFO = {"name": "spidercaster-mcp", "version": "0.1.0"}
 
 
@@ -254,7 +254,7 @@ def tool_wallets(args: dict) -> dict:
     sd = Path(args.get("secretsDir") or SECRETS_DIR)
     wallets = []
     if sd.exists():
-        for p in sorted(list(sd.glob("vertex_*_key.txt")) + list(sd.glob("vertex_key.txt"))):
+        for p in sorted(list(sd.glob("vertex_*_key.txt")) + list(sd.glob("gemini_key5.txt"))):
             m = _key_meta(p.read_text(encoding="utf-8"))
             if m:
                 wallets.append({"file": p.name, **m})

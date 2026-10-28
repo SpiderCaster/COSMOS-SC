@@ -135,7 +135,7 @@ SpiderCaster already refuses the parts of Harmony that do not fit a static, noin
 - The SEO seat's hands are only `uniqueness` and `meta_basics`. `seat_gate` refuses any other hand. There is no Aria chat, no keyword generator, and no copy writer.
 - Header and footer are real parts. The mobile drawer is a checker gate, which is the static stand-in for Harmony's hamburger, without a second mobile document.
 - DOM order is the section order `compose` writes. A separate optimizer is not required.
-- No CMS, no member login, no hosted form, no app market, and no React runtime. `lib/ingest.py` drops `htt<local-path>` and `https://` asset URLs. Media stays on local files.
+- No CMS, no member login, no hosted form, no app market, and no React runtime. `lib/ingest.py` drops `http://` and `https://` asset URLs. Media stays on local files.
 
 ## Worth building
 

@@ -1,6 +1,6 @@
 # Local photos for the quality tests
 
-Measured 2026-10-01. Working tree `<repo-root>`. No image API. Nothing published. No hotlink. No site edit. No image copied. No credential file opened. No Cloudflare id copied.
+Measured 2026-10-01. Working tree `V:\A\Ai\spidercaster\working`. No image API. Nothing published. No hotlink. No site edit. No image copied. No credential file opened. No Cloudflare id copied.
 
 ## Files in `library/image-tests/2026-10-01`
 
@@ -62,7 +62,7 @@ None of the four shows the engine, a command, or a token ledger. The M mark is t
 
 Both briefs must keep the letter mark. No honest local photo exists for either.
 
-`hero_visual()` in `lib/render.py` prints an `img` only when `image` is set and does not start with `htt<local-path>`, `https://`, or `//`. Otherwise it emits `hero-mark`, the first alphanumeric of the brand. That letter is **H** for Harbor Tea Room and **S** for the SpiderCaster title. `favicon_svg()` draws the same letter into `favicon.svg`. `movelixir-mark.png` does not replace it. `FEEDBACK.md` says not to ask the photo model for the favicon.
+`hero_visual()` in `lib/render.py` prints an `img` only when `image` is set and does not start with `http://`, `https://`, or `//`. Otherwise it emits `hero-mark`, the first alphanumeric of the brand. That letter is **H** for Harbor Tea Room and **S** for the SpiderCaster title. `favicon_svg()` draws the same letter into `favicon.svg`. `movelixir-mark.png` does not replace it. `FEEDBACK.md` says not to ask the photo model for the favicon.
 
 `library/research/HANDS_CHANGELOG.md`: if the project has no `assets/hero.png`, `assets/hero.jpg`, `assets/hero.jpeg`, or `assets/hero.webp`, the letter mark stays. Neither quality-test project has one of those files.
 
@@ -70,7 +70,7 @@ The built pages were not edited. `sites\bench-harbor-tearoom\index.html` (17006 
 
 ## Vault
 
-Default vault `<local-path>` exists. `SPIDERCASTER_VAULT` was unset in the process and user environments. `frames.json` is 23525 bytes: 82 frames, every `photos` value `not-pulled`, no snapshot set, and zero image files under the vault. The note says names only, until a snapshot is accepted. Those rows are not local photos. Nothing was copied out of the vault.
+Default vault `V:\streams\webdev\vendor-vault` exists. `SPIDERCASTER_VAULT` was unset in the process and user environments. `frames.json` is 23525 bytes: 82 frames, every `photos` value `not-pulled`, no snapshot set, and zero image files under the vault. The note says names only, until a snapshot is accepted. Those rows are not local photos. Nothing was copied out of the vault.
 
 ## Leave them
 

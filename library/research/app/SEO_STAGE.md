@@ -2,7 +2,7 @@
 
 Scored after a three-minute wait on 2026-10-01. Read-only. No publish. No page or engine edits. No crew.
 
-Paths are under `<repo-root>`. Both folders were present. Neither page is missing.
+Paths are under `V:\a\Ai\spidercaster\working`. Both folders were present. Neither page is missing.
 
 Checks are yes/no from the HTML only. A missing `aggregateRating` is correct. Do not add reviews, stars, or extra keywords to clear a gap.
 
@@ -20,7 +20,7 @@ Description: `A quiet tea room that seats walk-ins by the water.`
 | rel=canonical | no. No `<link rel="canonical">`. |
 | json-ld WebSite, and no aggregateRating | no. No `application/ld+json` and no `WebSite` object. `aggregateRating` is absent, which is correct. |
 | every img has alt | yes. One image: `<img src="assets/hero.png" alt="Harbor Tea Room" ...>`. |
-| no remote img or og:image URL | yes. The image src is relative. No `og:image`. No `htt<local-path>` or `https://` in the file. |
+| no remote img or og:image URL | yes. The image src is relative. No `og:image`. No `http://` or `https://` in the file. |
 | title contains the brand | yes. Title is the brand `Harbor Tea Room`. |
 | lang attribute | yes. `<html lang="en">`. |
 
@@ -38,7 +38,7 @@ Description: `SpiderCaster is a copy-driven static website engine. You give it a
 | rel=canonical | no. No `<link rel="canonical">`. |
 | json-ld WebSite, and no aggregateRating | no. No `application/ld+json` and no `WebSite` object. `aggregateRating` is absent, which is correct. |
 | every img has alt | yes. Zero `<img>` elements, so none lack alt. |
-| no remote img or og:image URL | yes. No `<img>`, no `og:image`, no `htt<local-path>` or `https://`. Hero is a text mark `S` with `aria-hidden="true"`. |
+| no remote img or og:image URL | yes. No `<img>`, no `og:image`, no `http://` or `https://`. Hero is a text mark `S` with `aria-hidden="true"`. |
 | title contains the brand | yes. Title begins with `SpiderCaster`. |
 | lang attribute | yes. `<html lang="en">`. |
 

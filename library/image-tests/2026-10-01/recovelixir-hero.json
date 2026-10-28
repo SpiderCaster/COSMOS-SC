@@ -1,9 +1,0 @@
-{
-  "provider": "xai",
-  "model": "grok-imagine-image-2.0",
-  "prompt": "Quiet evening interior, no text, no logo, no watermark. A person resting under a blanket on a sofa, one warm lamp, a dark window. Mood of the calm after a hard day. Not a product ad and not a supplement bottle.",
-  "file": "recovelixir-hero.png",
-  "bytes": 185764,
-  "aspect_ratio": "16:9",
-  "quality": "low"
-}

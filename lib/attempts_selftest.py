@@ -228,7 +228,8 @@ def _battery_tel(root: Path) -> None:
     _expect(rows["phone_bar"]["status"] == "PASS",
             f"phone_bar: {rows['phone_bar'].get('detail')}")
 
-    # Ask slot with digits but no bar: FAIL, never invented elsewhere.
+    # Phone bar is opt-in. Digits in the ask slot without a bar stay PASS.
+    # A rendered bar whose digits are not the copy digits still FAILs.
     noslot = root / "tel-noslot"
     _mk_site(noslot)
     noslot_html = (noslot / "index.html").read_text(encoding="utf-8")
@@ -236,8 +237,15 @@ def _battery_tel(root: Path) -> None:
     (noslot / "index.html").write_text(noslot_html, encoding="utf-8")
     rep = check_mod.check_site(noslot, quiet=True)
     single = next(row for row in rep.rows if row["name"] == "single_primary_cta")
-    _expect(single["status"] == "FAIL", "missing bar on a digit ask slot passed")
-    _expect("phone-bar" in single.get("detail", ""), "FAIL does not name the bar")
+    _expect(single["status"] == "PASS", "missing bar on a digit ask slot must pass")
+    badbar = root / "tel-badbar"
+    _mk_site(badbar)
+    bad_html = (badbar / "index.html").read_text(encoding="utf-8")
+    bad_html = bad_html.replace("tel:5550142288", "tel:5550199999")
+    (badbar / "index.html").write_text(bad_html, encoding="utf-8")
+    rep = check_mod.check_site(badbar, quiet=True)
+    single = next(row for row in rep.rows if row["name"] == "single_primary_cta")
+    _expect(single["status"] == "FAIL", "bar digits that are not the copy digits passed")
 
     # Order rule: an ask section before proof fails ask_after_proof.
     bad_order = [

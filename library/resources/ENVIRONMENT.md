@@ -87,11 +87,11 @@ Ledger on disk: `warmth-authority` is `live` on `movelixir.com`. A crew run for 
 | `V:\streams\webdev\spidercaster_local\sites\movelixir.com.md` | yes. Brief contains provider ids — omitted |
 | `V:\streams\webdev\spidercaster_local\sites\floelixir.com.md` | yes. Brief contains provider ids — omitted |
 | `V:\streams\webdev\spidercaster_local\sites\recovelixir.com.md` | yes. Brief contains provider ids — omitted |
-| `V:\Research4\.secrets\Grok_API_Token-Key.txt` | yes. Not opened |
+| `<your-key-file-dir>\Grok_API_Token-Key.txt` | yes. Not opened |
 | `V:\A\Ai\COSMOS\live\config\openrouter_api_key.txt` | yes. Not opened |
 | `V:\A\Ai\COSMOS\live\config\xai_api_key.txt` | no |
 
-`lib\imagine.py` reads `XAI_API_KEY`, else `XAI_API_KEY_FILE`, else `V:\Research4\.secrets\Grok_API_Token-Key.txt`. OpenRouter reads `OPENROUTER_API_KEY`, else `OPENROUTER_API_KEY_FILE`, else `V:\A\Ai\COSMOS\live\config\openrouter_api_key.txt`. It does not read `xai_api_key.txt`. File contents were not checked, so this note does not claim either file is a usable key.
+`lib\imagine.py` reads `XAI_API_KEY`, else `XAI_API_KEY_FILE`, else `<your-key-file-dir>\Grok_API_Token-Key.txt`. OpenRouter reads `OPENROUTER_API_KEY`, else `OPENROUTER_API_KEY_FILE`, else `V:\A\Ai\COSMOS\live\config\openrouter_api_key.txt`. It does not read `xai_api_key.txt`. File contents were not checked, so this note does not claim either file is a usable key.
 
 Image tests at `library\image-tests\2026-10-01` (filename and byte size only):
 

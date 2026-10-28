@@ -40,6 +40,79 @@ PAD_WIDE = 48
 WIDE_MIN = 1280
 CONTAINER_MAX = 1120
 
+#: Speed proxy (VJ-00). Byte gates are 1024-based. The critical-CSS figure is a
+#: target, never a gate. Lab metrics (LCP/FCP/INP/CLS/ATF) are not checked here.
+WEIGHT_HTML_RAW = 220 * 1024
+WEIGHT_HTML_GZIP = 60 * 1024
+WEIGHT_SCRIPT = 12 * 1024
+WEIGHT_HERO_IMG = 150 * 1024
+WEIGHT_IMAGE = 250 * 1024
+WEIGHT_CRITICAL_TARGET = 98 * 1024
+
+#: Surfaces shared by every mold. Dark/light is a mold choice, not a hash.
+DARK_BASE = {
+    "bg": "#0a0e14",
+    "surface": "#111722",
+    "surface2": "#161e2c",
+    "text": "#e9eef6",
+    "muted": "#b7c2d0",
+}
+LIGHT_BASE = {
+    "bg": "#f7f8fa",
+    "surface": "#ffffff",
+    "surface2": "#f1f3f7",
+    "text": "#171a21",
+    "muted": "#3e4652",
+}
+
+def _mold_row(
+    mold_id: str,
+    template: str,
+    type_lead: str,
+    dark: bool,
+    radius: str,
+    accent: str,
+    accent2: str,
+) -> dict:
+    base = DARK_BASE if dark else LIGHT_BASE
+    return {
+        "id": mold_id,
+        "template": template,
+        "type_lead": type_lead,
+        "dark": dark,
+        "radius": radius,
+        "accent": accent,
+        "accent2": accent2,
+        "display_stack": STACKS[type_lead],
+        "body_stack": STACKS["sans"],
+        **base,
+    }
+
+
+#: Package molds. Accents are the palette hex in library/molds/*.json.
+#: display_stack/body_stack are recorded for VJ-02; the renderer still uses
+#: the template font rule until that job lands.
+MOLD_TOKENS = {
+    "warmth-authority": _mold_row(
+        "warmth-authority", "editorial", "serif", False, "16px", "#c8923e", "#8a5a2b",
+    ),
+    "discover-grid": _mold_row(
+        "discover-grid", "modern", "sans", True, "16px", "#2a6f8f", "#5eead4",
+    ),
+    "clarify-mix": _mold_row(
+        "clarify-mix", "bold", "slab", True, "22px", "#6b4c3b", "#fcd34d",
+    ),
+    "spidercaster-com": _mold_row(
+        "spidercaster-com", "modern", "sans", True, "16px", "#1f6f5b", "#5eead4",
+    ),
+}
+
+_TEMPLATE_MOLD = {
+    "editorial": "warmth-authority",
+    "bold": "clarify-mix",
+    "modern": "discover-grid",
+}
+
 _HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 _REMOTE = re.compile(r"@import|@font-face|url\(\s*[\"']?https?:", re.IGNORECASE)
 _SPACING_PROP = re.compile(
@@ -75,6 +148,36 @@ def contrast_ratio(a: str, b: str) -> float:
     if hi < lo:
         hi, lo = lo, hi
     return (hi + 0.05) / (lo + 0.05)
+
+
+def mold_tokens(mold_id: str) -> dict:
+    """Copy of one package mold token set. Unknown ids raise TokensError."""
+    key = str(mold_id or "").strip()
+    try:
+        row = MOLD_TOKENS[key]
+    except KeyError as exc:
+        raise TokensError(f"bad mold {mold_id!r}") from exc
+    return dict(row)
+
+
+def resolve_mold_id(theme: dict) -> str:
+    """Mold id for a theme. Explicit mold wins; else template; else discover-grid.
+
+    The title/seed is not an input. Color choice does not hash.
+    """
+    if not isinstance(theme, dict):
+        return "discover-grid"
+    for key in ("mold", "mold_id"):
+        val = theme.get(key)
+        if isinstance(val, str) and val.strip():
+            mold_tokens(val)  # raise on an explicit unknown id
+            return val.strip()
+    template = theme.get("template")
+    if isinstance(template, str):
+        mapped = _TEMPLATE_MOLD.get(template.strip())
+        if mapped:
+            return mapped
+    return "discover-grid"
 
 
 def stack_for(type_lead: str) -> str:

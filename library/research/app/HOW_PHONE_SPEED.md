@@ -74,7 +74,7 @@ box = f' width="{w}" height="{h}"' if w > 0 and h > 0 else ""
 
 `hero_visual` then writes one `img` with that `box`, plus `fetchpriority="high"` and `decoding="async"`. If either number is missing or not positive, the attributes are omitted. `image_box` can read a PNG or JPEG header, but nothing in this file calls it, so the tag does not measure the file itself.
 
-The hero source is one local path. `_local_image_src` returns the string only when it does not start with `htt<local-path>`, `https://`, or `//`. Otherwise it returns `""`, and `hero_visual` draws a letter mark instead of an `img`.
+The hero source is one local path. `_local_image_src` returns the string only when it does not start with `http://`, `https://`, or `//`. Otherwise it returns `""`, and `hero_visual` draws a letter mark instead of an `img`.
 
 There is no `srcset` and no `sizes` on that tag, or anywhere else in the file. There is no `content-visibility`.
 

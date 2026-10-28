@@ -49,8 +49,11 @@
             },
             "bullets": [],
             "image": "",
-            "image_alt": ""
-          }
+            "image_alt": "",
+            "image_w": null,
+            "image_h": null
+          },
+          "_source": "overview.md"
         },
         {
           "id": "about",
@@ -73,7 +76,8 @@
               "Closed Mondays."
             ],
             "points": []
-          }
+          },
+          "_source": "hours.md"
         },
         {
           "id": "menu",
@@ -103,7 +107,8 @@
                 ]
               }
             ]
-          }
+          },
+          "_source": "menu.md"
         },
         {
           "id": "contact",
@@ -115,7 +120,8 @@
             "phone": "(555) 014-2288",
             "address": "14 Harbor Lane",
             "hours": ""
-          }
+          },
+          "_source": "contact.md"
         }
       ]
     }
@@ -124,5 +130,43 @@
     "text": "(c) 2026 Harbor Tea Room",
     "links": [],
     "credit": true
+  },
+  "citations": {
+    "hero": {
+      "file": "overview.md",
+      "texts": [
+        "Harbor Tea Room",
+        "A quiet tea room that seats walk-ins by the water."
+      ]
+    },
+    "hours": {
+      "file": "hours.md",
+      "texts": [
+        "Hours"
+      ]
+    },
+    "menu": {
+      "file": "menu.md",
+      "texts": [
+        "Menu",
+        "12oz cups, brewed to order."
+      ]
+    },
+    "contact": {
+      "file": "contact.md",
+      "texts": [
+        "Contact"
+      ]
+    }
+  },
+  "presentation": {
+    "frame_id": "",
+    "mold_id": "",
+    "slots": [
+      {
+        "section": "hero",
+        "required": true
+      }
+    ]
   }
 }

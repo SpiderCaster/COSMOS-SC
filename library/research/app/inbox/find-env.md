@@ -21,7 +21,7 @@ Pass 2 present: the three `lib` modules. Pass 2 still absent: `SANDBOX.md`, `REQ
 
 Gaps: those two markdown files. Doctor is not a gap.
 
-Key files were not opened. XAI and OpenRouter env vars unset. Research4 Grok token path yes. COSMOS openrouter key path yes. `xai_api_key.txt` no.
+Key files were not opened. XAI and OpenRouter env vars unset. local-secrets Grok token path yes. COSMOS openrouter key path yes. `xai_api_key.txt` no.
 
 Report: library/research/app/RESOURCES_ENV_NOW.md
 

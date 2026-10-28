@@ -1,9 +1,0 @@
-{
-  "provider": "xai",
-  "model": "grok-imagine-image-2.0",
-  "prompt": "Intimate still life, no text, no logo, no watermark. Morning window light, a ceramic cup of tea on a wooden desk beside an open notebook, a little steam. Mood of a small ritual before deep work. Not a product ad.",
-  "file": "floelixir-hero.png",
-  "bytes": 223763,
-  "aspect_ratio": "16:9",
-  "quality": "low"
-}

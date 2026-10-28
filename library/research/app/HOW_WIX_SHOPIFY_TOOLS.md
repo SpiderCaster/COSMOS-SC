@@ -196,7 +196,7 @@ Stdlib only (`json`, `pathlib`, `datetime`). Offline. No network. No publish. No
 - Caller: frontend.
 - Inputs: `kind` (string).
 - Output keys: `kind`, `refused`, `reason`.
-- Fail: `kind` empty; `kind` is `liquid`, `velo`, `javascript`, `css`, or `custom_element`; `kind` contains `htt<local-path>` or `https://`; `kind` is not one of `ir.SECTION_TYPES`. Writes nothing. If `kind` is an existing section type, status is still a refusal to emit code: `refused` true, `reason` says the type stays in the catalog. That case is the only non-error refusal.
+- Fail: `kind` empty; `kind` is `liquid`, `velo`, `javascript`, `css`, or `custom_element`; `kind` contains `http://` or `https://`; `kind` is not one of `ir.SECTION_TYPES`. Writes nothing. If `kind` is an existing section type, status is still a refusal to emit code: `refused` true, `reason` says the type stays in the catalog. That case is the only non-error refusal.
 - Target file: `lib/hands/__init__.py`.
 - Why: Harmony has no Velo; the element generator is the substitute, and SpiderCaster does not copy it. Magic **Keep** writes a `.liquid` file into `/blocks`. This seat does not.
 
@@ -205,7 +205,7 @@ Stdlib only (`json`, `pathlib`, `datetime`). Offline. No network. No publish. No
 - Caller: architect.
 - Inputs: `mold_id` (string). If `live` is passed, fail.
 - Output keys: `id`, `origin`, `palette`, `type_lead`, `nav`, `template`, `parents`.
-- Fail: mold file missing; `origin` not `scratch`, `mutate`, or `mix`; palette not `#` plus six hex digits; any string value contains `htt<local-path>` or `https://`; `live` was passed. Reads `library/molds/<id>.json` only. Does not write the mold, the ledger, or the vault. Does not download a parent.
+- Fail: mold file missing; `origin` not `scratch`, `mutate`, or `mix`; palette not `#` plus six hex digits; any string value contains `http://` or `https://`; `live` was passed. Reads `library/molds/<id>.json` only. Does not write the mold, the ledger, or the vault. Does not download a parent.
 - Target file: `lib/library.py`.
 - Why: Harmony Brand and Shopify Theme settings are global tokens, separate from one section. `mold_list` lists. `mold_pick` can create. This only shows the package tokens and rejects a URL.
 
@@ -214,6 +214,6 @@ Stdlib only (`json`, `pathlib`, `datetime`). Offline. No network. No publish. No
 - Caller: deployer.
 - Inputs: `out`, `seat`, `hand`, `status`, `detail`.
 - Output keys: `path`, `seq`, `seat`, `hand`, `status`.
-- Fail: `seat` not in the seven; `hand` not in that seat's list; `status` not `PASS`, `FAIL`, or `SKIP`; `detail` contains `htt<local-path>` or `https://`; `out` missing or escapes the working tree; a restore flag was passed. Appends one JSON object as a line to `out/session.jsonl`. Does not rewrite earlier lines. Does not restore. Does not write `crew-ticket.json`. Does not bind live.
+- Fail: `seat` not in the seven; `hand` not in that seat's list; `status` not `PASS`, `FAIL`, or `SKIP`; `detail` contains `http://` or `https://`; `out` missing or escapes the working tree; a restore flag was passed. Appends one JSON object as a line to `out/session.jsonl`. Does not rewrite earlier lines. Does not restore. Does not write `crew-ticket.json`. Does not bind live.
 - Target file: `lib/hands/__init__.py`.
 - Why: Harmony history is an append of saves with who and when. Shopify undo dies at **Save** and is not a second publish. This is the local append. Publish stays the Keith click outside `crew run`.
