@@ -1,6 +1,6 @@
 # The rules it runs on
 
-Six rules. They hold unless Keith changes them.
+Six rules. They hold for every build.
 
 - Nothing invented: the builder only uses words it was given. A missing fact stays missing.
 - Hidden first: pages stay out of search results until a person signs off on the words.
@@ -11,8 +11,8 @@ Six rules. They hold unless Keith changes them.
 
 ## The check gate
 
-The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, noindex. One failure stops the job. Zero is the only passing score.
+The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, and the search flag. One failure stops the job. Zero is the only passing score.
 
 ## Seven seats, no publish
 
-One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person typing a command, and only Keith types that one.
+One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person copying the built files to a host.

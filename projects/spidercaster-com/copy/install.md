@@ -1,12 +1,11 @@
-# One click to install
+# Install from the repository
 
-Download SpiderCaster and click the installer icon to launch.
-The app starts immediately and opens the studio desk in your browser.
-Windows, macOS, and Linux ready.
+Clone SpiderCaster / COSMOS-SC from GitHub and run it with Python.
+Windows, macOS, and Linux use the same commands.
 
-- Download for Windows: click the SpiderCaster installer to start.
-- Download for macOS: open the package to start.
-- Free agent seated in studio: starts chatting and planning with zero account setup.
-- The desk opens in your browser with rooms for the plan, the paint, the check, and the preview.
-- Free cloud staging: share your site live online even if you do not have a domain yet.
-- Nothing publishes from here without your explicit click.
+- git clone the SpiderCaster / COSMOS-SC repository
+- cd COSMOS-SC
+- python spidercaster.py build projects/demo-local --offline --out sites/demo-local
+- python spidercaster.py check sites/demo-local
+- python spidercaster.py serve sites/demo-local
+- Nothing publishes until you copy the built files to a host yourself.

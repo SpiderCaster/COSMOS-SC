@@ -1,16 +1,16 @@
 {
   "version": 1,
   "generator": "spidercaster/0.1",
-  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, 1-click install, 7 seats,\n1 planning call, 14 frames, 0 failures allowed. No metrics, prices,\ntestimonials, or brand names. None exist in the sources, so none appear here.\nThis build stays noindex until a content gate is signed.",
+  "brief": "# Brief\n\nSpiderCaster's front door at spidercaster.com. Readers: developers and site\nowners who want a site built from their own words, plus operators who will\nrun the builder on their own machines.\n\nOne page. A big hero that says the verb: write words, run a command, get a\nsite. Then the proof in order: how it goes in three moves, what you get,\nthe cost in plain numbers, old machines with the same job, the rules, the\ncheck gate, the crew, install in two clicks, questions, and a closing panel.\n\nVoice: human. Short sentences. Concrete nouns. No hype. Every number on the\npage is a fact about the engine: 0-token drafts, Python 3.11+, 7 seats,\n14 frames, 0 failures allowed. The public source path may appear as text.\nNo prices or testimonials. This page is the public front door.",
   "meta": {
     "title": "SpiderCaster turns words into websites.",
-    "description": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database.",
+    "description": "You write what the page should say. SpiderCaster builds a self-contained website from your words and hands you the files. There is no database.",
     "lang": "en"
   },
   "theme": {
     "template": "modern",
     "dark": true,
-    "accent": "#1f6f5b",
+    "accent": null,
     "accent2": null
   },
   "nav": [
@@ -27,7 +27,7 @@
       "href": "#how-it-goes"
     },
     {
-      "label": "One click to install",
+      "label": "Install from the repository",
       "href": "#features-2"
     },
     {
@@ -50,17 +50,16 @@
           "data": {
             "eyebrow": "",
             "headline": "SpiderCaster turns words into websites.",
-            "subhead": "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again.",
+            "subhead": "You write what the page should say. SpiderCaster builds a self-contained website from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again.",
             "primary": {
               "label": "What you get",
               "href": "#features"
             },
             "secondary": null,
             "bullets": [
-              "Download SpiderCaster to start with one click.",
-              "Automatic free agent seated in your browser studio.",
-              "Instant local preview and one-click free staging.",
-              "Keep every file. The site is yours forever."
+              "The code is the SpiderCaster / COSMOS-SC repository on GitHub.",
+              "Clone the repository and run one offline command.",
+              "Keep every file. The site is yours."
             ],
             "image": "",
             "image_alt": "",
@@ -82,14 +81,14 @@
                 "body": "one command builds a site from your words. The draft costs nothing and needs no keys."
               },
               {
-                "icon": "rocket",
-                "title": "Free agent seated in studio",
-                "body": "the free model chain plans the site in the background with zero setup."
+                "icon": "sparkles",
+                "title": "The repository",
+                "body": "SpiderCaster / COSMOS-SC on GitHub is the public source."
               },
               {
-                "icon": "terminal",
-                "title": "One-click free staging",
-                "body": "test on your port or share live online even before you own a domain."
+                "icon": "browser",
+                "title": "Local preview",
+                "body": "serve the built folder on your own machine and read it in a browser."
               },
               {
                 "icon": "rocket",
@@ -136,11 +135,11 @@
               },
               {
                 "q": "What if I do not have a domain or webhost yet?",
-                "a": "You can preview locally on port 4173. You can also deploy to free cloud staging with a single click, or download the self-contained static files to host anywhere for free."
+                "a": "Preview locally. The serve command opens the built folder on your machine. The files are ordinary HTML, so any static host can take them later."
               },
               {
-                "q": "How does the free agent work without an account?",
-                "a": "SpiderCaster automatically provisions a free background model chain so you can chat and plan immediately. No API keys, credit cards, or accounts are needed."
+                "q": "Where is the code?",
+                "a": "The public repository is SpiderCaster / COSMOS-SC on GitHub. Clone that. The offline build needs no key and no account."
               },
               {
                 "q": "How do I change one thing?",
@@ -163,7 +162,7 @@
           "type": "steps",
           "data": {
             "title": "How it goes",
-            "subhead": "Three moves. Write, build, preview.",
+            "subhead": "Three moves. Write, build, check.",
             "items": [
               {
                 "title": "Write the words",
@@ -174,8 +173,8 @@
                 "body": "One command turns the words into a site, and the offline draft costs nothing."
               },
               {
-                "title": "Preview and share",
-                "body": "The checker reads every page, and you can preview locally or share live online for free."
+                "title": "Run the checker, then preview on your machine",
+                "body": "Nothing goes live until you put the files on a host."
               }
             ]
           },
@@ -185,37 +184,37 @@
           "id": "features-2",
           "type": "features",
           "data": {
-            "title": "One click to install",
-            "subhead": "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready.",
+            "title": "Install from the repository",
+            "subhead": "Clone SpiderCaster / COSMOS-SC from GitHub and run it with Python. Windows, macOS, and Linux use the same commands.",
             "items": [
               {
                 "icon": "rocket",
-                "title": "Download for Windows",
-                "body": "click the SpiderCaster installer to start."
-              },
-              {
-                "icon": "rocket",
-                "title": "Download for macOS",
-                "body": "open the package to start."
-              },
-              {
-                "icon": "rocket",
-                "title": "Free agent seated in studio",
-                "body": "starts chatting and planning with zero account setup."
-              },
-              {
-                "icon": "rocket",
-                "title": "The desk opens in your browser with rooms for the plan, the",
+                "title": "git clone the SpiderCaster / COSMOS-SC repository",
                 "body": ""
               },
               {
                 "icon": "rocket",
-                "title": "Free cloud staging",
-                "body": "share your site live online even if you do not have a domain yet."
+                "title": "cd COSMOS-SC",
+                "body": ""
               },
               {
                 "icon": "rocket",
-                "title": "Nothing publishes from here without your explicit click.",
+                "title": "python spidercaster.py build projects/demo-local --offline -",
+                "body": ""
+              },
+              {
+                "icon": "rocket",
+                "title": "python spidercaster.py check sites/demo-local",
+                "body": ""
+              },
+              {
+                "icon": "rocket",
+                "title": "python spidercaster.py serve sites/demo-local",
+                "body": ""
+              },
+              {
+                "icon": "rocket",
+                "title": "Nothing publishes until you copy the built files to a host y",
                 "body": ""
               }
             ]
@@ -233,16 +232,12 @@
                 "label": "tokens to build the offline draft"
               },
               {
-                "value": "1",
-                "label": "click to install: open the downloaded installer icon"
+                "value": "11",
+                "label": "or newer"
               },
               {
                 "value": "7",
                 "label": "seats in the crew"
-              },
-              {
-                "value": "1",
-                "label": "planning call when AI helps"
               },
               {
                 "value": "14",
@@ -300,7 +295,7 @@
           "type": "features",
           "data": {
             "title": "The rules it runs on",
-            "subhead": "Six rules. They hold unless Keith changes them.",
+            "subhead": "Six rules. They hold for every build.",
             "items": [
               {
                 "icon": "rocket",
@@ -342,7 +337,7 @@
           "data": {
             "title": "The check gate",
             "body": [
-              "The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, noindex. One failure stops the job. Zero is the only passing score."
+              "The checker reads every page before anything moves. Words against copy, links, photos, and the small print: title, description, and the search flag. One failure stops the job. Zero is the only passing score."
             ],
             "points": []
           },
@@ -354,7 +349,7 @@
           "data": {
             "title": "Seven seats, no publish",
             "body": [
-              "One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person typing a command, and only Keith types that one."
+              "One site moves through seven seats in order: architect, content, frontend, graphics, visual critic, SEO, deployer. Each seat does its own job. The last seat writes a ticket. Going live is a person copying the built files to a host."
             ],
             "points": []
           },
@@ -384,7 +379,7 @@
       "file": "overview.md",
       "texts": [
         "SpiderCaster turns words into websites.",
-        "You write what the page should say. SpiderCaster builds an elevated, self-contained website from your words and hands you the files. There is no database. There is nothing to log into. No monthly subscription fees. When the words change, you build again."
+        "You write what the page should say. SpiderCaster builds a self-contained website from your words and hands you the files. There is no database. There is nothing to log into. When the words change, you build again."
       ]
     },
     "features": {
@@ -404,14 +399,14 @@
       "file": "how.md",
       "texts": [
         "How it goes",
-        "Three moves. Write, build, preview."
+        "Three moves. Write, build, check."
       ]
     },
     "features-2": {
       "file": "install.md",
       "texts": [
-        "One click to install",
-        "Download SpiderCaster and click the installer icon to launch. The app starts immediately and opens the studio desk in your browser. Windows, macOS, and Linux ready."
+        "Install from the repository",
+        "Clone SpiderCaster / COSMOS-SC from GitHub and run it with Python. Windows, macOS, and Linux use the same commands."
       ]
     },
     "the-cost-in-plain-numbers": {
@@ -431,7 +426,7 @@
       "file": "rails.md",
       "texts": [
         "The rules it runs on",
-        "Six rules. They hold unless Keith changes them."
+        "Six rules. They hold for every build."
       ]
     },
     "the-check-gate": {

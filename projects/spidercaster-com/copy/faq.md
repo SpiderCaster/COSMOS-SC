@@ -10,10 +10,10 @@ Can the AI make things up?
 No. It works only from the words in your files. It can reorder and shorten, but it cannot add facts, prices, or names.
 
 What if I do not have a domain or webhost yet?
-You can preview locally on port 4173. You can also deploy to free cloud staging with a single click, or download the self-contained static files to host anywhere for free.
+Preview locally. The serve command opens the built folder on your machine. The files are ordinary HTML, so any static host can take them later.
 
-How does the free agent work without an account?
-SpiderCaster automatically provisions a free background model chain so you can chat and plan immediately. No API keys, credit cards, or accounts are needed.
+Where is the code?
+The public repository is SpiderCaster / COSMOS-SC on GitHub. Clone that. The offline build needs no key and no account.
 
 How do I change one thing?
 Edit the site.json file and rebuild from it with build --from. The rebuild costs nothing. Small fixes beat full rebuilds.
