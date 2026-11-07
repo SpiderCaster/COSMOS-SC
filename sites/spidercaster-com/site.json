@@ -27,7 +27,7 @@
       "href": "#how-it-goes"
     },
     {
-      "label": "Install from the repository",
+      "label": "Install",
       "href": "#features-2"
     },
     {
@@ -184,9 +184,14 @@
           "id": "features-2",
           "type": "features",
           "data": {
-            "title": "Install from the repository",
-            "subhead": "Clone SpiderCaster / COSMOS-SC from GitHub and run it with Python. Windows, macOS, and Linux use the same commands.",
+            "title": "Install",
+            "subhead": "Windows runs SpiderCaster-Setup.exe from the download page on this site. The wizard does not need an administrator. Its shortcut opens the studio.",
             "items": [
+              {
+                "icon": "rocket",
+                "title": "Run SpiderCaster-Setup.exe on Windows.",
+                "body": ""
+              },
               {
                 "icon": "rocket",
                 "title": "git clone the SpiderCaster / COSMOS-SC repository",
@@ -405,8 +410,8 @@
     "features-2": {
       "file": "install.md",
       "texts": [
-        "Install from the repository",
-        "Clone SpiderCaster / COSMOS-SC from GitHub and run it with Python. Windows, macOS, and Linux use the same commands."
+        "Install",
+        "Windows runs SpiderCaster-Setup.exe from the download page on this site. The wizard does not need an administrator. Its shortcut opens the studio."
       ]
     },
     "the-cost-in-plain-numbers": {

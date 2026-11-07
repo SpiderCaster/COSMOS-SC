@@ -61,8 +61,38 @@ from lib.library import Library, LibraryError  # noqa: E402
 from lib.seatpack import pack as seat_pack   # noqa: E402
 from lib.shipcheck import main as shipcheck_main  # noqa: E402
 
+def _frozen() -> bool:
+    return bool(getattr(sys, "frozen", False))
+
+
+def _bundle_root() -> Path:
+    """Read-only tree shipped inside a frozen executable."""
+    if _frozen():
+        return Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+    return Path(__file__).resolve().parent
+
+
 _HOME = os.environ.get("SPIDERCASTER_HOME", "").strip()
-ROOT = Path(_HOME).resolve() if _HOME else Path(__file__).resolve().parent
+if _HOME:
+    ROOT = Path(_HOME).resolve()
+    BUNDLE = ROOT
+elif _frozen():
+    BUNDLE = _bundle_root()
+    ROOT = Path(sys.executable).resolve().parent
+else:
+    ROOT = Path(__file__).resolve().parent
+    BUNDLE = ROOT
+
+
+def _data_root() -> Path:
+    """Library and shipped projects. A checkout keeps them beside the script.
+    A frozen exe keeps them in the bundle and writes sites next to the exe."""
+    if (ROOT / "library" / "molds").is_dir():
+        return ROOT
+    return BUNDLE
+
+
+DATA = _data_root()
 
 
 # ---------------------------------------------------------------- helpers
@@ -261,7 +291,7 @@ def _load_apply_mold(mold_id: str) -> dict:
     mold_id = str(mold_id or "").strip()
     if not mold_id or "/" in mold_id or "\\" in mold_id or ".." in mold_id:
         raise ValueError(f"bad mold id: {mold_id}")
-    path = ROOT / "library" / "molds" / f"{mold_id}.json"
+    path = DATA / "library" / "molds" / f"{mold_id}.json"
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
@@ -670,7 +700,7 @@ def cmd_start(args) -> int:
     if not no_build:
         demo_proj = Path(project)
         if not demo_proj.is_dir():
-            cand = ROOT / "projects" / Path(project).name
+            cand = DATA / "projects" / Path(project).name
             if cand.is_dir():
                 demo_proj = cand
         out = ROOT / "sites" / demo_proj.name
@@ -837,7 +867,7 @@ def cmd_sections(_args) -> int:
 
 # ---------------------------------------------------------------- library + crew
 
-PACKAGE_LIBRARY = ROOT / "library"
+PACKAGE_LIBRARY = DATA / "library"
 DEFAULT_VAULT = Path(os.environ.get("SPIDERCASTER_VAULT") or r"V:\streams\webdev\vendor-vault")
 DEFAULT_OWP = Path(r"V:\streams\webdev\templates\owp\_catalog.json")
 DEFAULT_GP = Path(r"V:\streams\webdev\templates\gp\_catalog.json")
@@ -1017,7 +1047,7 @@ def cmd_crew(args) -> int:
         import tempfile
         from lib.crew import selftest as crew_selftest
         with tempfile.TemporaryDirectory() as tmp:
-            return crew_selftest(Path(tmp), ROOT / "projects" / "demo-local")
+            return crew_selftest(Path(tmp), DATA / "projects" / "demo-local")
     if args.crew_cmd == "run":
         lib = _library(args)
         mold_id = args.mold
@@ -1050,7 +1080,7 @@ def cmd_crew(args) -> int:
 
 
 def cmd_doctor(_args) -> int:
-    data = doctor_report(ROOT)
+    data = doctor_report(DATA)
     print(json.dumps(data, separators=(",", ":")))
     return 0 if data["ok"] else 2
 
@@ -1129,7 +1159,7 @@ def cmd_tools(args) -> int:
 
 def cmd_seat(args) -> int:
     try:
-        data = seat_pack(ROOT, args.seat)
+        data = seat_pack(DATA, args.seat)
     except KeyError:
         print("unknown seat")
         return 2
@@ -1165,7 +1195,7 @@ def cmd_ui(args) -> int:
     if project:
         cand = Path(project)
         if not cand.is_dir():
-            named = ROOT / "projects" / Path(project).name
+            named = DATA / "projects" / Path(project).name
             if named.is_dir():
                 project = str(named)
     return run_ui(project, root=ROOT)
@@ -1380,7 +1410,7 @@ def main(argv=None) -> int:
     p = partsub.add_parser("scan", help="count every part manifest")
     p.add_argument("--json", action="store_true")
     p = partsub.add_parser("assemble", help="build a noindex site that uses the parts")
-    p.add_argument("--project", default=str(ROOT / "projects" / "demo-local"))
+    p.add_argument("--project", default=str(DATA / "projects" / "demo-local"))
     p.add_argument("--out", default=str(ROOT / "sites" / "assembled"))
     partsub.add_parser("selftest", help="scan, assemble to a temp dir, and run check")
     partp.set_defaults(fn=cmd_parts)
